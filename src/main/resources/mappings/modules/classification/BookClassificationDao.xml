@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.classification.dao.BookClassificationDao">
+    
+	<sql id="bookClassificationColumns">
+		a.id AS "id",
+		a.classification AS "classification"
+	</sql>
+	
+	<sql id="bookClassificationJoins">
+	</sql>
+    
+	<select id="get" resultType="BookClassification">
+		SELECT 
+			<include refid="bookClassificationColumns"/>
+		FROM book_classification a
+		<include refid="bookClassificationJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BookClassification">
+		SELECT 
+			<include refid="bookClassificationColumns"/>
+		FROM book_classification a
+		<include refid="bookClassificationJoins"/>
+		<where>
+			
+			<if test="classification != null and classification != ''">
+				AND a.classification LIKE 
+					<if test="dbName == 'oracle'">'%'||#{classification}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{classification}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{classification},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BookClassification">
+		SELECT 
+			<include refid="bookClassificationColumns"/>
+		FROM book_classification a
+		<include refid="bookClassificationJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO book_classification(
+			id,
+			classification
+		) VALUES (
+			#{id},
+			#{classification}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE book_classification SET 	
+			classification = #{classification}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM book_classification
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

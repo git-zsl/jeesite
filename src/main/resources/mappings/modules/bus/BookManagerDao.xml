@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.bus.dao.BookManagerDao">
+    
+	<sql id="bookManagerColumns">
+		a.id AS "id",
+		a.book_name AS "bookName",
+		a.author AS "author",
+		a.cover AS "cover",
+		a.first_class AS "firstClass",
+		a.second_class AS "secondClass",
+		a.price AS "price",
+		a.by_link AS "byLink",
+		a.is_recommend AS "isRecommend",
+		a.publish_date AS "publishDate"
+	</sql>
+	
+	<sql id="bookManagerJoins">
+	</sql>
+    
+	<select id="get" resultType="BookManager">
+		SELECT 
+			<include refid="bookManagerColumns"/>
+		FROM book_manager a
+		<include refid="bookManagerJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BookManager">
+		SELECT 
+			<include refid="bookManagerColumns"/>
+		FROM book_manager a
+		<include refid="bookManagerJoins"/>
+		<where>
+			
+			<if test="bookName != null and bookName != ''">
+				AND a.book_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{bookName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{bookName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{bookName},'%')</if>
+			</if>
+			<if test="author != null and author != ''">
+				AND a.author LIKE 
+					<if test="dbName == 'oracle'">'%'||#{author}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{author}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{author},'%')</if>
+			</if>
+			<if test="firstClass != null and firstClass != ''">
+				AND a.first_class LIKE 
+					<if test="dbName == 'oracle'">'%'||#{firstClass}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{firstClass}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{firstClass},'%')</if>
+			</if>
+			<if test="secondClass != null and secondClass != ''">
+				AND a.second_class LIKE 
+					<if test="dbName == 'oracle'">'%'||#{secondClass}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{secondClass}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{secondClass},'%')</if>
+			</if>
+			<if test="beginPrice != null and endPrice != null and beginPrice != '' and endPrice != ''">
+				AND a.price BETWEEN #{beginPrice} AND #{endPrice}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BookManager">
+		SELECT 
+			<include refid="bookManagerColumns"/>
+		FROM book_manager a
+		<include refid="bookManagerJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO book_manager(
+			id,
+			book_name,
+			author,
+			cover,
+			first_class,
+			second_class,
+			price,
+			by_link,
+			is_recommend,
+			publish_date
+		) VALUES (
+			#{id},
+			#{bookName},
+			#{author},
+			#{cover},
+			#{firstClass},
+			#{secondClass},
+			#{price},
+			#{byLink},
+			#{isRecommend},
+			#{publishDate}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE book_manager SET 	
+			book_name = #{bookName},
+			author = #{author},
+			cover = #{cover},
+			first_class = #{firstClass},
+			second_class = #{secondClass},
+			price = #{price},
+			by_link = #{byLink},
+			is_recommend = #{isRecommend},
+			publish_date = #{publishDate}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM book_manager
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.business.dao.BussinessUserDao">
+    
+	<sql id="bussinessUserColumns">
+		a.id AS "id",
+		a.bussiness_login_name AS "bussinessLoginName",
+		a.bussiness_login_password AS "bussinessLoginPassword",
+		a.company AS "company",
+		a.phone AS "phone",
+		a.email AS "email",
+		a.user_name AS "userName",
+		a.checked AS "checked",
+		a.integral AS "integral",
+		a.end_time AS "endTime"
+	</sql>
+	
+	<sql id="bussinessUserJoins">
+	</sql>
+    
+	<select id="get" resultType="BussinessUser">
+		SELECT 
+			<include refid="bussinessUserColumns"/>
+		FROM bussiness_user a
+		<include refid="bussinessUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BussinessUser">
+		SELECT 
+			<include refid="bussinessUserColumns"/>
+		FROM bussiness_user a
+		<include refid="bussinessUserJoins"/>
+		<where>
+			
+			<if test="bussinessLoginName != null and bussinessLoginName != ''">
+				AND a.bussiness_login_name = #{bussinessLoginName}
+			</if>
+			<if test="company != null and company != ''">
+				AND a.company = #{company}
+			</if>
+			<if test="phone != null and phone != ''">
+				AND a.phone = #{phone}
+			</if>
+			<if test="checked != null and checked != ''">
+				AND a.checked = #{checked}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BussinessUser">
+		SELECT 
+			<include refid="bussinessUserColumns"/>
+		FROM bussiness_user a
+		<include refid="bussinessUserJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO bussiness_user(
+			id,
+			bussiness_login_name,
+			bussiness_login_password,
+			company,
+			phone,
+			email,
+			user_name,
+			checked,
+			integral,
+			end_time
+		) VALUES (
+			#{id},
+			#{bussinessLoginName},
+			#{bussinessLoginPassword},
+			#{company},
+			#{phone},
+			#{email},
+			#{userName},
+			#{checked},
+			#{integral},
+			#{endTime}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE bussiness_user SET 	
+			bussiness_login_name = #{bussinessLoginName},
+			bussiness_login_password = #{bussinessLoginPassword},
+			company = #{company},
+			phone = #{phone},
+			email = #{email},
+			user_name = #{userName},
+			checked = #{checked},
+			integral = #{integral},
+			end_time = #{endTime}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM bussiness_user
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

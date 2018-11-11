@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.peruser.dao.PersonalUserDao">
+    
+	<sql id="personalUserColumns">
+		a.id AS "id",
+		a.login_name AS "loginName",
+		a.password AS "password",
+		a.phone AS "phone",
+		a.email AS "email",
+		a.user_name AS "userName",
+		a.is_blacklist AS "isBlacklist",
+		a.black_reason AS "blackReason"
+	</sql>
+	
+	<sql id="personalUserJoins">
+	</sql>
+    
+	<select id="get" resultType="PersonalUser">
+		SELECT 
+			<include refid="personalUserColumns"/>
+		FROM personal_user a
+		<include refid="personalUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="PersonalUser">
+		SELECT 
+			<include refid="personalUserColumns"/>
+		FROM personal_user a
+		<include refid="personalUserJoins"/>
+		<where>
+			
+			<if test="loginName != null and loginName != ''">
+				AND a.login_name = #{loginName}
+			</if>
+			<if test="phone != null and phone != ''">
+				AND a.phone = #{phone}
+			</if>
+			<if test="isBlacklist != null and isBlacklist != ''">
+				AND a.is_blacklist = #{isBlacklist}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="PersonalUser">
+		SELECT 
+			<include refid="personalUserColumns"/>
+		FROM personal_user a
+		<include refid="personalUserJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO personal_user(
+			id,
+			login_name,
+			password,
+			phone,
+			email,
+			user_name,
+			is_blacklist,
+			black_reason
+		) VALUES (
+			#{id},
+			#{loginName},
+			#{password},
+			#{phone},
+			#{email},
+			#{userName},
+			#{isBlacklist},
+			#{blackReason}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE personal_user SET 	
+			login_name = #{loginName},
+			password = #{password},
+			phone = #{phone},
+			email = #{email},
+			user_name = #{userName},
+			is_blacklist = #{isBlacklist},
+			black_reason = #{blackReason}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM personal_user
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
