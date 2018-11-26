@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.sys.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Objects;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +44,23 @@ public class OfficeService extends TreeService<OfficeDao, Office> {
 		}
 		return  new ArrayList<Office>();
 	}
-	
+
+	@Transactional(readOnly = true)
+	public List<Office> findListByName(Office office){
+		if(!java.util.Objects.isNull(office)){
+			return dao.findListByName(office);
+		}
+		return  new ArrayList<Office>();
+	}
+
+	@Transactional(readOnly = true)
+	public List<Office> findompanyListByName(Office office){
+		if(!java.util.Objects.isNull(office)){
+			return dao.findompanyListByName(office);
+		}
+		return  new ArrayList<Office>();
+	}
+
 	@Transactional(readOnly = false)
 	public void save(Office office) {
 		super.save(office);

@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.peruser.dao;
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.peruser.entity.PersonalUser;
+import com.thinkgem.jeesite.modules.sys.entity.User;
 
 /**
  * 个人用户DAO接口
@@ -14,5 +15,5 @@ import com.thinkgem.jeesite.modules.peruser.entity.PersonalUser;
  */
 @MyBatisDao
 public interface PersonalUserDao extends CrudDao<PersonalUser> {
-	
+	public void deleteOrrecover(User user);
 }

@@ -52,16 +52,14 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">一级分类：</label>
+			<label class="control-label">分类：</label>
 			<div class="controls">
-				<form:input path="firstClass" htmlEscape="false" maxlength="255" class="input-xlarge "/>
+				<form:select id="firstClass" path="firstClass" class="input-medium">
+					<form:option value="" label="请选择"/>
+					<form:options items="${classifications}" htmlEscape="false"/>
+				</form:select>&nbsp;
 			</div>
 		</div>
-		<div class="control-group">
-			<label class="control-label">二级分类：</label>
-			<div class="controls">
-				<form:input path="secondClass" htmlEscape="false" maxlength="255" class="input-xlarge "/>
-			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">价格：</label>

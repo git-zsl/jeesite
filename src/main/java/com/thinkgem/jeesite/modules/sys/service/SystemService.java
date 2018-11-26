@@ -3,11 +3,9 @@
  */
 package com.thinkgem.jeesite.modules.sys.service;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
+import com.thinkgem.jeesite.modules.sys.dao.OfficeDao;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.apache.shiro.session.Session;
@@ -56,6 +54,8 @@ public class SystemService extends BaseService implements InitializingBean {
 	private RoleDao roleDao;
 	@Autowired
 	private MenuDao menuDao;
+	@Autowired
+	private OfficeDao officeDao;
 	@Autowired
 	private SessionDAO sessionDao;
 	@Autowired
@@ -111,8 +111,33 @@ public class SystemService extends BaseService implements InitializingBean {
 	}
 
 	/**
-	 * 通过部门ID获取用户列表，仅返回用户id和name（树查询用户时用）
+	 * 无分页查询个人黑名单列表
 	 * @param user
+	 * @return
+	 */
+	public List<User> findBlacklist(User user){
+		List<User> list = userDao.findBlacklist(user.getDelFlag(),user.getOffice().getId());
+		return list;
+	}
+
+	/**
+	 * 无分页查询企业状态列表
+	 * @param user
+	 * @return
+	 */
+	public List<User> findCompanyBlacklist(User user){
+		List<User> list = userDao.findCompanyBlacklist(user.getDelFlag(),user.getOffice().getId());
+		return list;
+	}
+
+	@Transactional(readOnly = false)
+	public void deleteOrrecover(User user) {
+		userDao.deleteOrrecover(user);
+	}
+
+	/**
+	 * 通过部门ID获取用户列表，仅返回用户id和name（树查询用户时用）
+	 * @param
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")

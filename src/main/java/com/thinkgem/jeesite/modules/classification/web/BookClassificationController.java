@@ -6,6 +6,8 @@ package com.thinkgem.jeesite.modules.classification.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,8 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.classification.entity.BookClassification;
 import com.thinkgem.jeesite.modules.classification.service.BookClassificationService;
+
+import java.util.*;
 
 /**
  * 书籍分类Controller
@@ -51,6 +55,12 @@ public class BookClassificationController extends BaseController {
 	public String list(BookClassification bookClassification, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<BookClassification> page = bookClassificationService.findPage(new Page<BookClassification>(request, response), bookClassification); 
 		model.addAttribute("page", page);
+		/*Map<String, BookClassification> maps = Maps.uniqueIndex(page.getList(), new Function<BookClassification, String>() {
+			@Override
+			public String apply(BookClassification bookClassification) {
+				return bookClassification.getClassification();
+			}
+		});*/
 		return "modules/classification/bookClassificationList";
 	}
 

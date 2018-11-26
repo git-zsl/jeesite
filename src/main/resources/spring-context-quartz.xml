@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns ="http://www.springframework.org/schema/beans"
+       xmlns:xsi ="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context ="http://www.springframework.org/schema/context"
+       xsi:schemaLocation ="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd"
+       default-lazy-init="true">
+    <description>quartz Configuration</description>
+    <context:property-placeholder ignore-unresolvable="true" location="classpath:jeesite.properties"/>
+
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <!-- <property name="jobFactory" ref="jobFactory"/>-->
+        <property name="triggers">
+            <list>
+               <!-- <ref bean="simpleTrigger"/>-->
+                <ref bean="cronTriggerFactoryBean" />
+            </list>
+        </property>
+      <property name="autoStartup" value="false"></property>
+    </bean>
+
+    <!-- 第一个定时任务 -->
+    <bean id = "simpleTrigger" class = "org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="promotionJob"/>
+        <property name="startDelay" value="3000"/>
+        <property name="repeatInterval" value="5000"/>
+    </bean>
+
+    <bean id="promotionJob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <property name="jobClass" value="com.thinkgem.jeesite.modules.sys.service.QuartzJob"/>
+        <!--<property name="durability" value="true" />-->
+    </bean>
+    <!-- 第二个定时任务 -->
+    <!-- 配置Job类 -->
+    <bean id="myJob" class="com.thinkgem.jeesite.modules.sys.service.MyJob"></bean>
+    <!-- 配置JobDetail -->
+    <bean id="springQtzJobMethod" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <!-- 执行目标job -->
+        <property name="targetObject" ref="myJob"></property>
+        <!-- 要执行的方法 -->
+        <property name="targetMethod" value="execute"></property>
+    </bean>
+    <!-- 配置tirgger触发器 -->
+    <bean id="cronTriggerFactoryBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <!-- jobDetail -->
+        <property name="jobDetail" ref="springQtzJobMethod"></property>
+        <!-- cron表达式，执行时间  每5秒执行一次 -->
+        <property name="cronExpression" value="0/5 * * * * ?"></property>
+    </bean>
+</beans>

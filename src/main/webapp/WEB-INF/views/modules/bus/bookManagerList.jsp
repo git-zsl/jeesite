@@ -31,11 +31,11 @@
 			<li><label>作者：</label>
 				<form:input path="author" htmlEscape="false" maxlength="255" class="input-medium"/>
 			</li>
-			<li><label>一级分类：</label>
-				<form:input path="firstClass" htmlEscape="false" maxlength="255" class="input-medium"/>
-			</li>
-			<li><label>二级分类：</label>
-				<form:input path="secondClass" htmlEscape="false" maxlength="255" class="input-medium"/>
+			<li><label>分类：</label>
+				<form:select id="firstClass" path="firstClass" class="input-medium">
+					<form:option value="" label="请选择"/>
+					<form:options items="${classifications}" htmlEscape="false"/>
+				</form:select>&nbsp;
 			</li>
 			<li><label>价格：</label>
 				<form:input path="price" htmlEscape="false" class="input-medium"/>
@@ -52,7 +52,6 @@
 				<th>作者</th>
 				<th>封面</th>
 				<th>一级分类</th>
-				<th>二级分类</th>
 				<th>价格</th>
 				<th>购买链接</th>
 				<th>推荐</th>
@@ -76,13 +75,10 @@
 					${bookManager.firstClass}
 				</td>
 				<td>
-					${bookManager.secondClass}
-				</td>
-				<td>
 					${bookManager.price}
 				</td>
 				<td>
-					${bookManager.byLink}
+					<a href="http://${bookManager.byLink}" target="_blank">访问</a>
 				</td>
 				<td>
 					${fns:getDictLabel(bookManager.isRecommend, 'yes_no', 'yes_no')}

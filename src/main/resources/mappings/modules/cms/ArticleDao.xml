@@ -111,7 +111,7 @@
 		left join cms_category c
 		on c.id = a.category_id
 		<where>
-			a.del_flag = #{DEL_FLAG_NORMAL}
+			1=1
 			<if test="category.name != null and category.name !=''">
 				AND  c.name = #{category.name}
 			</if>

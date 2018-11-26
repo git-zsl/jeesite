@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.peruser.service;
 
 import java.util.List;
 
+import com.thinkgem.jeesite.modules.sys.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,12 @@ public class PersonalUserService extends CrudService<PersonalUserDao, PersonalUs
 	public Page<PersonalUser> findPage(Page<PersonalUser> page, PersonalUser personalUser) {
 		return super.findPage(page, personalUser);
 	}
-	
+	@Transactional(readOnly = false)
+	public void deleteOrrecover(User user) {
+		dao.deleteOrrecover(user);
+	}
+
+
 	@Transactional(readOnly = false)
 	public void save(PersonalUser personalUser) {
 		super.save(personalUser);

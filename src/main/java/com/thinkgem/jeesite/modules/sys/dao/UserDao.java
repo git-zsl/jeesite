@@ -8,6 +8,7 @@ import java.util.List;
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.sys.entity.User;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 用户DAO接口
@@ -72,4 +73,20 @@ public interface UserDao extends CrudDao<User> {
 	 */
 	public int updateUserInfo(User user);
 
+	/**
+	 * 查找个人黑名单列表
+	 * @param
+	 * @return
+	 */
+	public List<User> findBlacklist(@Param("delFalg") String delFalg,@Param("officeId") String officeId);
+
+	/**
+	 * 查找企业黑名单列表
+	 * @param
+	 * @return
+	 */
+	public List<User> findCompanyBlacklist(@Param("delFalg") String delFalg,@Param("companyId") String companyId);
+
+
+	public void deleteOrrecover(User user);
 }

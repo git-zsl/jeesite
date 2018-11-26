@@ -37,6 +37,7 @@
 					title="栏目" url="/cms/category/treeData" module="article" notAllowSelectRoot="false" cssClass="input-small"/>
 		<label>标题：</label>
 		<form:select id="title" path="title" class="input-medium">
+			<form:option value="" label="请选择"/>
 			<form:options items="${titles}" htmlEscape="false"/>
 		</form:select>&nbsp;
 		<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>&nbsp;&nbsp;

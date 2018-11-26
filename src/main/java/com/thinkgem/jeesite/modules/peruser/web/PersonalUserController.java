@@ -6,6 +6,10 @@ package com.thinkgem.jeesite.modules.peruser.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.sys.entity.Office;
+import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.service.OfficeService;
+import com.thinkgem.jeesite.modules.sys.service.SystemService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +26,8 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.peruser.entity.PersonalUser;
 import com.thinkgem.jeesite.modules.peruser.service.PersonalUserService;
 
+import java.util.List;
+
 /**
  * 个人用户Controller
  * @author zsl
@@ -33,7 +39,11 @@ public class PersonalUserController extends BaseController {
 
 	@Autowired
 	private PersonalUserService personalUserService;
-	
+	@Autowired
+	private SystemService systemService;
+	@Autowired
+	private OfficeService officeService;
+
 	@ModelAttribute
 	public PersonalUser get(@RequestParam(required=false) String id) {
 		PersonalUser entity = null;
@@ -48,8 +58,15 @@ public class PersonalUserController extends BaseController {
 	
 	@RequiresPermissions("peruser:personalUser:view")
 	@RequestMapping(value = {"list", ""})
-	public String list(PersonalUser personalUser, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<PersonalUser> page = personalUserService.findPage(new Page<PersonalUser>(request, response), personalUser); 
+	public String list(User user, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Office office = new Office();
+		office.setName("个人用户");
+		List<Office> listByName = officeService.findListByName(office);
+		user.setOffice(listByName.get(0));
+		Page<User> page = systemService.findUser(new Page<User>(request, response), user);
+		if(user.getDelFlag().equals("1")){
+			page.setList(systemService.findBlacklist(user));
+		}
 		model.addAttribute("page", page);
 		return "modules/peruser/personalUserList";
 	}
@@ -74,10 +91,12 @@ public class PersonalUserController extends BaseController {
 	
 	@RequiresPermissions("peruser:personalUser:edit")
 	@RequestMapping(value = "delete")
-	public String delete(PersonalUser personalUser, RedirectAttributes redirectAttributes) {
-		personalUserService.delete(personalUser);
-		addMessage(redirectAttributes, "删除个人用户成功");
+	public String delete(User user, RedirectAttributes redirectAttributes) {
+		personalUserService.deleteOrrecover(user);
+		addMessage(redirectAttributes, "操作成功");
 		return "redirect:"+Global.getAdminPath()+"/peruser/personalUser/?repage";
 	}
+
+
 
 }

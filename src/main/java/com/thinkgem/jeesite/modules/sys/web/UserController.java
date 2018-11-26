@@ -5,12 +5,19 @@ package com.thinkgem.jeesite.modules.sys.web;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import com.thinkgem.jeesite.modules.sys.entity.Email;
+import com.thinkgem.jeesite.modules.sys.service.OfficeService;
+import com.thinkgem.jeesite.modules.sys.utils.EmailUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,7 +56,11 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private SystemService systemService;
-	
+	@Autowired
+	private OfficeService officeService;
+
+	private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
+
 	@ModelAttribute
 	public User get(@RequestParam(required=false) String id) {
 		if (StringUtils.isNotBlank(id)){
@@ -370,4 +381,184 @@ public class UserController extends BaseController {
 //			}
 //		});
 //	}
+
+	@RequiresPermissions("sys:user:view")
+	@RequestMapping(value = {"personalList"})
+	public String personalList(User user, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Office office = new Office();
+		office.setName("个人用户");
+		List<Office> listByName = officeService.findListByName(office);
+		user.setOffice(listByName.get(0));
+		Page<User> page = systemService.findUser(new Page<User>(request, response), user);
+		if(user.getDelFlag().equals("1")){
+			page.setList(systemService.findBlacklist(user));
+		}
+		model.addAttribute("page", page);
+		return "modules/peruser/personalUserList";
+	}
+
+	@RequiresPermissions("sys:user:view")
+	@RequestMapping(value = "personalForm")
+	public String personalForm(User user, Model model) {
+		if (user.getCompany()==null || user.getCompany().getId()==null){
+			user.setCompany(UserUtils.getUser().getCompany());
+		}
+		if (user.getOffice()==null || user.getOffice().getId()==null){
+			user.setOffice(UserUtils.getUser().getOffice());
+		}
+		model.addAttribute("user", user);
+		model.addAttribute("allRoles", systemService.findAllRole());
+		return "modules/peruser/personalUserForm";
+	}
+
+	@RequiresPermissions("sys:user:edit")
+	@RequestMapping(value = "personalSave")
+	public String personalSave(User user, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+		if(Global.isDemoMode()){
+			addMessage(redirectAttributes, "演示模式，不允许操作！");
+			return "redirect:" + adminPath + "/sys/user/list?repage";
+		}
+		// 修正引用赋值问题，不知道为何，Company和Office引用的一个实例地址，修改了一个，另外一个跟着修改。
+		user.setCompany(new Office(request.getParameter("company.id")));
+		user.setOffice(new Office(request.getParameter("office.id")));
+		// 如果新密码为空，则不更换密码
+		if (StringUtils.isNotBlank(user.getNewPassword())) {
+			user.setPassword(SystemService.entryptPassword(user.getNewPassword()));
+		}
+		if (!beanValidator(model, user)){
+			return form(user, model);
+		}
+		if (!"true".equals(checkLoginName(user.getOldLoginName(), user.getLoginName()))){
+			addMessage(model, "保存用户'" + user.getLoginName() + "'失败，登录名已存在");
+			return form(user, model);
+		}
+		// 角色数据有效性验证，过滤不在授权内的角色
+		List<Role> roleList = Lists.newArrayList();
+		List<String> roleIdList = user.getRoleIdList();
+		for (Role r : systemService.findAllRole()){
+			if (roleIdList.contains(r.getId())){
+				roleList.add(r);
+			}
+		}
+		user.setRoleList(roleList);
+		// 保存用户信息
+		systemService.saveUser(user);
+		// 清除当前用户缓存
+		if (user.getLoginName().equals(UserUtils.getUser().getLoginName())){
+			UserUtils.clearCache();
+			//UserUtils.getCacheMap().clear();
+		}
+		addMessage(redirectAttributes, "保存用户'" + user.getLoginName() + "'成功");
+		return "redirect:" + adminPath + "/sys/user/personalList?repage";
+	}
+
+	@RequiresPermissions("sys:user:view")
+	@RequestMapping(value = {"businessList"})
+	public String companyList(User user, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Office office = new Office();
+		office.setName("企业用户");
+		List<Office> listByName = officeService.findompanyListByName(office);
+		if(!listByName.isEmpty()){
+			user.setOffice(listByName.get(0));
+		}
+		Page<User> page = systemService.findUser(new Page<User>(request, response), user);
+		if(!user.getDelFlag().equals("0")){
+			page.setList(systemService.findCompanyBlacklist(user));
+		}
+		model.addAttribute("page", page);
+		return "modules/business/bussinessUserList";
+	}
+
+	@RequiresPermissions("sys:user:edit")
+	@RequestMapping(value = "bussinessDelete")
+	public String bussinessDelete(User user, RedirectAttributes redirectAttributes,@RequestParam(value = "isSendEmail",required = false) String isSendEmail) {
+		systemService.deleteOrrecover(user);
+		addMessage(redirectAttributes, "操作成功");
+		//审核失败发送邮件
+		if(!StringUtils.isBlank(isSendEmail)){
+			ExecutorService archiveService = Executors.newSingleThreadExecutor();
+			archiveService.execute(() -> {
+				try {
+					System.out.println("发邮件ing......");
+					EmailUtils.sendHtmlMail(new Email(user.getEmail(),"审核失败","资料缺失，请重新提交资料审核"));
+				} catch (Exception ex) {
+					LOG.info("线程发送邮件失败：{}", ex);
+				}
+			});
+		}
+		return "redirect:"+Global.getAdminPath()+"/sys/user/businessList/?repage";
+	}
+
+/*	@RequiresPermissions("sys:user:edit")
+	@RequestMapping(value = "bussinessDelete")
+	public String bussinessDelete(User user, RedirectAttributes redirectAttributes) {
+		if(Global.isDemoMode()){
+			addMessage(redirectAttributes, "演示模式，不允许操作！");
+			return "redirect:" + adminPath + "/sys/user/list?repage";
+		}
+		if (UserUtils.getUser().getId().equals(user.getId())){
+			addMessage(redirectAttributes, "删除用户失败, 不允许删除当前用户");
+		}else if (User.isAdmin(user.getId())){
+			addMessage(redirectAttributes, "删除用户失败, 不允许删除超级管理员用户");
+		}else{
+			systemService.deleteUser(user);
+			addMessage(redirectAttributes, "删除用户成功");
+		}
+		return "redirect:" + adminPath + "/sys/user/bussinessUserList?repage";
+	}*/
+
+	@RequiresPermissions("sys:user:edit")
+	@RequestMapping(value = "bussinessSave")
+	public String bussinessSave(User user, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+		if(Global.isDemoMode()){
+			addMessage(redirectAttributes, "演示模式，不允许操作！");
+			return "redirect:" + adminPath + "/sys/user/list?repage";
+		}
+		// 修正引用赋值问题，不知道为何，Company和Office引用的一个实例地址，修改了一个，另外一个跟着修改。
+		user.setCompany(new Office(request.getParameter("company.id")));
+		user.setOffice(new Office(request.getParameter("office.id")));
+		// 如果新密码为空，则不更换密码
+		if (StringUtils.isNotBlank(user.getNewPassword())) {
+			user.setPassword(SystemService.entryptPassword(user.getNewPassword()));
+		}
+		if (!beanValidator(model, user)){
+			return form(user, model);
+		}
+		if (!"true".equals(checkLoginName(user.getOldLoginName(), user.getLoginName()))){
+			addMessage(model, "保存用户'" + user.getLoginName() + "'失败，登录名已存在");
+			return form(user, model);
+		}
+		// 角色数据有效性验证，过滤不在授权内的角色
+		List<Role> roleList = Lists.newArrayList();
+		List<String> roleIdList = user.getRoleIdList();
+		for (Role r : systemService.findAllRole()){
+			if (roleIdList.contains(r.getId())){
+				roleList.add(r);
+			}
+		}
+		user.setRoleList(roleList);
+		// 保存用户信息
+		systemService.saveUser(user);
+		// 清除当前用户缓存
+		if (user.getLoginName().equals(UserUtils.getUser().getLoginName())){
+			UserUtils.clearCache();
+			//UserUtils.getCacheMap().clear();
+		}
+		addMessage(redirectAttributes, "保存用户'" + user.getLoginName() + "'成功");
+		return "redirect:" + adminPath + "/sys/user/businessList?repage";
+	}
+
+	@RequiresPermissions("sys:user:view")
+	@RequestMapping(value = "bussinessForm")
+	public String bussinessForm(User user, Model model) {
+		if (user.getCompany()==null || user.getCompany().getId()==null){
+			user.setCompany(UserUtils.getUser().getCompany());
+		}
+		if (user.getOffice()==null || user.getOffice().getId()==null){
+			user.setOffice(UserUtils.getUser().getOffice());
+		}
+		model.addAttribute("user", user);
+		model.addAttribute("allRoles", systemService.findAllRole());
+		return "modules/business/bussinessUserForm";
+	}
 }

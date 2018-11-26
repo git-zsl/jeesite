@@ -2,94 +2,58 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>企业用户管理</title>
+	<title>用户管理</title>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
-		$(document).ready(function() {
-			
-		});
-		function page(n,s){
-			$("#pageNo").val(n);
-			$("#pageSize").val(s);
-			$("#searchForm").submit();
-        	return false;
+        function page(n,s){
+            if(n) $("#pageNo").val(n);
+            if(s) $("#pageSize").val(s);
+            $("#searchForm").attr("action","${ctx}/sys/user/businessList");
+            $("#searchForm").submit();
+            return false;
         }
 	</script>
 </head>
 <body>
-	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/business/bussinessUser/">企业用户列表</a></li>
-		<shiro:hasPermission name="business:bussinessUser:edit"><li><a href="${ctx}/business/bussinessUser/form">企业用户添加</a></li></shiro:hasPermission>
+<form:form id="searchForm" modelAttribute="user" action="${ctx}/sys/user/businessList" method="post" class="breadcrumb form-search ">
+	<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
+	<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
+	<sys:tableSort id="orderBy" name="orderBy" value="${page.orderBy}" callback="page();"/>
+	<ul class="ul-form">
+		<li><label>企业名称：</label><sys:treeselect id="office" name="office.id" value="${user.office.id}" labelName="office.name" labelValue="${user.office.name}"
+												title="部门" url="/sys/office/treeData?type=2" cssClass="input-small" allowClear="true" notAllowSelectParent="true"/></li>
+		<li><label>姓名：</label>
+			<form:input path="name" htmlEscape="false" maxlength="255" class="input-medium"/>
+		</li>
+		<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
+
+		<li><label>状态：</label>
+			<form:radiobuttons onclick="$('#searchForm').submit();" path="delFlag" items="${fns:getDictList('is_pass')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+		</li>
+		<li class="clearfix"></li>
 	</ul>
-	<form:form id="searchForm" modelAttribute="bussinessUser" action="${ctx}/business/bussinessUser/" method="post" class="breadcrumb form-search">
-		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
-		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
-		<ul class="ul-form">
-			<li><label>企业用户名：</label>
-				<form:input path="bussinessLoginName" htmlEscape="false" maxlength="255" class="input-medium"/>
-			</li>
-			<li><label>公司名称：</label>
-				<form:input path="company" htmlEscape="false" maxlength="255" class="input-medium"/>
-			</li>
-			<li><label>联系电话：</label>
-				<form:input path="phone" htmlEscape="false" maxlength="255" class="input-medium"/>
-			</li>
-			<li><label>审核：</label>
-				<form:select path="checked" class="input-medium">
-					<form:option value="" label=""/>
-					<form:options items="${fns:getDictList('bussiness_user')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-				</form:select>
-			</li>
-			<li class="btns"><input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/></li>
-			<li class="clearfix"></li>
-		</ul>
-	</form:form>
-	<sys:message content="${message}"/>
-	<table id="contentTable" class="table table-striped table-bordered table-condensed">
-		<thead>
-			<tr>
-				<th>企业用户名</th>
-				<th>公司名称</th>
-				<th>联系电话</th>
-				<th>邮箱</th>
-				<th>是否通过审核</th>
-				<th>积分</th>
-				<th>积分截至时间</th>
-				<shiro:hasPermission name="business:bussinessUser:edit"><th>操作</th></shiro:hasPermission>
-			</tr>
-		</thead>
-		<tbody>
-		<c:forEach items="${page.list}" var="bussinessUser">
-			<tr>
-				<td><a href="${ctx}/business/bussinessUser/form?id=${bussinessUser.id}">
-					${bussinessUser.bussinessLoginName}
-				</a></td>
-				<td>
-					${bussinessUser.company}
-				</td>
-				<td>
-					${bussinessUser.phone}
-				</td>
-				<td>
-					${bussinessUser.email}
-				</td>
-				<td>
-					${fns:getDictLabel(bussinessUser.checked, 'bussiness_user', '')}
-				</td>
-				<td>
-					${bussinessUser.integral}
-				</td>
-				<td>
-					<fmt:formatDate value="${bussinessUser.endTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
-				</td>
-				<shiro:hasPermission name="business:bussinessUser:edit"><td>
-    				<a href="${ctx}/business/bussinessUser/form?id=${bussinessUser.id}">修改</a>
-					<a href="${ctx}/business/bussinessUser/delete?id=${bussinessUser.id}" onclick="return confirmx('确认要删除该企业用户吗？', this.href)">删除</a>
-				</td></shiro:hasPermission>
-			</tr>
-		</c:forEach>
-		</tbody>
-	</table>
-	<div class="pagination">${page}</div>
+</form:form>
+<sys:message content="${message}"/>
+<table id="contentTable" class="table table-striped table-bordered table-condensed">
+	<thead><tr><th class="sort-column login_name">企业名称</th><th class="sort-column login_name">登录名</th><th class="sort-column name">姓名</th><th>电话</th><th>手机</th><%--<th>角色</th> --%><shiro:hasPermission name="sys:user:edit"><th>操作</th></shiro:hasPermission></tr></thead>
+	<tbody>
+	<c:forEach items="${page.list}" var="user">
+		<tr>
+			<td>${user.office.name}</td>
+			<td><a href="${ctx}/sys/user/bussinessForm?id=${user.id}">${user.loginName}</a></td>
+			<td>${user.name}</td>
+			<td>${user.phone}</td>
+			<td>${user.mobile}</td><%--
+				<td>${user.roleNames}</td> --%>
+			<shiro:hasPermission name="sys:user:edit"><td>
+				<a href="${ctx}/sys/user/bussinessDelete?id=${user.id}&delFlag=${user.delFlag eq 0?'1': user.delFlag eq 1?'2':'0'}" onclick="return confirmx('确认要${user.delFlag eq 0?'删除吗？': user.delFlag eq 1?'设置为待审核吗？':'设置为审核通过吗？'}', this.href)">${user.delFlag eq 0?'删除': user.delFlag eq 1?'待审核':'审核通过'}</a>
+				<a href="${ctx}/sys/user/bussinessDelete?id=${user.id}&isSendEmail=true&delFlag=${user.delFlag eq 0?'1': user.delFlag eq 1?'2':'1'}" onclick="return confirmx('确认要${user.delFlag eq 0?'删除吗？': user.delFlag eq 1?'设置为待审核吗？':'设置为审核失败吗？'}', this.href)">${user.delFlag eq 0?'': user.delFlag eq 1?'':'审核失败'}</a>
+				<a href="${ctx}/sys/user/bussinessForm?id=${user.id}">修改信息</a>
+			</td></shiro:hasPermission>
+		</tr>
+	</c:forEach>
+	</tbody>
+</table>
+<div class="pagination">${page}</div>
 </body>
 </html>

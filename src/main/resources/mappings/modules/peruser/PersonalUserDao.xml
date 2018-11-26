@@ -105,5 +105,11 @@
 		DELETE FROM personal_user
 		WHERE id = #{id}
 	</update>
-	
+
+	<update id="deleteOrrecover">
+		UPDATE sys_user SET
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+
 </mapper>

@@ -48,7 +48,21 @@
 		<include refid="officeJoins"/>
 		WHERE a.id = #{id}
 	</select>
-	
+
+	<select id="findListByName" resultType="Office">
+		SELECT *
+		FROM sys_office a
+		WHERE a.name = #{name}
+		AND a.parent_ids != "0,"
+	</select>
+
+	<select id="findompanyListByName" resultType="Office">
+		SELECT *
+		FROM sys_office a
+		WHERE a.name = #{name}
+		AND a.parent_ids ="0,"
+	</select>
+
 	<select id="findList" resultType="Office">
 		SELECT
 			<include refid="officeColumns"/>

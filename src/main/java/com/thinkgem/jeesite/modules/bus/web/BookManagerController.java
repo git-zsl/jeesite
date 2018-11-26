@@ -6,6 +6,8 @@ package com.thinkgem.jeesite.modules.bus.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.classification.entity.BookClassification;
+import com.thinkgem.jeesite.modules.classification.service.BookClassificationService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,10 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.bus.entity.BookManager;
 import com.thinkgem.jeesite.modules.bus.service.BookManagerService;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * 书籍管理Controller
  * @author zsl
@@ -34,6 +40,8 @@ public class BookManagerController extends BaseController {
 
 	@Autowired
 	private BookManagerService bookManagerService;
+	@Autowired
+	private BookClassificationService bookClassificationService;
 	
 	@ModelAttribute
 	public BookManager get(@RequestParam(required=false) String id) {
@@ -52,12 +60,25 @@ public class BookManagerController extends BaseController {
 	public String list(BookManager bookManager, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<BookManager> page = bookManagerService.findPage(new Page<BookManager>(request, response), bookManager); 
 		model.addAttribute("page", page);
+		List<BookClassification> list = bookClassificationService.findList(new BookClassification());
+		Set<String> classifications = new HashSet<String>();
+		for ( BookClassification b: list) {
+			classifications.add(b.getClassification());
+		}
+		model.addAttribute("classifications", classifications);
 		return "modules/bus/bookManagerList";
 	}
 
 	@RequiresPermissions("bus:bookManager:view")
 	@RequestMapping(value = "form")
 	public String form(BookManager bookManager, Model model) {
+
+		List<BookClassification> list = bookClassificationService.findList(new BookClassification());
+		Set<String> classifications = new HashSet<String>();
+		for ( BookClassification b: list) {
+			classifications.add(b.getClassification());
+		}
+		model.addAttribute("classifications", classifications);
 		model.addAttribute("bookManager", bookManager);
 		return "modules/bus/bookManagerForm";
 	}

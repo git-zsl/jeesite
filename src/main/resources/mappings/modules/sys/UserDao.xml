@@ -101,13 +101,7 @@
     	ou.id AS "office.primaryPerson.id",
     	ou.name AS "office.primaryPerson.name",
     	ou2.id AS "office.deputyPerson.id",
-    	ou2.name AS "office.deputyPerson.name"<!-- ,
-        r.id AS "roleList.id",
-        r.office_id AS "roleList.office.id",
-        r.name AS "roleList.name",
-        r.enname AS "roleList.enname",
-        r.role_type AS "roleList.roleType",
-        r.data_scope AS "roleList.dataScope" -->
+    	ou2.name AS "office.deputyPerson.name"
     </sql>
     
     <sql id="userJoins">
@@ -118,19 +112,15 @@
 		LEFT JOIN sys_user cu ON cu.id = c.primary_person
 		LEFT JOIN sys_user cu2 ON cu2.id = c.deputy_person
 		LEFT JOIN sys_user ou ON ou.id = o.primary_person
-		LEFT JOIN sys_user ou2 ON ou2.id = o.deputy_person<!-- 
-		LEFT JOIN sys_user_role ur ON ur.user_id = a.id
-        LEFT JOIN sys_role r ON r.id = ur.role_id -->
+		LEFT JOIN sys_user ou2 ON ou2.id = o.deputy_person
     </sql>
 	
 	<!-- 根据编号获得用户 -->
 	<select id="get" resultType="User">
 		SELECT
-			<include refid="userColumns"/><!-- ,
-			ro.office_id AS "roleList.officeList.id" -->
+			<include refid="userColumns"/>
 		FROM sys_user a
-		<include refid="userJoins"/><!-- 
-		LEFT JOIN sys_role_office ro ON ro.role_id = r.id -->
+		<include refid="userJoins"/>
 		WHERE a.id = #{id}
 	</select>
 	
@@ -214,7 +204,35 @@
 		WHERE a.del_flag = #{DEL_FLAG_NORMAL}
 		ORDER BY c.code, o.code, a.name
 	</select>
-	
+
+	<select id="findBlacklist" resultType="User">
+		SELECT
+			*
+		FROM sys_user a
+		WHERE a.del_flag = #{delFalg}
+		<if test="officeId != null and officeId != ''">
+			AND  a.office_id = #{officeId}
+		</if>
+	</select>
+
+	<select id="findCompanyBlacklist" resultType="User">
+		select
+		u.*,o.name AS "office.name"
+		from sys_user u
+		left join sys_office o
+		on u.office_id = o.id
+		WHERE u.del_flag = #{delFalg}
+		<if test="companyId != null and companyId != ''">
+			AND  u.company_id = #{companyId}
+		</if>
+	</select>
+
+	<update id="deleteOrrecover">
+		UPDATE sys_user SET
+		del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+
 	<!-- 查询全部用户数目 -->
 	<select id="findAllCount" resultType="long">
 		SELECT
