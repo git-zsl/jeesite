@@ -9,6 +9,7 @@ import java.util.Map;
 import com.thinkgem.jeesite.common.persistence.TreeDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 栏目DAO接口
@@ -38,7 +39,9 @@ public interface CategoryDao extends TreeDao<Category> {
 //	}
 
 	public List<Category> findByParentIdAndSiteId(Category entity);
-	
+
+	public List<Category> findCategorysByParentId(Category entity);
+
 	public List<Map<String, Object>> findStats(String sql);
 //	{
 //		return find("from Category where delFlag=:p1 and parent.id=:p2 and site.id=:p3 order by site.id, sort", 

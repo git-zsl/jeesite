@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.crn.dao.UserCategoryNumDao">
+    
+	<sql id="userCategoryNumColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.category_id AS "categoryId",
+		a.create_num AS "createNum",
+		a.current_num AS "currentNum",
+		u2.name AS "user.name"
+	</sql>
+	
+	<sql id="userCategoryNumJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="UserCategoryNum">
+		SELECT 
+			<include refid="userCategoryNumColumns"/>
+		FROM user_category_num a
+		<include refid="userCategoryNumJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UserCategoryNum">
+		SELECT 
+			<include refid="userCategoryNumColumns"/>
+		FROM user_category_num a
+		<include refid="userCategoryNumJoins"/>
+		<where>
+			
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user_id LIKE 
+					<if test="dbName == 'oracle'">'%'||#{user.id}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{user.id}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{user.id},'%')</if>
+			</if>
+			<if test="categoryId != null and categoryId != ''">
+				AND a.category_id LIKE 
+					<if test="dbName == 'oracle'">'%'||#{categoryId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{categoryId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{categoryId},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UserCategoryNum">
+		SELECT 
+			<include refid="userCategoryNumColumns"/>
+		FROM user_category_num a
+		<include refid="userCategoryNumJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO user_category_num(
+			id,
+			user_id,
+			category_id,
+			create_num,
+			current_num
+		) VALUES (
+			#{id},
+			#{user.id},
+			#{categoryId},
+			#{createNum},
+			#{currentNum}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE user_category_num SET 	
+			user_id = #{user.id},
+			category_id = #{categoryId},
+			create_num = #{createNum},
+			current_num = #{currentNum}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM user_category_num
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

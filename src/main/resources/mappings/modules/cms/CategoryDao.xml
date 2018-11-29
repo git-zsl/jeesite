@@ -258,6 +258,19 @@
 		</where>		
 		order by a.site_id, a.sort
 	</select>
+
+	<select id="findCategorysByParentId" resultType="Category">
+		SELECT
+			<include refid="cmsCategoryDaoColumns"/>
+		FROM cms_category a
+		<include refid="cmsCategoryDaoJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="id != null and id != ''">
+				AND a.parent_id  = #{id}
+			</if>
+		</where>
+	</select>
 	<select id="findByParentIdsLike" resultType="Category">
 		SELECT 
 			<include refid="cmsCategoryDaoColumns"/>

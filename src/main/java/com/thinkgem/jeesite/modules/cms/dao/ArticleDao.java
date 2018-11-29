@@ -22,10 +22,13 @@ public interface ArticleDao extends CrudDao<Article> {
 	public List<Article> findByIdIn(String[] ids);
 
 	public List<String> findTitle(Article article);
+
+	public int findOwnNum(@Param("categoryId") String categoryId,@Param("createBy") String createBy);
+	//		return find("from Article where id in (:p1)", new Parameter(new Object[]{ids}));
 //	{
-//		return find("from Article where id in (:p1)", new Parameter(new Object[]{ids}));
+
 //	}
-	
+
 	public int updateHitsAddOne(String id);
 //	{
 //		return update("update Article set hits=hits+1 where id = :p1", new Parameter(id));

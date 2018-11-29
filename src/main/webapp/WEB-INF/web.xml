@@ -66,6 +66,16 @@
 		<url-pattern>*.html</url-pattern>
 	</filter-mapping>-->
 
+	<!-- SaveFilter -->
+	<filter>
+		<filter-name>saveFilter</filter-name>
+		<filter-class>com.thinkgem.jeesite.common.filter.SaveFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>saveFilter</filter-name>
+		<url-pattern>/a/cms/article/save</url-pattern>
+	</filter-mapping>
+
 	<!-- SiteMesh -->
 	<filter>
 		<filter-name>sitemeshFilter</filter-name>
@@ -76,10 +86,10 @@
 		<url-pattern>/a/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
-		<filter-name>sitemeshFilter</filter-name>
-		<url-pattern>/f/*</url-pattern>
-	</filter-mapping>
-	
+	<filter-name>sitemeshFilter</filter-name>
+	<url-pattern>/f/*</url-pattern>
+</filter-mapping>
+
 	<!-- MVC Servlet -->
 	<servlet>
 		<servlet-name>springServlet</servlet-name>

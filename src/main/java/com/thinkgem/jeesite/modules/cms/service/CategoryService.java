@@ -34,7 +34,7 @@ import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 public class CategoryService extends TreeService<CategoryDao, Category> {
 
 	public static final String CACHE_CATEGORY_LIST = "categoryList";
-	
+
 	private Category entity = new Category();
 	
 	@SuppressWarnings("unchecked")
@@ -104,7 +104,11 @@ public class CategoryService extends TreeService<CategoryDao, Category> {
 		entity.setSite(site);
 		return dao.findByParentIdAndSiteId(entity);
 	}
-	
+
+	public List<Category> findCategorysByParentId(String parentId){
+		return dao.findCategorysByParentId(this.get(parentId));
+	}
+
 	public Page<Category> find(Page<Category> page, Category category) {
 //		DetachedCriteria dc = dao.createDetachedCriteria();
 //		if (category.getSite()!=null && StringUtils.isNotBlank(category.getSite().getId())){

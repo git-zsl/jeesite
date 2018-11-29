@@ -200,4 +200,13 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 	public List<String> findTitle(Article article){
 		return dao.findTitle(article);
 	}
+
+	/**
+	 * 查找拥有当前栏目数据
+	 * @param categoryId
+	 * @return
+	 */
+	public int findOwnNum(String categoryId,String createBy){
+		return dao.findOwnNum(categoryId,createBy);
+	}
 }

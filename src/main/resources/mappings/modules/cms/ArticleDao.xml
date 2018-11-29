@@ -120,6 +120,22 @@
 		ORDER BY a.create_date desc
 	</select>
 
+	<select id="findOwnNum" resultType="Integer">
+		select count(id)
+		from cms_article a
+		<where>
+			del_flag != '1'
+			<if test="categoryId != null and categoryId !=''">
+				AND  a.category_id = #{categoryId}
+			</if>
+			<if test="createBy != null and createBy !=''">
+				AND  a.create_by = #{createBy}
+			</if>
+		</where>
+		GROUP BY a.title
+		ORDER BY a.create_date desc
+	</select>
+
 	<insert id="insert">
 		INSERT INTO cms_article(
 			id,

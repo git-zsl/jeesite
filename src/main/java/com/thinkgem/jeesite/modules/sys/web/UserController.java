@@ -59,6 +59,8 @@ public class UserController extends BaseController {
 	@Autowired
 	private OfficeService officeService;
 
+	private static final String OFFICE_TYPE_1 = "企业用户";
+	private static final String OFFICE_TYPE_2 = "企业用户";
 	private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
 	@ModelAttribute
@@ -561,4 +563,31 @@ public class UserController extends BaseController {
 		model.addAttribute("allRoles", systemService.findAllRole());
 		return "modules/business/bussinessUserForm";
 	}
+
+
+
+/*	@RequiresPermissions("sys:user:view")
+	@RequestMapping(value = {"customizationList"})
+	public String personalList(User user, @RequestParam(value="officeId",required=false) String officeId,HttpServletRequest request, HttpServletResponse response, Model model) {
+		Office office = new Office();
+		if(!StringUtils.isBlank(officeId)){
+			office = officeService.get(officeId);
+		}
+		*//*List<Office> listByName = officeService.findListByName(office);*//*
+		user.setOffice(office);
+		Page<User> page = systemService.findUser(new Page<User>(request, response), user);
+		if(OFFICE_TYPE_2.equals(office.getName())){
+			if(user.getDelFlag().equals("1")){
+				page.setList(systemService.findBlacklist(user));
+			}
+			model.addAttribute("page", page);
+			return "modules/peruser/personalUserList";
+		}else{
+			if(!user.getDelFlag().equals("0")){
+				page.setList(systemService.findCompanyBlacklist(user));
+			}
+			model.addAttribute("page", page);
+			return "modules/business/bussinessUserList";
+		}
+	}*/
 }
