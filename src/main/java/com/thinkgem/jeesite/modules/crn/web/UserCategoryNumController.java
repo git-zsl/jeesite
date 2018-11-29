@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
 import com.thinkgem.jeesite.modules.cms.service.ArticleService;
 import com.thinkgem.jeesite.modules.cms.service.CategoryService;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -60,7 +61,7 @@ public class UserCategoryNumController extends BaseController {
 	@RequiresPermissions("crn:userCategoryNum:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(UserCategoryNum userCategoryNum, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<UserCategoryNum> page = userCategoryNumService.findPage(new Page<UserCategoryNum>(request, response), userCategoryNum); 
+		Page<UserCategoryNum> page = userCategoryNumService.findPage(new Page<UserCategoryNum>(request, response), userCategoryNum);
 		model.addAttribute("page", page);
 		return "modules/crn/userCategoryNumList";
 	}
@@ -96,7 +97,7 @@ public class UserCategoryNumController extends BaseController {
 	@RequestMapping(value = "ownNum")
 	@ResponseBody
 	public Integer findOwnNum(String id,String createBy) {
-		int ownNum = articleService.findOwnNum(id,createBy);
+		Integer ownNum = articleService.findOwnNum(id,createBy);
 		return ownNum;
 	}
 }

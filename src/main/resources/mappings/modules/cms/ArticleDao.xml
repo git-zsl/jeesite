@@ -132,8 +132,6 @@
 				AND  a.create_by = #{createBy}
 			</if>
 		</where>
-		GROUP BY a.title
-		ORDER BY a.create_date desc
 	</select>
 
 	<insert id="insert">

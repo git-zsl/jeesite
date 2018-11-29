@@ -22,21 +22,22 @@
 					}
 				}
 			});
-            $(".valid").change(function(){
-                alert("XXXXX");
-                if($("#userId").val()){
-                    $("#selectCategory").attr("disabled","false");
-				}
-			});
+
 			$("#selectCategory").change(function(){
+			    if(!$("#userName").val()){
+                   /* $($("#selectCategory")[0][0]).val("");*/
+			        alert("先填写用户");
+			        return;
+				}
 			    var categoryId = $("#selectCategory").val();
-			    var createBy = $("user").val();
+			    var createBy = $("#userId").val();
 			    var url = "${ctx}/crn/userCategoryNum/ownNum?id="+categoryId+"&createBy="+createBy;
                 $.ajax({
                     type: "GET",
                     url: url,
                     success: function(msg){
                         $("#num").val(msg);
+                        alert("xxxx");
                         $("#num").attr("readonly","false");
                     }
                 });
@@ -59,10 +60,19 @@
 					title="用户" url="/sys/office/treeData?type=3" cssClass="" allowClear="true" notAllowSelectParent="true"/>
 			</div>
 		</div>
+		<%--<div class="control-group">
+			<label class="control-label">用户：</label>
+			<div class="controls">
+				<form:select id="user" path="userId" disabled="false" class="input-xlarge ">
+					<form:option value="" label=""/>
+					<form:options items="${categorys}" itemLabel="name" itemValue="id" htmlEscape="false"/>
+				</form:select>
+			</div>
+		</div>--%>
 		<div class="control-group">
 			<label class="control-label">栏目id：</label>
 			<div class="controls">
-				<form:select id="selectCategory" path="categoryId" disabled="true" class="input-xlarge ">
+				<form:select id="selectCategory" path="categoryId" disabled="false" class="input-xlarge ">
 					<form:option value="" label=""/>
 					<form:options items="${categorys}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select>

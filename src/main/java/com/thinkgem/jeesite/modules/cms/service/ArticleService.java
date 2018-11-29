@@ -206,7 +206,7 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 	 * @param categoryId
 	 * @return
 	 */
-	public int findOwnNum(String categoryId,String createBy){
+	public Integer findOwnNum(String categoryId,String createBy){
 		return dao.findOwnNum(categoryId,createBy);
 	}
 }

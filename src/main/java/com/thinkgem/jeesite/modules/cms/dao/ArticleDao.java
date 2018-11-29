@@ -23,7 +23,7 @@ public interface ArticleDao extends CrudDao<Article> {
 
 	public List<String> findTitle(Article article);
 
-	public int findOwnNum(@Param("categoryId") String categoryId,@Param("createBy") String createBy);
+	public Integer findOwnNum(@Param("categoryId") String categoryId,@Param("createBy") String createBy);
 	//		return find("from Article where id in (:p1)", new Parameter(new Object[]{ids}));
 //	{
 
