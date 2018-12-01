@@ -22,13 +22,12 @@
 					}
 				}
 			});
+            $("#user").change(function(){
+                $("#selectCategory").removeAttr("disabled");
+			})
+
 
 			$("#selectCategory").change(function(){
-			    if(!$("#userName").val()){
-                   /* $($("#selectCategory")[0][0]).val("");*/
-			        alert("先填写用户");
-			        return;
-				}
 			    var categoryId = $("#selectCategory").val();
 			    var createBy = $("#userId").val();
 			    var url = "${ctx}/crn/userCategoryNum/ownNum?id="+categoryId+"&createBy="+createBy;
@@ -37,8 +36,6 @@
                     url: url,
                     success: function(msg){
                         $("#num").val(msg);
-                        alert("xxxx");
-                        $("#num").attr("readonly","false");
                     }
                 });
 			})
@@ -54,25 +51,18 @@
 		<form:hidden path="id"/>
 		<sys:message content="${message}"/>		
 		<div class="control-group">
-			<label class="control-label">用户id：</label>
-			<div class="controls">
-				<sys:treeselect id="user" name="user.id" value="${userCategoryNum.user.id}" labelName="user.name" labelValue="${userCategoryNum.user.name}"
-					title="用户" url="/sys/office/treeData?type=3" cssClass="" allowClear="true" notAllowSelectParent="true"/>
-			</div>
-		</div>
-		<%--<div class="control-group">
 			<label class="control-label">用户：</label>
 			<div class="controls">
-				<form:select id="user" path="userId" disabled="false" class="input-xlarge ">
+				<form:select id="user" path="user.id" disabled="false" class="input-xlarge ">
 					<form:option value="" label=""/>
-					<form:options items="${categorys}" itemLabel="name" itemValue="id" htmlEscape="false"/>
+					<form:options items="${users}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select>
 			</div>
-		</div>--%>
+		</div>
 		<div class="control-group">
 			<label class="control-label">栏目id：</label>
 			<div class="controls">
-				<form:select id="selectCategory" path="categoryId" disabled="false" class="input-xlarge ">
+				<form:select id="selectCategory" path="category.id" disabled="true" class="input-xlarge ">
 					<form:option value="" label=""/>
 					<form:options items="${categorys}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select>

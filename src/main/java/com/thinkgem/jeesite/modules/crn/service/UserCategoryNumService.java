@@ -25,13 +25,17 @@ public class UserCategoryNumService extends CrudService<UserCategoryNumDao, User
 	public UserCategoryNum get(String id) {
 		return super.get(id);
 	}
-	
+
+	public UserCategoryNum findByCategoryIdAndUserId(UserCategoryNum u) {
+		return dao.findByCategoryIdAndUserId(u);
+	}
+
 	public List<UserCategoryNum> findList(UserCategoryNum userCategoryNum) {
 		return super.findList(userCategoryNum);
 	}
 	
-	public Page<UserCategoryNum> findPage(Page<UserCategoryNum> page, UserCategoryNum userCategoryNum) {
-		return super.findPage(page, userCategoryNum);
+	public Page<UserCategoryNum> findNewPage(Page<UserCategoryNum> page, UserCategoryNum userCategoryNum) {
+		return super.findNewPage(page, userCategoryNum);
 	}
 	
 	@Transactional(readOnly = false)

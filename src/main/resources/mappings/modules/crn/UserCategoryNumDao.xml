@@ -10,11 +10,25 @@
 		a.current_num AS "currentNum",
 		u2.name AS "user.name"
 	</sql>
-	
+	<sql id="newUserCategoryNumColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.category_id AS "category.id",
+		a.create_num AS "createNum",
+		a.current_num AS "currentNum",
+		u2.name AS "user.name",
+		cc.name AS "category.name"
+	</sql>
+
 	<sql id="userCategoryNumJoins">
 		LEFT JOIN sys_user u2 ON u2.id = a.user_id
 	</sql>
-    
+
+	<sql id="newUserCategoryNumJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+		LEFT JOIN cms_category cc on cc.id = a.category_id
+	</sql>
+
 	<select id="get" resultType="UserCategoryNum">
 		SELECT 
 			<include refid="userCategoryNumColumns"/>
@@ -22,7 +36,23 @@
 		<include refid="userCategoryNumJoins"/>
 		WHERE a.id = #{id}
 	</select>
-	
+
+	<select id="findByCategoryIdAndUserId" resultType="UserCategoryNum">
+		SELECT
+			<include refid="newUserCategoryNumColumns"/>
+		FROM user_category_num a
+		<include refid="newUserCategoryNumJoins"/>
+		<where>
+			1=1
+			<if test="category.id != null and category.id != ''">
+				AND a.category_id = ${category.id}
+			</if>
+			<if test="user.id != null and user.id != ''">
+				AND a.user_id = ${user.id}
+			</if>
+		</where>
+	</select>
+
 	<select id="findList" resultType="UserCategoryNum">
 		SELECT 
 			<include refid="userCategoryNumColumns"/>
@@ -51,7 +81,36 @@
 			</otherwise>
 		</choose>
 	</select>
-	
+
+	<select id="findNewList" resultType="UserCategoryNum">
+		SELECT
+			<include refid="newUserCategoryNumColumns"/>
+		FROM user_category_num a
+		<include refid="newUserCategoryNumJoins"/>
+		<where>
+
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user_id LIKE
+					<if test="dbName == 'oracle'">'%'||#{user.id}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{user.id}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{user.id},'%')</if>
+			</if>
+			<if test="categoryId != null and categoryId != ''">
+				AND a.category_id LIKE
+					<if test="dbName == 'oracle'">'%'||#{categoryId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{categoryId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{categoryId},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
 	<select id="findAllList" resultType="UserCategoryNum">
 		SELECT 
 			<include refid="userCategoryNumColumns"/>

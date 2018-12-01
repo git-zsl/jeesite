@@ -8,6 +8,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.modules.crn.entity.UserCategoryNum;
+import com.thinkgem.jeesite.modules.sys.entity.User;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -66,14 +69,10 @@ public class ArticleController extends BaseController {
 	@RequiresPermissions("cms:article:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(Article article, HttpServletRequest request, HttpServletResponse response, Model model) {
-//		for (int i=0; i<10000000; i++){
-//			Article a = new Article();
-//			a.setCategory(new Category(article.getCategory().getId()));
-//			a.setTitle("测试测试测试测试测试测试测试测试"+a.getCategory().getId());
-//			a.setArticleData(new ArticleData());
-//			a.getArticleData().setContent(a.getTitle());
-//			articleService.save(a);
-//		}
+		User user = UserUtils.getUser();
+		if(!user.isAdmin()){
+			article.setCreateBy(user);
+		}
         Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
 		List<String> titles = articleService.findTitle(article);
 		model.addAttribute("titles", titles);
@@ -95,9 +94,7 @@ public class ArticleController extends BaseController {
 			}
 		}
 		article.setArticleData(articleDataService.get(article.getId()));
-//		if (article.getCategory()=null && StringUtils.isNotBlank(article.getCategory().getId())){
-//			Category category = categoryService.get(article.getCategory().getId());
-//		}
+		model.addAttribute("userId",UserUtils.getUser().getId());
         model.addAttribute("contentViewList",getTplContent());
         model.addAttribute("article_DEFAULT_TEMPLATE",Article.DEFAULT_TEMPLATE);
 		model.addAttribute("article", article);
@@ -116,7 +113,15 @@ public class ArticleController extends BaseController {
 		String categoryId = article.getCategory()!=null?article.getCategory().getId():null;
 		return "redirect:" + adminPath + "/cms/article/?repage&category.id="+(categoryId!=null?categoryId:"");
 	}
-	
+
+	@RequiresPermissions("cms:article:edit")
+	@RequestMapping(value = "noSave")
+	public String noSave(UserCategoryNum userCategoryNum, Model model, RedirectAttributes redirectAttributes) {
+		String categoryId = userCategoryNum.getCategory().getId();
+		addMessage(redirectAttributes, "当前用户无法再创建新的栏目");
+		return "redirect:"+ Global.getAdminPath()+"/cms/article/?repage&category.id="+(categoryId!=null?categoryId:"");
+	}
+
 	@RequiresPermissions("cms:article:edit")
 	@RequestMapping(value = "delete")
 	public String delete(Article article, String categoryId, @RequestParam(required=false) Boolean isRe, RedirectAttributes redirectAttributes) {

@@ -57,7 +57,7 @@
 					${userCategoryNum.user.name}
 				</a></td>
 				<td>
-					${fns:getDictLabel(userCategoryNum.categoryId, '', '')}
+						${userCategoryNum.category.name}
 				</td>
 				<td>
 					${userCategoryNum.createNum}

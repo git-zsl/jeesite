@@ -50,9 +50,6 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 			dao.updateExpiredWeight(article);
 			CacheUtils.put("updateExpiredWeightDateByArticle", DateUtils.addHours(new Date(), 6));
 		}
-//		DetachedCriteria dc = dao.createDetachedCriteria();
-//		dc.createAlias("category", "category");
-//		dc.createAlias("category.site", "category.site");
 		if (article.getCategory()!=null && StringUtils.isNotBlank(article.getCategory().getId()) && !Category.isRoot(article.getCategory().getId())){
 			Category category = categoryDao.get(article.getCategory().getId());
 			if (category==null){
@@ -65,11 +62,6 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 		else{
 			article.setCategory(new Category());
 		}
-//		if (StringUtils.isBlank(page.getOrderBy())){
-//			page.setOrderBy("a.weight,a.update_date desc");
-//		}
-//		return dao.find(page, dc);
-	//	article.getSqlMap().put("dsf", dataScopeFilter(article.getCurrentUser(), "o", "u"));
 		return super.findPage(page, article);
 		
 	}

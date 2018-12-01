@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.crn.dao;
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.crn.entity.UserCategoryNum;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 栏目授权DAO接口
@@ -14,5 +15,7 @@ import com.thinkgem.jeesite.modules.crn.entity.UserCategoryNum;
  */
 @MyBatisDao
 public interface UserCategoryNumDao extends CrudDao<UserCategoryNum> {
-	
+
+	public UserCategoryNum findByCategoryIdAndUserId(UserCategoryNum u);
+
 }

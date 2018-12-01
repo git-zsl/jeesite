@@ -63,6 +63,11 @@ public class Article extends DataEntity<Article> {
 		this();
 		this.category = category;
 	}
+	public Article(Category category,User user){
+		this();
+		this.category = category;
+		this.user = user;
+	}
 
 	public void prePersist(){
 		//TODO 后续处理，暂不知有何用处

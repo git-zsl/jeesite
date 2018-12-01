@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.crn.entity;
 
+import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import org.hibernate.validator.constraints.Length;
 
@@ -20,6 +21,7 @@ public class UserCategoryNum extends DataEntity<UserCategoryNum> {
 	private String categoryId;		// 栏目id
 	private Integer createNum;		// 允许创建数量
 	private Integer currentNum;		// 拥有数量
+	private Office category;        // 栏目
 	
 	public UserCategoryNum() {
 		super();
@@ -31,6 +33,14 @@ public class UserCategoryNum extends DataEntity<UserCategoryNum> {
 
 	public User getUser() {
 		return user;
+	}
+
+	public Office getCategory() {
+		return category;
+	}
+
+	public void setCategory(Office category) {
+		this.category = category;
 	}
 
 	public void setUser(User user) {
