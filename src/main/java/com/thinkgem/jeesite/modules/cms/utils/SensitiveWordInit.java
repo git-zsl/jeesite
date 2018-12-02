@@ -13,7 +13,6 @@ import java.util.Set;
 /**
  * @Description: 初始化敏感词库，将敏感词加入到HashMap中，构建DFA算法模型
  * @Project：test
- * @Author : chenming
  * @Date ： 2014年4月20日 下午2:27:06
  * @version 1.0
  */
@@ -27,7 +26,6 @@ public class SensitiveWordInit {
 	}
 
 	/**
-	 * @author chenming
 	 * @date 2014年4月20日 下午2:28:32
 	 * @version 1.0
 	 */
@@ -74,7 +72,6 @@ public class SensitiveWordInit {
 	 *              }
 	 *      	}
 	 *      }
-	 * @author chenming
 	 * @date 2014年4月20日 下午3:04:20
 	 * @param keyWordSet  敏感词库
 	 * @version 1.0
@@ -113,7 +110,6 @@ public class SensitiveWordInit {
 
 	/**
 	 * 读取敏感词库中的内容，将内容添加到set集合中
-	 * @author chenming
 	 * @date 2014年4月20日 下午2:31:18
 	 * @return
 	 * @version 1.0
