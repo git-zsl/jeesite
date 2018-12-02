@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.modules.classification.entity.BookClassification;
 import com.thinkgem.jeesite.modules.classification.service.BookClassificationService;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -58,7 +59,8 @@ public class BookManagerController extends BaseController {
 	@RequiresPermissions("bus:bookManager:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(BookManager bookManager, HttpServletRequest request, HttpServletResponse response, Model model) {
-		Page<BookManager> page = bookManagerService.findPage(new Page<BookManager>(request, response), bookManager); 
+		/*bookManager.setCreateBy(UserUtils.getUser());*/
+		Page<BookManager> page = bookManagerService.findPage(new Page<BookManager>(request, response), bookManager);
 		model.addAttribute("page", page);
 		List<BookClassification> list = bookClassificationService.findList(new BookClassification());
 		Set<String> classifications = new HashSet<String>();

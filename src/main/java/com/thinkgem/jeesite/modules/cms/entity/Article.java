@@ -70,7 +70,6 @@ public class Article extends DataEntity<Article> {
 	}
 
 	public void prePersist(){
-		//TODO 后续处理，暂不知有何用处
 		//super.prePersist();
 		articleData.setId(this.id);
 	}

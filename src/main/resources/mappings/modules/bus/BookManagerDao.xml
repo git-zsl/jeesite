@@ -12,7 +12,13 @@
 		a.price AS "price",
 		a.by_link AS "byLink",
 		a.is_recommend AS "isRecommend",
-		a.publish_date AS "publishDate"
+		a.publish_date AS "publishDate",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
 	</sql>
 	
 	<sql id="bookManagerJoins">
@@ -60,6 +66,9 @@
 			<if test="beginPrice != null and endPrice != null and beginPrice != '' and endPrice != ''">
 				AND a.price BETWEEN #{beginPrice} AND #{endPrice}
 			</if>
+			<if test="createBy != null and createBy.id != null and createBy.id != ''">
+				AND a.create_by  = #{createBy.id}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -98,7 +107,13 @@
 			price,
 			by_link,
 			is_recommend,
-			publish_date
+			publish_date,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
 		) VALUES (
 			#{id},
 			#{bookName},
@@ -109,7 +124,13 @@
 			#{price},
 			#{byLink},
 			#{isRecommend},
-			#{publishDate}
+			#{publishDate},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
 		)
 	</insert>
 	
@@ -123,7 +144,12 @@
 			price = #{price},
 			by_link = #{byLink},
 			is_recommend = #{isRecommend},
-			publish_date = #{publishDate}
+			publish_date = #{publishDate},
+			create_date = #{createDate},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			del_flag = #{delFlag}
 		WHERE id = #{id}
 	</update>
 	
