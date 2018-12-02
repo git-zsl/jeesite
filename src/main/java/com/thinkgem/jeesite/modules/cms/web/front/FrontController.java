@@ -9,6 +9,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.cms.utils.SensitivewordFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,6 +59,7 @@ public class FrontController extends BaseController{
 	private CategoryService categoryService;
 	@Autowired
 	private SiteService siteService;
+	private SensitivewordFilter filter = new SensitivewordFilter();
 	
 	/**
 	 * 网站首页
@@ -287,18 +289,22 @@ public class FrontController extends BaseController{
 	@ResponseBody
 	@RequestMapping(value = "comment", method=RequestMethod.POST)
 	public String commentSave(Comment comment, String validateCode,@RequestParam(required=false) String replyId, HttpServletRequest request) {
+		//过滤敏感词
+		String content = filter.replaceSensitiveWord(comment.getContent(), 1, "*");
 		if (StringUtils.isNotBlank(validateCode)){
 			if (ValidateCodeServlet.validate(request, validateCode)){
 				if (StringUtils.isNotBlank(replyId)){
 					Comment replyComment = commentService.get(replyId);
 					if (replyComment != null){
 						comment.setContent("<div class=\"reply\">"+replyComment.getName()+":<br/>"
-								+replyComment.getContent()+"</div>"+comment.getContent());
+								+replyComment.getContent()+"</div>"+content);
+					}else{
+						comment.setContent(content);
 					}
 				}
 				comment.setIp(request.getRemoteAddr());
 				comment.setCreateDate(new Date());
-				comment.setDelFlag(Comment.DEL_FLAG_AUDIT);
+				comment.setDelFlag(Comment.DEL_FLAG_NORMAL);
 				commentService.save(comment);
 				return "{result:1, message:'提交成功。'}";
 			}else{

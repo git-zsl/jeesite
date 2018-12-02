@@ -68,12 +68,21 @@
 
 	<!-- SaveFilter -->
 	<filter>
-		<filter-name>saveFilter</filter-name>
+		<filter-name>articleFilter</filter-name>
 		<filter-class>com.thinkgem.jeesite.common.filter.SaveFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>saveFilter</filter-name>
+		<filter-name>articleFilter</filter-name>
 		<url-pattern>/a/cms/article/save</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<filter-name>commentFilter</filter-name>
+		<filter-class>com.thinkgem.jeesite.common.filter.SaveFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>commentFilter</filter-name>
+		<url-pattern>/a/cms/comment/save</url-pattern>
 	</filter-mapping>
 
 	<!-- SiteMesh -->
