@@ -35,6 +35,22 @@
 		o.name AS "office.name",
 		s.theme AS "site.theme"
 	</sql>
+	<sql id="CategoryColumns">
+		a.id AS "id",
+		a.parent_id AS "parent.id",
+		a.parent_ids AS "parentIds",
+		a.name AS "name",
+		a.image AS "image",
+		a.href AS "href",
+		a.description AS "description",
+		a.sort AS "sort",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
 	
 	<sql id="cmsCategoryDaoJoins">
 	    LEFT JOIN cms_category c ON c.id = a.parent_id
@@ -270,6 +286,20 @@
 				AND a.parent_id  = #{id}
 			</if>
 		</where>
+	</select>
+
+	<select id="findNavigationBar" resultType="Category">
+		SELECT
+			<include refid="CategoryColumns"/>
+		FROM cms_category a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		<choose>
+			<when test="sort != null and sort !=''">
+				ORDER BY a.sort DESC
+			</when>
+		</choose>
 	</select>
 	<select id="findByParentIdsLike" resultType="Category">
 		SELECT 

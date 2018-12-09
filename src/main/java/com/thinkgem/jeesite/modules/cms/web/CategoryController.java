@@ -8,16 +8,15 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.modules.book.entity.BookManager;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.common.collect.Lists;
@@ -162,4 +161,14 @@ public class CategoryController extends BaseController {
    		tplList = TplUtils.tplTrim(tplList, prefix, "");
    		return tplList;
    	}
+
+	/**
+	 * 主页导航栏接口
+	 */
+	@RequestMapping(value = "navigationBar",method = RequestMethod.POST)
+	@ResponseBody
+	public ReturnEntity<List<Category>> navigationBar(Category category) {
+		List<Category> categorys = categoryService.findNavigationBar(category);
+		return ReturnEntity.success(categorys,"查询导航栏成功");
+	}
 }

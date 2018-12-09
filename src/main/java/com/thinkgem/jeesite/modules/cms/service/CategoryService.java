@@ -179,5 +179,8 @@ public class CategoryService extends TreeService<CategoryDao, Category> {
 		}
 		return list;
 	}
-	
+
+	public List<Category> findNavigationBar(Category category) {
+		return dao.findNavigationBar(category);
+	}
 }

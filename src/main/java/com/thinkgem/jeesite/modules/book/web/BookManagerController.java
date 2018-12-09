@@ -107,12 +107,13 @@ public class BookManagerController extends BaseController {
 
 	@RequestMapping(value = "bookSoft",method = RequestMethod.POST)
 	@ResponseBody
-	public ReturnEntity<List<BookManager>> bookSoft(@RequestParam Map<String,String> map,BookManager bookManager) {
+	public ReturnEntity<List<BookManager>> bookSoft(@RequestParam Map<String,String> map,BookManager bookManager,HttpServletResponse response,HttpServletRequest request) {
 		if(!StringUtils.isBlank(map.get("softType"))){
 			bookManager.setSoftType(SOFT_TYPE_YES.equals(map.get("softType"))?"a.hits":"a.create_date");
 		}
-		List<BookManager> bookManagers = bookManagerService.findList(bookManager);
-		return ReturnEntity.success(bookManagers,"查询书籍分类成功");
+		Page<BookManager> page = bookManagerService.findPage(new Page<BookManager>(request, response), bookManager);
+		/*List<BookManager> bookManagers = bookManagerService.findList(bookManager);*/
+		return ReturnEntity.success(page,"查询书籍分类成功");
 	}
 
 }
