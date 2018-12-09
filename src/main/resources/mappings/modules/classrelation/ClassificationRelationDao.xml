@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.classrelation.dao.ClassificationRelationDao">
+    
+	<sql id="classificationRelationColumns">
+		a.first_classification_id AS "firstClassificationId",
+		a.second_classification_id AS "secondClassificationId"
+	</sql>
+	
+	<sql id="classificationRelationJoins">
+	</sql>
+    
+	<select id="get" resultType="ClassificationRelation">
+		SELECT 
+			<include refid="classificationRelationColumns"/>
+		FROM classification_relation a
+		<include refid="classificationRelationJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="ClassificationRelation">
+		SELECT 
+			<include refid="classificationRelationColumns"/>
+		FROM classification_relation a
+		<include refid="classificationRelationJoins"/>
+		<where>
+			
+			<if test="firstClassificationId != null and firstClassificationId != ''">
+				AND a.first_classification_id = #{firstClassificationId}
+			</if>
+			<if test="secondClassificationId != null and secondClassificationId != ''">
+				AND a.second_classification_id = #{secondClassificationId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="ClassificationRelation">
+		SELECT 
+			<include refid="classificationRelationColumns"/>
+		FROM classification_relation a
+		<include refid="classificationRelationJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO classification_relation(
+			first_classification_id,
+			second_classification_id
+		) VALUES (
+			#{firstClassificationId},
+			#{secondClassificationId}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE classification_relation SET 	
+			first_classification_id = #{firstClassificationId},
+			second_classification_id = #{secondClassificationId}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM classification_relation
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

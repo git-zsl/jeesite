@@ -1,10 +1,12 @@
 package com.thinkgem.jeesite.common.filter;
 
+import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
 import com.thinkgem.jeesite.modules.crn.entity.UserCategoryNum;
 import com.thinkgem.jeesite.modules.crn.service.UserCategoryNumService;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
@@ -20,6 +22,7 @@ import java.util.Objects;
 public class SaveFilter implements Filter {
     private FilterConfig filterConfig;
     private UserCategoryNumService userCategoryNumService;
+    private static final String ADMIN_ID="1";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -40,19 +43,28 @@ public class SaveFilter implements Filter {
         Map parameterMap = request.getParameterMap();
         String[] categoryId = (String[])parameterMap.get("category.id");
         UserCategoryNum u = new UserCategoryNum();
-        User user = new User(userId);
-        Office c = new Office(categoryId[0]);
+        User user = UserUtils.get(userId);
+        Category c = new Category(categoryId[0]);
         u.setUser(user);
         u.setCategory(c);
-        List<UserCategoryNum> list = userCategoryNumService.findList(u);
-        UserCategoryNum userCategoryNum = list.get(0);
-        Integer num = 0;
-        if(!Objects.isNull(userCategoryNum)){
-            num = userCategoryNum.getCurrentNum();
+        String[] deptIds = Global.getConfig("deptId").split(",");
+        for(int i = 0 ; i < deptIds.length ; i++){
+            if(deptIds[i].equals(user.getOffice().getId()) || user.isAdmin()){
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
+        List<UserCategoryNum> list = userCategoryNumService.findList(u);
+        if(list.isEmpty()){
+            req.getRequestDispatcher("/a/cms/article/noSave").forward(request,response);
+            return;
+        }
+        UserCategoryNum userCategoryNum = list.get(0);
+        Integer num = userCategoryNum.getCurrentNum();
         userCategoryNum.setCurrentNum(++num);
         if(userCategoryNum.getCurrentNum()>userCategoryNum.getCreateNum()){
             req.getRequestDispatcher("/a/cms/article/noSave").forward(request,response);
+            return;
         }else{
             userCategoryNumService.save(userCategoryNum);
             filterChain.doFilter(request, response);

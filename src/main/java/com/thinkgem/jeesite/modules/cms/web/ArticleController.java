@@ -118,7 +118,7 @@ public class ArticleController extends BaseController {
 	@RequestMapping(value = "noSave")
 	public String noSave(UserCategoryNum userCategoryNum, Model model, RedirectAttributes redirectAttributes) {
 		String categoryId = userCategoryNum.getCategory().getId();
-		addMessage(redirectAttributes, "当前用户无法再创建新的栏目");
+		addMessage(redirectAttributes, "当前用户未授权创建更多栏目");
 		return "redirect:"+ Global.getAdminPath()+"/cms/article/?repage&category.id="+(categoryId!=null?categoryId:"");
 	}
 
@@ -160,4 +160,14 @@ public class ArticleController extends BaseController {
    		tplList = TplUtils.tplTrim(tplList, Article.DEFAULT_TEMPLATE, "");
    		return tplList;
    	}
+
+	@RequiresPermissions("cms:article:view")
+	@RequestMapping(value = "allList")
+	public String allList(Article article, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
+		List<String> titles = articleService.findTitle(article);
+		model.addAttribute("titles", titles);
+		model.addAttribute("page", page);
+		return "modules/cms/articleList";
+	}
 }

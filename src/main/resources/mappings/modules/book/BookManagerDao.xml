@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.thinkgem.jeesite.modules.bus.dao.BookManagerDao">
+<mapper namespace="com.thinkgem.jeesite.modules.book.dao.BookManagerDao">
     
 	<sql id="bookManagerColumns">
 		a.id AS "id",
 		a.book_name AS "bookName",
 		a.author AS "author",
-		a.cover AS "cover",
-		a.first_class AS "firstClass",
-		a.second_class AS "secondClass",
+		a.author_introduce AS "authorIntroduce",
+		a.book_imag_url AS "bookImagUrl",
+		a.first_class_id AS "firstClassId.id",
+		a.second_class_id AS "secondClassId.id",
 		a.price AS "price",
-		a.by_link AS "byLink",
+		a.buy_link AS "buyLink",
 		a.is_recommend AS "isRecommend",
 		a.publish_date AS "publishDate",
 		a.create_by AS "createBy.id",
@@ -18,10 +19,30 @@
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		a.editor_recommend AS "editorRecommend",
+		a.publishing_house AS "publishingHouse",
+		a.language AS "language",
+		a.specification AS "specification",
+		a.place_of_publication AS "placeOfPublication",
+		a.particulars AS "particulars",
+		a.praise_num AS "praiseNum",
+		a.collect_num AS "collectNum",
+		a.recommend_num AS "recommendNum",
+		a.book_type AS "bookType",
+		a.hits AS "hits",
+		a.soft_type AS "softType",
+		<include refid="classificationtreeColumns"/>
+	</sql>
+
+	<sql id="classificationtreeColumns">
+		b.name AS "firstClassId.name",
+		c.name AS "secondClassId.name"
 	</sql>
 	
 	<sql id="bookManagerJoins">
+		LEFT JOIN classificationtree b ON a.first_class_id = b.id
+		LEFT JOIN classificationtree c ON a.second_class_id = c.id
 	</sql>
     
 	<select id="get" resultType="BookManager">
@@ -38,7 +59,7 @@
 		FROM book_manager a
 		<include refid="bookManagerJoins"/>
 		<where>
-			
+			a.del_flag = #{DEL_FLAG_NORMAL}
 			<if test="bookName != null and bookName != ''">
 				AND a.book_name LIKE 
 					<if test="dbName == 'oracle'">'%'||#{bookName}||'%'</if>
@@ -51,30 +72,22 @@
 					<if test="dbName == 'mssql'">'%'+#{author}+'%'</if>
 					<if test="dbName == 'mysql'">concat('%',#{author},'%')</if>
 			</if>
-			<if test="firstClass != null and firstClass != ''">
-				AND a.first_class LIKE 
-					<if test="dbName == 'oracle'">'%'||#{firstClass}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{firstClass}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{firstClass},'%')</if>
+			<if test="firstClassId != null and firstClassId.id != null and firstClassId.id != ''">
+				AND a.first_class_id = #{firstClassId.id}
 			</if>
-			<if test="secondClass != null and secondClass != ''">
-				AND a.second_class LIKE 
-					<if test="dbName == 'oracle'">'%'||#{secondClass}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{secondClass}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{secondClass},'%')</if>
-			</if>
-			<if test="beginPrice != null and endPrice != null and beginPrice != '' and endPrice != ''">
-				AND a.price BETWEEN #{beginPrice} AND #{endPrice}
-			</if>
-			<if test="createBy != null and createBy.id != null and createBy.id != ''">
-				AND a.create_by  = #{createBy.id}
+			<if test="secondClassId != null and secondClassId.id != null and secondClassId.id != ''">
+				AND a.second_class_id = #{secondClassId.id}
 			</if>
 		</where>
 		<choose>
+			<when test="softType !=null and softType != ''">
+				ORDER BY ${softType} DESC
+			</when>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
+				ORDER BY a.update_date DESC
 			</otherwise>
 		</choose>
 	</select>
@@ -85,13 +98,14 @@
 		FROM book_manager a
 		<include refid="bookManagerJoins"/>
 		<where>
-			
+			a.del_flag = #{DEL_FLAG_NORMAL}
 		</where>		
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
+				ORDER BY a.update_date DESC
 			</otherwise>
 		</choose>
 	</select>
@@ -101,11 +115,12 @@
 			id,
 			book_name,
 			author,
-			cover,
-			first_class,
-			second_class,
+			author_introduce,
+			book_imag_url,
+			first_class_id,
+			second_class_id,
 			price,
-			by_link,
+			buy_link,
 			is_recommend,
 			publish_date,
 			create_by,
@@ -113,16 +128,29 @@
 			update_by,
 			update_date,
 			remarks,
-			del_flag
+			del_flag,
+			editor_recommend,
+			publishing_house,
+			language,
+			specification,
+			place_of_publication,
+			particulars,
+			praise_num,
+			collect_num,
+			recommend_num,
+			book_type,
+			hits,
+			soft_type
 		) VALUES (
 			#{id},
 			#{bookName},
 			#{author},
-			#{cover},
-			#{firstClass},
-			#{secondClass},
+			#{authorIntroduce},
+			#{bookImagUrl},
+			#{firstClassId.id},
+			#{secondClassId.id},
 			#{price},
-			#{byLink},
+			#{buyLink},
 			#{isRecommend},
 			#{publishDate},
 			#{createBy.id},
@@ -130,7 +158,19 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag}
+			#{delFlag},
+			#{editorRecommend},
+			#{publishingHouse},
+			#{language},
+			#{specification},
+			#{placeOfPublication},
+			#{particulars},
+			#{praiseNum},
+			#{collectNum},
+			#{recommendNum},
+			#{bookType},
+			#{hits},
+			#{softType}
 		)
 	</insert>
 	
@@ -138,23 +178,35 @@
 		UPDATE book_manager SET 	
 			book_name = #{bookName},
 			author = #{author},
-			cover = #{cover},
-			first_class = #{firstClass},
-			second_class = #{secondClass},
+			author_introduce = #{authorIntroduce},
+			book_imag_url = #{bookImagUrl},
+			first_class_id = #{firstClassId.id},
+			second_class_id = #{secondClassId.id},
 			price = #{price},
-			by_link = #{byLink},
+			buy_link = #{buyLink},
 			is_recommend = #{isRecommend},
 			publish_date = #{publishDate},
-			create_date = #{createDate},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
-			del_flag = #{delFlag}
+			editor_recommend = #{editorRecommend},
+			publishing_house = #{publishingHouse},
+			language = #{language},
+			specification = #{specification},
+			place_of_publication = #{placeOfPublication},
+			particulars = #{particulars},
+			praise_num = #{praiseNum},
+			collect_num = #{collectNum},
+			recommend_num = #{recommendNum},
+			book_type = #{bookType},
+			hits = #{hits},
+			soft_type = #{softType}
 		WHERE id = #{id}
 	</update>
 	
 	<update id="delete">
-		DELETE FROM book_manager
+		UPDATE book_manager SET 
+			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
 	

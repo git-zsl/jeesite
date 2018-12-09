@@ -94,7 +94,10 @@ public class UserCategoryNumController extends BaseController {
 	@RequiresPermissions("crn:userCategoryNum:edit")
 	@RequestMapping(value = "save")
 	public String save(UserCategoryNum userCategoryNum, Model model, RedirectAttributes redirectAttributes) {
-		userCategoryNum.setCategoryId(userCategoryNum.getCategory().getId());
+		if(StringUtils.isBlank(userCategoryNum.getCategoryId())){
+			userCategoryNum.setCategoryId(userCategoryNum.getCategory().getId());
+		}
+		userCategoryNum.getCategory().setId(userCategoryNum.getCategoryId());
 		if (!beanValidator(model, userCategoryNum)){
 			return form(userCategoryNum, model);
 		}

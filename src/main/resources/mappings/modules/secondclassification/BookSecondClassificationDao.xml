@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.secondclassification.dao.BookSecondClassificationDao">
+    
+	<sql id="bookSecondClassificationColumns">
+		a.id AS "id",
+		a.second_classification AS "secondClassification"
+	</sql>
+	
+	<sql id="bookSecondClassificationJoins">
+	</sql>
+    
+	<select id="get" resultType="BookSecondClassification">
+		SELECT 
+			<include refid="bookSecondClassificationColumns"/>
+		FROM book_second_classification a
+		<include refid="bookSecondClassificationJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="BookSecondClassification">
+		SELECT 
+			<include refid="bookSecondClassificationColumns"/>
+		FROM book_second_classification a
+		<include refid="bookSecondClassificationJoins"/>
+		<where>
+			
+			<if test="secondClassification != null and secondClassification != ''">
+				AND a.second_classification LIKE 
+					<if test="dbName == 'oracle'">'%'||#{secondClassification}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{secondClassification}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{secondClassification},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="BookSecondClassification">
+		SELECT 
+			<include refid="bookSecondClassificationColumns"/>
+		FROM book_second_classification a
+		<include refid="bookSecondClassificationJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO book_second_classification(
+			id,
+			second_classification
+		) VALUES (
+			#{id},
+			#{secondClassification}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE book_second_classification SET 	
+			second_classification = #{secondClassification}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM book_second_classification
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,7 +1,7 @@
 /**
  * Copyright &copy; 2012-2016 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
  */
-package com.thinkgem.jeesite.modules.bus.service;
+package com.thinkgem.jeesite.modules.book.service;
 
 import java.util.List;
 
@@ -10,13 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.CrudService;
-import com.thinkgem.jeesite.modules.bus.entity.BookManager;
-import com.thinkgem.jeesite.modules.bus.dao.BookManagerDao;
+import com.thinkgem.jeesite.modules.book.entity.BookManager;
+import com.thinkgem.jeesite.modules.book.dao.BookManagerDao;
 
 /**
  * 书籍管理Service
  * @author zsl
- * @version 2018-11-03
+ * @version 2018-12-09
  */
 @Service
 @Transactional(readOnly = true)

@@ -80,4 +80,10 @@ public class TestDataController extends BaseController {
 		return "redirect:"+Global.getAdminPath()+"/test/testData/?repage";
 	}
 
+	@RequiresPermissions("test:testData:view")
+	@RequestMapping(value = "demo")
+	public String demo(TestData testData, RedirectAttributes redirectAttributes) {
+		return "/modules/test/echarts";
+	}
+
 }

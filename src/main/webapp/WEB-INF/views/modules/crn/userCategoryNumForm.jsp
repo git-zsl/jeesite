@@ -62,7 +62,7 @@
 		<div class="control-group">
 			<label class="control-label">栏目id：</label>
 			<div class="controls">
-				<form:select id="selectCategory" path="category.id" disabled="true" class="input-xlarge ">
+				<form:select id="selectCategory" path="categoryId" disabled="true" class="input-xlarge ">
 					<form:option value="" label=""/>
 					<form:options items="${categorys}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select>
