@@ -43,11 +43,20 @@ public class BookManager extends DataEntity<BookManager> {
 
 	
 	public BookManager() {
-		super();
+		this.praiseNum = 0;		// 点赞数
+		this.collectNum = 0;		//收藏数
+		this.hits = 0;	   // 推荐数
+		this.recommendNum = 0;			    // 点击数
+		this.price = "0.0";			    // 价格
 	}
 
 	public BookManager(String id){
 		super(id);
+		this.praiseNum = 0;		// 点赞数
+		this.collectNum = 0;		//收藏数
+		this.hits = 0;	   // 推荐数
+		this.recommendNum = 0;			    // 点击数
+		this.price = "0.0";			    // 价格
 	}
 
 	@Length(min=0, max=255, message="图书名称长度必须介于 0 和 255 之间")

@@ -89,6 +89,10 @@ public class BookManagerController extends BaseController {
 		if (!beanValidator(model, bookManager)){
 			return form(bookManager, model);
 		}
+		if(StringUtils.isBlank(bookManager.getFirstClassId().getId()) || StringUtils.isBlank(bookManager.getSecondClassId().getId())){
+			addMessage(redirectAttributes, "请选择分类");
+			return "redirect:"+Global.getAdminPath()+"/book/bookManager/form";
+		}
 		bookManagerService.save(bookManager);
 		addMessage(redirectAttributes, "保存书籍成功");
 		return "redirect:"+Global.getAdminPath()+"/book/bookManager/?repage";
@@ -111,8 +115,18 @@ public class BookManagerController extends BaseController {
 		if(!StringUtils.isBlank(map.get("softType"))){
 			bookManager.setSoftType(SOFT_TYPE_YES.equals(map.get("softType"))?"a.hits":"a.create_date");
 		}
+		if(!StringUtils.isBlank(map.get("bookName"))){
+			bookManager.setBookName(map.get("bookName"));
+		}
+		if(!StringUtils.isBlank(map.get("parentId")) && !StringUtils.isBlank(map.get("id"))){
+			Classificationtree Classification = new Classificationtree(map.get("id"));
+			if(PARENT_FINST_ID.equals(map.get("parentId"))){
+				bookManager.setFirstClassId(Classification);
+			}else{
+				bookManager.setSecondClassId(Classification);
+			}
+		}
 		Page<BookManager> page = bookManagerService.findPage(new Page<BookManager>(request, response), bookManager);
-		/*List<BookManager> bookManagers = bookManagerService.findList(bookManager);*/
 		return ReturnEntity.success(page,"查询书籍分类成功");
 	}
 
