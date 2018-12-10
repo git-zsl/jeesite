@@ -84,7 +84,7 @@ public class BookNoticeController extends BaseController {
 	}
 
 	/**
-	 * 主页图书排序规则接口
+	 * 主页公告接口
 	 */
 
 	@RequestMapping(value = "notice",method = RequestMethod.POST)
