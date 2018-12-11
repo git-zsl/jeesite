@@ -111,6 +111,13 @@ public class BookManagerController extends BaseController {
 	@RequestMapping(value = "bookSoft",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity<List<BookManager>> bookSoft(@RequestParam Map<String,String> map,BookManager bookManager,HttpServletResponse response,HttpServletRequest request) {
+		Page page1 = new Page();
+		if(!StringUtils.isBlank(map.get("pageNo"))){
+			page1.setPageNo(Integer.parseInt(map.get("pageNo")));
+		}else{
+			page1.setPageNo(1);
+		}
+		page1.setPageSize(Integer.parseInt(Global.getConfig("home.pageSize")));
 		if(!StringUtils.isBlank(map.get("softType"))){
 			bookManager.setSoftType(SOFT_TYPE_YES.equals(map.get("softType"))?"a.hits":"a.create_date");
 		}
@@ -139,7 +146,7 @@ public class BookManagerController extends BaseController {
 				bookManager.setSecondClassId(Classification);
 			}
 		}
-		Page<BookManager> page = bookManagerService.findPage(new Page<BookManager>(request, response), bookManager);
+		Page<BookManager> page = bookManagerService.findPage(page1, bookManager);
 		return ReturnEntity.success(page,"查询书籍列表成功");
 	}
 
