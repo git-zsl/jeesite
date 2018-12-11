@@ -21,6 +21,8 @@ public interface ArticleDao extends CrudDao<Article> {
 	
 	public List<Article> findByIdIn(String[] ids);
 
+	public List<Article> findByCategoryIdIn(List<String> list);
+
 	public List<String> findTitle(Article article);
 
 	public Integer findOwnNum(@Param("categoryId") String categoryId,@Param("createBy") String createBy);

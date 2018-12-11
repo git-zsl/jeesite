@@ -218,12 +218,25 @@
 	<select id="findByIdIn" resultType="Article">
 		SELECT 
 			<include refid="cmsArticleColumns"/>
-		from cms_article a where 
+		from cms_article a
 		<where>
-			id in (${id});
+			id in (${id})
 		</where>		
 	</select>
- 
+
+	<select id="findByCategoryIdIn" resultType="Article">
+		SELECT
+			<include refid="cmsArticleColumns"/>
+		from cms_article a
+		<include refid="cmsArticleJoins"/>
+		<where>
+			1=1
+				AND a.category_id in
+				<foreach item="item" index="index" collection="list"
+						 open="(" separator="," close=")">#{item}</foreach>
+		</where>
+	</select>
+
 	<update id="updateExpiredWeight">
 		update cms_article SET
 			 weight = 0

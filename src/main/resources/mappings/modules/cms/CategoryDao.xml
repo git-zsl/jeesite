@@ -280,6 +280,18 @@
 		order by a.site_id, a.sort
 	</select>
 
+	<select id="findByParentIdNoSite" resultType="string">
+		SELECT
+		a.id
+		FROM cms_category a
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="parent.id != null and parent.id != ''">
+				AND a.parent_id  = #{parent.id}
+			</if>
+		</where>
+	</select>
+
 	<select id="findCategorysByParentId" resultType="Category">
 		SELECT
 			<include refid="cmsCategoryDaoColumns"/>

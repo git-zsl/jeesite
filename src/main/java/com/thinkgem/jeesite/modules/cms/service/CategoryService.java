@@ -105,6 +105,13 @@ public class CategoryService extends TreeService<CategoryDao, Category> {
 		return dao.findByParentIdAndSiteId(entity);
 	}
 
+	public List<String> findByParentIdNoSite(String parentId){
+		Category parent = new Category();
+		parent.setId(parentId);
+		entity.setParent(parent);
+		return dao.findByParentIdNoSite(entity);
+	}
+
 	public List<Category> findCategorysByParentId(String parentId){
 		return dao.findCategorysByParentId(this.get(parentId));
 	}
