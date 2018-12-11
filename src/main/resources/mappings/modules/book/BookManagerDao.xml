@@ -37,9 +37,9 @@
 
 	<sql id="classificationtreeColumns">
 		b.name AS "firstClassId.name",
-		c.name AS "secondClassId.name",
 		b.parent_id AS "firstClassId.parent.id",
-	c.parent_id AS "secondClassId.parent.id"
+		c.name AS "secondClassId.name",
+	    c.parent_id AS "secondClassId.parent.id"
 	</sql>
 	
 	<sql id="bookManagerJoins">

@@ -168,6 +168,7 @@ public class CategoryController extends BaseController {
 	@RequestMapping(value = "navigationBar",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity<List<Category>> navigationBar(Category category) {
+		category.setIsShowHome(Global.NO);
 		List<Category> categorys = categoryService.findNavigationBar(category);
 		return ReturnEntity.success(categorys,"查询导航栏成功");
 	}

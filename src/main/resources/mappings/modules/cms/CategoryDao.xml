@@ -49,7 +49,8 @@
 		a.update_by AS "updateBy.id",
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		a.is_show_home AS "isShowHome"
 	</sql>
 	
 	<sql id="cmsCategoryDaoJoins">
@@ -88,7 +89,8 @@
 			a.update_date AS "updateDate",
 			a.remarks AS "remarks",
 			a.del_flag AS "delFlag",
-			o.name AS "office.name"
+			o.name AS "office.name",
+			a.is_show_home AS "isShowHome"
 		FROM cms_category a
 		JOIN sys_office o ON o.id = a.office_id
 		JOIN sys_user u ON u.id = a.create_by
@@ -180,7 +182,8 @@
 			update_by,
 			update_date,
 			remarks,
-			del_flag
+			del_flag,
+			is_show_home
 		) VALUES (
 			#{id},
 			#{parent.id},
@@ -208,7 +211,8 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag}
+			#{delFlag},
+			#{isShowHome}
 		)
 	</insert>
 	
@@ -238,7 +242,8 @@
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
-			del_flag = #{delFlag}
+			del_flag = #{delFlag},
+			is_show_home = #{isShowHome}
 		WHERE id = #{id}
 	</update>
 	
@@ -293,7 +298,10 @@
 			<include refid="CategoryColumns"/>
 		FROM cms_category a
 		<where>
-			a.del_flag = #{DEL_FLAG_NORMAL}
+			    a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="isShowHome != null and isShowHome != ''">
+				AND a.is_show_home = #{isShowHome}
+			</if>
 		</where>
 		<choose>
 			<when test="sort != null and sort !=''">

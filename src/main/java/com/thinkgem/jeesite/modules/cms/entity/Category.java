@@ -41,6 +41,7 @@ public class Category extends TreeEntity<Category> {
 	private String showModes; 	// 展现方式（0:有子栏目显示栏目列表，无子栏目显示内容列表;1：首栏目内容列表；2：栏目第一条内容）
 	private String allowComment;// 是否允许评论
 	private String isAudit;	// 是否需要审核
+	private String isShowHome;	// 是否需要审核
 	private String customListView;		// 自定义列表视图
 	private String customContentView;	// 自定义内容视图
     private String viewConfig;	// 视图参数
@@ -62,6 +63,7 @@ public class Category extends TreeEntity<Category> {
 		this.allowComment = Global.NO;
 		this.delFlag = DEL_FLAG_NORMAL;
 		this.isAudit = Global.NO;
+		this.isShowHome = Global.NO;
 	}
 
 	public Category(String id){
@@ -196,8 +198,16 @@ public class Category extends TreeEntity<Category> {
 	public void setKeywords(String keywords) {
 		this.keywords = keywords;
 	}
-	
-//	@NotNull
+
+	public String getIsShowHome() {
+		return isShowHome;
+	}
+
+	public void setIsShowHome(String isShowHome) {
+		this.isShowHome = isShowHome;
+	}
+
+	//	@NotNull
 //	public Integer getSort() {
 //		return sort;
 //	}
