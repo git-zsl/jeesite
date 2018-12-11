@@ -6,6 +6,8 @@ package com.thinkgem.jeesite.modules.book.entity;
 import com.thinkgem.jeesite.modules.classificationtree.entity.Classificationtree;
 import org.hibernate.validator.constraints.Length;
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import com.thinkgem.jeesite.common.persistence.DataEntity;
@@ -40,6 +42,7 @@ public class BookManager extends DataEntity<BookManager> {
 	private String bookType;		// 图书类型
 	private Integer hits;		    // 点击数
 	private String softType;		    // 排序类型
+	private List<String> ImagUrl;           //图片路径数组
 
 	
 	public BookManager() {
@@ -85,7 +88,7 @@ public class BookManager extends DataEntity<BookManager> {
 	public void setAuthorIntroduce(String authorIntroduce) {
 		this.authorIntroduce = authorIntroduce;
 	}
-	
+
 	@Length(min=0, max=2000, message="图书图片存储路径长度必须介于 0 和 2000 之间")
 	public String getBookImagUrl() {
 		return bookImagUrl;
@@ -246,5 +249,13 @@ public class BookManager extends DataEntity<BookManager> {
 
 	public void setSoftType(String softType) {
 		this.softType = softType;
+	}
+
+	public List<String> getImagUrl() {
+		return ImagUrl;
+	}
+
+	public void setImagUrl(List<String> imagUrl) {
+		ImagUrl = imagUrl;
 	}
 }

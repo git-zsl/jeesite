@@ -24,9 +24,8 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.book.entity.BookManager;
 import com.thinkgem.jeesite.modules.book.service.BookManagerService;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * 书籍管理Controller
@@ -118,6 +117,20 @@ public class BookManagerController extends BaseController {
 		if(!StringUtils.isBlank(map.get("bookName"))){
 			bookManager.setBookName(map.get("bookName"));
 		}
+		if(!StringUtils.isBlank(map.get("bookId"))){
+			BookManager book = bookManagerService.get(map.get("bookId"));
+			List<String> strings = Arrays.asList(book.getBookImagUrl().split("\\|"));
+			List<String> strs = new ArrayList<>();
+			for (String s : strings) {
+				if(!StringUtils.isBlank(s)){
+					strs.add(s);
+				}
+			}
+			book.setImagUrl(strs);
+			List<BookManager> books = new ArrayList<BookManager>();
+			books.add(book);
+			return ReturnEntity.success(books,"查询对应书籍成功");
+		}
 		if(!StringUtils.isBlank(map.get("parentId")) && !StringUtils.isBlank(map.get("id"))){
 			Classificationtree Classification = new Classificationtree(map.get("id"));
 			if(PARENT_FINST_ID.equals(map.get("parentId"))){
@@ -127,7 +140,7 @@ public class BookManagerController extends BaseController {
 			}
 		}
 		Page<BookManager> page = bookManagerService.findPage(new Page<BookManager>(request, response), bookManager);
-		return ReturnEntity.success(page,"查询书籍分类成功");
+		return ReturnEntity.success(page,"查询书籍列表成功");
 	}
 
 }

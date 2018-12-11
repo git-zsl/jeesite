@@ -46,7 +46,6 @@
 			<tr>
 				<th>图书名称</th>
 				<th>作者名称</th>
-				<th>图书图片存储路径</th>
 				<th>图书类目</th>
 				<th>图书分组</th>
 				<th>更新时间</th>
@@ -63,9 +62,6 @@
 				</a></td>
 				<td>
 					${bookManager.author}
-				</td>
-				<td>
-					${bookManager.bookImagUrl}
 				</td>
 				<td>
 					${bookManager.firstClassId.name}
