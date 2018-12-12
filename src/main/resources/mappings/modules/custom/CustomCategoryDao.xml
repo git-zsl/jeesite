@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.custom.dao.CustomCategoryDao">
+    
+	<sql id="customCategoryColumns">
+		a.id AS "id",
+		a.category_name AS "categoryName",
+		a.category_id AS "categoryId",
+		a.custom_mark AS "customMark"
+	</sql>
+	
+	<sql id="customCategoryJoins">
+	</sql>
+    
+	<select id="get" resultType="CustomCategory">
+		SELECT 
+			<include refid="customCategoryColumns"/>
+		FROM custom_category a
+		<include refid="customCategoryJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="findByMark" resultType="CustomCategory">
+		SELECT
+			<include refid="customCategoryColumns"/>
+		FROM custom_category a
+		<include refid="customCategoryJoins"/>
+		WHERE a.custom_mark = #{key}
+	</select>
+
+	<select id="findList" resultType="CustomCategory">
+		SELECT 
+			<include refid="customCategoryColumns"/>
+		FROM custom_category a
+		<include refid="customCategoryJoins"/>
+		<where>
+			
+			<if test="categoryName != null and categoryName != ''">
+				AND a.category_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{categoryName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{categoryName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{categoryName},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CustomCategory">
+		SELECT 
+			<include refid="customCategoryColumns"/>
+		FROM custom_category a
+		<include refid="customCategoryJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO custom_category(
+			id,
+			category_name,
+			category_id,
+			custom_mark
+		) VALUES (
+			#{id},
+			#{categoryName},
+			#{categoryId},
+			#{customMark}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE custom_category SET 	
+			category_name = #{categoryName},
+			category_id = #{categoryId},
+			custom_mark = #{customMark}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM custom_category
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

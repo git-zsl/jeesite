@@ -67,6 +67,12 @@ public class Global {
 	public static final String NO = "0";
 
 	/**
+	 * 自定义栏目编号
+	 */
+	public static final String GG = "GG";
+	public static final String YDCJ = "YDCJ";
+
+	/**
 	 * 对/错
 	 */
 	public static final String TRUE = "true";
@@ -79,7 +85,7 @@ public class Global {
 
 	/**
 	 * 获取配置
-	 * 
+	 *
 	 * @see ${fns:getConfig('adminPath')}
 	 */
 	public static String getConfig(String key) {

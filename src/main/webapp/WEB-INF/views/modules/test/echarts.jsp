@@ -5,7 +5,8 @@
     <meta charset="utf-8">
     <title>ECharts</title>
     <!-- 引入 echarts.js -->
-    <link href="${ctxStatic}/bootstrap/bsie/css/bootstrap-ie6.min.css" rel="stylesheet">
+    <link href="${ctxStatic}/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+    <link href="${ctxStatic}/bootstrap/3.3.5/css/bootstrap-theme.css" rel="stylesheet">
     <script src="${ctxStatic}/echarts/echarts.min.js"></script>
 
 </head>
@@ -22,33 +23,60 @@
         width:100%;
         height:auto;
     }
+    .myclore{
+        color: #fff;
+        background-color: #31b0d5;
+        border-color: #269abc;
+    }
+    .mycss{
+        color: #fff;
+        background-color: #31b0d5;
+        border-color: #269abc;
+    }
 </style>
 <body>
 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-<div style="width:1200px;height:100px;" class="ShaShiDi">
-   <%-- <div style="width:650px;height:400px;float:left;" class="ShaShiDi">
-        <button type="button" class="btn btn-info">info</button>
-    </div>--%>
-       <ul class="nav nav-pills" role="tablist">
-           <li role="presentation" class="active"><a href="${ctx}/cms/article/allList">Messages <span class="badge">42</span></a></li>
-           <li role="presentation" class="active"><a href="${ctx}/cms/article/allList">Messages <span class="badge">42</span></a></li>
-           <li role="presentation" class="active"><a href="${ctx}/cms/article/allList">Messages <span class="badge">42</span></a></li>
-       </ul>
-      <%-- <a href="${ctx}/cms/article/allList">
-           <img src="${ctxStatic}/img/button.jpg"  class="img-circle">
-       </a>--%>
+<div style="width:600px;height:100px;" class="ShaShiDi">
+    <div style="width:400px;height:100px;" class="ShaShiDi">
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation"><a class="btn mycss myclore" href="${ctx}/cms/article/allList?init=2">Messages <span class="badge">42</span></a></li>
+        </ul>
+    </div>
+    <div style="width:400px;height:100px;" class="ShaShiDi">
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation"><a class="btn mycss myclore" href="${ctx}/cms/article/allList">Messages <span class="badge">42</span></a></li>
+        </ul>
+    </div>
+    <div style="width:400px;height:100px;" class="ShaShiDi">
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation"><a class="btn mycss myclore" href="${ctx}/cms/article/allList">Messages <span class="badge">42</span></a></li>
+        </ul>
+    </div>
+    <div style="width:400px;height:100px;" class="ShaShiDi">
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation"><a class="btn mycss myclore" href="${ctx}/cms/article/allList">Messages <span class="badge">42</span></a></li>
+        </ul>
+    </div>
+
 
 
 </div>
 <div style="width:500px;height:500px;" />
-<div style="width:1320px;height:400px;">
-<div id="main" style="width: 650px;height:400px;float:left;"></div>
-<div id="main2" style="width: 600px;height:400px;float:right;"></div>
+<div style="width:1150px;height:400px;">
+    <div id="main" style="width: 560px;height:350px;float:left;"></div>
+    <div style="width: 580px;height:350px;float:left;" class="list-group">
+        <a href="#" class="list-group-item myclore">
+            最新文章
+        </a>
+        <c:forEach items="${list}" var="article">
+        <a href="http://www.baidu.com" class="list-group-item" target='_BLANK'>${article.title}<span class="badge"><fmt:formatDate value="${article.updateDate}" type="both"/></span></a>
+        </c:forEach>
+    </div>
 </div>
 <script type="text/javascript">
     // 基于准备好的dom，初始化echarts实例
     var myChart1 = echarts.init(document.getElementById('main'));
-    var myChart2 = echarts.init(document.getElementById('main2'));
+   /* var myChart2 = echarts.init(document.getElementById('main2'));*/
 
     // 指定图表的配置项和数据
     var option1 = {
@@ -57,8 +85,8 @@
             text: "简单线形图表及其配置展示", //正标题
             link: "正标题链接", //正标题链接 点击可在新窗口中打开
             x: "center", //标题水平方向位置
-            subtext: "副标题", //副标题
-            sublink: "副标题链接", //副标题链接
+           // subtext: "副标题", //副标题
+          //  sublink: "副标题链接", //副标题链接
 //正标题样式
             textStyle: {
                 fontSize: 24
@@ -108,11 +136,11 @@
         ],
         //图表Series数据序列配置
         series: [
-            {
+            /*{
                 name: '减少量',
                 type: 'line',
                 data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
-            },
+            },*/
             {
                 name: '增加量',
                 type: 'line',
@@ -121,7 +149,7 @@
         ]
     };
 
-    var option2 = {
+   /* var option2 = {
         backgroundColor: '#2c343c',
         visualMap: {
             show: false,
@@ -167,10 +195,10 @@
                 }
             }
         ]
-    }
+    }*/
     // 使用刚指定的配置项和数据显示图表。
     myChart1.setOption(option1);
-    myChart2.setOption(option2);
+   /* myChart2.setOption(option2);*/
 </script>
 </body>
 </html>

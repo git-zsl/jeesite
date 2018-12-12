@@ -24,7 +24,9 @@
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
 		c.name AS "category.name",
-		u.name AS "user.name"
+		u.name AS "user.name",
+		a.is_top AS "isTop",
+		a.is_recommend AS "isRecommend"
 	</sql>
 	
 	<sql id="cmsArticleJoins">
@@ -75,7 +77,12 @@
 			<if test="createBy != null and createBy.id != null and createBy.id != ''">
 				AND a.create_by  = #{createBy.id}
 			</if>
-			<!-- ${sqlMap.dsf}-->
+			<if test="isRecommend != null and isRecommend != ''">
+				AND a.is_recommend  = #{isRecommend}
+			</if>
+			<if test="isTop != null and isTop != ''">
+				AND a.is_top  = #{isTop}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -155,7 +162,9 @@
 			update_by,
 			update_date,
 			remarks,
-			del_flag
+			del_flag,
+			is_top,
+		    is_recommend
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -176,7 +185,9 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag}
+			#{delFlag},
+			#{is_top},
+		    #{is_recommend}
 		)
 	</insert>
 	
@@ -199,7 +210,9 @@
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks},
-			del_flag = #{delFlag}
+			del_flag = #{delFlag},
+			is_top = #{is_top},
+		    is_recommend = #{is_recommend}
 		WHERE id = #{id}
 	</update>
 	
@@ -224,16 +237,30 @@
 		</where>		
 	</select>
 
+	<select id="findArticles" resultType="Article">
+		SELECT
+			<include refid="cmsArticleColumns"/>
+		from cms_article a
+		<include refid="cmsArticleJoins"/>
+		<where>
+			a.del_flag = '0'
+		</where>
+		ORDER BY a.create_date DESC
+		limit 0,8
+	</select>
+
 	<select id="findByCategoryIdIn" resultType="Article">
 		SELECT
 			<include refid="cmsArticleColumns"/>
 		from cms_article a
 		<include refid="cmsArticleJoins"/>
 		<where>
-			1=1
+			a.del_flag = '0'
+			<if test="list != null">
 				AND a.category_id in
 				<foreach item="item" index="index" collection="list"
 						 open="(" separator="," close=")">#{item}</foreach>
+			</if>
 		</where>
 	</select>
 

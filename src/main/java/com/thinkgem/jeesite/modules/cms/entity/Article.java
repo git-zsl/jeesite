@@ -40,6 +40,8 @@ public class Article extends DataEntity<Article> {
     private String customContentView;	// 自定义内容视图
    	private String viewConfig;	// 视图参数
     private String url;
+    private String isRecommend;  //是否推荐
+    private String isTop;        //是否置顶
 	private ArticleData articleData;	//文章副表
 	
 	private Date beginDate;	// 开始时间
@@ -235,10 +237,6 @@ public class Article extends DataEntity<Article> {
         return CmsUtils.getUrlDynamic(this);
    	}
 
-	/*public String getUrl() {
-		return url;
-	}*/
-
 	public void setUrl(String url) {
 		this.url = url;
 	}
@@ -246,7 +244,23 @@ public class Article extends DataEntity<Article> {
 	public String getImageSrc() {
         return CmsUtils.formatImageSrcToWeb(this.image);
    	}
-	
+
+
+	public String getIsRecommend() {
+		return isRecommend;
+	}
+
+	public void setIsRecommend(String isRecommend) {
+		this.isRecommend = isRecommend;
+	}
+
+	public String getIsTop() {
+		return isTop;
+	}
+
+	public void setIsTop(String isTop) {
+		this.isTop = isTop;
+	}
 }
 
 

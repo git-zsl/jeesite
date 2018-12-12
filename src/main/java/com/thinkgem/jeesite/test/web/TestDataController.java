@@ -6,6 +6,8 @@ package com.thinkgem.jeesite.test.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.cms.entity.Article;
+import com.thinkgem.jeesite.modules.cms.service.ArticleService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,9 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.test.entity.TestData;
 import com.thinkgem.jeesite.test.service.TestDataService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 单表生成Controller
  * @author ThinkGem
@@ -33,7 +38,9 @@ public class TestDataController extends BaseController {
 
 	@Autowired
 	private TestDataService testDataService;
-	
+	@Autowired
+	private ArticleService articleService;
+
 	@ModelAttribute
 	public TestData get(@RequestParam(required=false) String id) {
 		TestData entity = null;
@@ -82,7 +89,9 @@ public class TestDataController extends BaseController {
 
 	@RequiresPermissions("test:testData:view")
 	@RequestMapping(value = "demo")
-	public String demo(TestData testData, RedirectAttributes redirectAttributes) {
+	public String demo(Article article, RedirectAttributes redirectAttributes,Model model) {
+		List<Article> list = articleService.findArticles();
+		model.addAttribute("list",list);
 		return "/modules/test/echarts";
 	}
 

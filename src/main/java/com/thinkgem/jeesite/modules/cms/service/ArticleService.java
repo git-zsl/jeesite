@@ -197,6 +197,10 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 		return dao.findByCategoryIdIn(ids);
 	}
 
+	public List<Article> findArticles(){
+		return dao.findArticles();
+	}
+
 	/**
 	 * 查找拥有当前栏目数据
 	 * @param categoryId

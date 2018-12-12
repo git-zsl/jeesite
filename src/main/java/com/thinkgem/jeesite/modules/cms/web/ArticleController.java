@@ -3,7 +3,9 @@
  */
 package com.thinkgem.jeesite.modules.cms.web;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.modules.crn.entity.UserCategoryNum;
+import com.thinkgem.jeesite.modules.custom.entity.CustomCategory;
+import com.thinkgem.jeesite.modules.custom.service.CustomCategoryService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -55,6 +60,8 @@ public class ArticleController extends BaseController {
     private FileTplService fileTplService;
     @Autowired
     private SiteService siteService;
+    @Autowired
+    private CustomCategoryService customCategoryService;
 
     @ModelAttribute
     public Article get(@RequestParam(required = false) String id) {
@@ -162,12 +169,15 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = "allList")
-    public String allList(Article article, HttpServletRequest request, HttpServletResponse response, Model model) {
+    public String allList(Article article, HttpServletRequest request, HttpServletResponse response, Model model,@RequestParam(value="init",required = false) String init) {
+        if(!StringUtils.isBlank(init)){
+            article.setDelFlag("2");
+        }
         Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
         List<String> titles = articleService.findTitle(article);
         model.addAttribute("titles", titles);
         model.addAttribute("page", page);
-        return "modules/cms/articleList";
+        return "modules/cms/articleAllList";
     }
 
     /**
@@ -176,14 +186,44 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "adsList", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> adsList(Article article,Category category) {
-        List<String> byParentIdNoSite = categoryService.findByParentIdNoSite(Global.getConfig("ads.id"));
-      /*  String[] ids = byParentIdNoSite.toArray(new String[byParentIdNoSite.size()]);*/
-       /* StringBuffer sb = new StringBuffer();
-        for (int i = 0 ; i < ids.length ; i++){
-            sb.append(ids[i]).append(",");
-        }*/
-        List<Article> articles = articleService.findByCategoryIdIn(byParentIdNoSite);
+    public ReturnEntity<List<Article>> adsList(Article article,Category category,HttpServletRequest request) {
+        List<Article> articles = null;
+        try{
+            CustomCategory gg = customCategoryService.findByMark(Global.GG);
+            if(Objects.isNull(gg)){
+                LogUtils.saveLog(request,gg,new Exception(),"没有找到对应的自定义栏目，请配置");
+                return ReturnEntity.success(null,"请先设置自定义栏目标志‘GG’");
+            }
+            List<String> byParentIdNoSite = categoryService.findByParentIdNoSite(gg.getCategoryId());
+            articles = articleService.findByCategoryIdIn(byParentIdNoSite);
+        }catch (Exception e){
+            LogUtils.saveLog(request,articles,e,"没有找到对应的自定义栏目，请配置");
+            return ReturnEntity.fail("系统内部错误成功，请联系管理员");
+        }
+        return ReturnEntity.success(articles, "查询广告成功");
+    }
+
+    /**
+     * 主页阅读场景接口
+     */
+
+    @RequestMapping(value = "readScene", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity<List<Article>> readScene(Article article,Category category,HttpServletRequest request) {
+        List<Article> articles = null;
+        try{
+            CustomCategory gg = customCategoryService.findByMark(Global.YDCJ);
+            if(Objects.isNull(gg)){
+                LogUtils.saveLog(request,gg,new Exception(),"没有找到对应的自定义栏目，请配置");
+                return ReturnEntity.success(null,"请先设置自定义栏目标志‘YDCJ’");
+            }
+            List<String> categoryIds = new ArrayList<>();
+            categoryIds.add(gg.getCategoryId());
+            articles = articleService.findByCategoryIdIn(categoryIds);
+        }catch (Exception e){
+            LogUtils.saveLog(request,articles,e,"没有找到对应的自定义栏目，请配置");
+            return ReturnEntity.fail("系统内部错误，请联系管理员");
+        }
         return ReturnEntity.success(articles, "查询广告成功");
     }
 }
