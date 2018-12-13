@@ -88,7 +88,7 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = "form")
-    public String form(Article article, Model model, RedirectAttributes redirectAttributes) {
+    public String form(Article article, Model model, RedirectAttributes redirectAttributes,@RequestParam(value="all",required = false) String all) {
         // 如果当前传参有子节点，则选择取消传参选择
         if (article.getCategory() != null && StringUtils.isNotBlank(article.getCategory().getId())) {
             List<Category> list = categoryService.findByParentId(article.getCategory().getId(), Site.getCurrentSiteId());
@@ -101,6 +101,7 @@ public class ArticleController extends BaseController {
         }
         article.setArticleData(articleDataService.get(article.getId()));
         model.addAttribute("userId", UserUtils.getUser().getId());
+        model.addAttribute("all", all);
         model.addAttribute("contentViewList", getTplContent());
         model.addAttribute("article_DEFAULT_TEMPLATE", Article.DEFAULT_TEMPLATE);
         model.addAttribute("article", article);
@@ -110,14 +111,18 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:edit")
     @RequestMapping(value = "save")
-    public String save(Article article, Model model, RedirectAttributes redirectAttributes) {
+    public String save(Article article, Model model, RedirectAttributes redirectAttributes,@RequestParam(value="all",required = false) String all) {
+        String path = "";
+        if(!StringUtils.isBlank(all)){
+            path = "allList";
+        }
         if (!beanValidator(model, article)) {
-            return form(article, model, redirectAttributes);
+            return form(article, model, redirectAttributes,all);
         }
         articleService.save(article);
         addMessage(redirectAttributes, "保存文章'" + StringUtils.abbr(article.getTitle(), 50) + "'成功");
         String categoryId = article.getCategory() != null ? article.getCategory().getId() : null;
-        return "redirect:" + adminPath + "/cms/article/?repage&category.id=" + (categoryId != null ? categoryId : "");
+        return "redirect:" + adminPath + "/cms/article/"+ path +"?repage&category.id=" + (categoryId != null ? categoryId : "");
     }
 
     @RequiresPermissions("cms:article:edit")
@@ -130,14 +135,18 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:edit")
     @RequestMapping(value = "delete")
-    public String delete(Article article, String categoryId, @RequestParam(required = false) Boolean isRe, RedirectAttributes redirectAttributes) {
+    public String delete(Article article, String categoryId, @RequestParam(required = false) Boolean isRe, RedirectAttributes redirectAttributes,@RequestParam(value="all",required = false) String all) {
+        String path = "";
+        if(!StringUtils.isBlank(all)){
+            path = "allList";
+        }
         // 如果没有审核权限，则不允许删除或发布。
         if (!UserUtils.getSubject().isPermitted("cms:article:audit")) {
             addMessage(redirectAttributes, "你没有删除或发布权限");
         }
         articleService.delete(article, isRe);
         addMessage(redirectAttributes, (isRe ? "删除" : "发布") + "文章成功");
-        return "redirect:" + adminPath + "/cms/article/?repage&category.id=" + (categoryId != null ? categoryId : "");
+        return "redirect:" + adminPath + "/cms/article/"+ path +"?repage&category.id=" + (categoryId != null ? categoryId : "");
     }
 
     /**

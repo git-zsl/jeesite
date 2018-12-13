@@ -4,6 +4,7 @@
 package com.thinkgem.jeesite.modules.cms.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
@@ -26,6 +27,8 @@ public interface ArticleDao extends CrudDao<Article> {
 	public List<Article> findByCategoryIdIn(List<String> list);
 
 	public List<String> findTitle(Article article);
+
+	public Map<String,Object> findByYearCount();
 
 	public Integer findOwnNum(@Param("categoryId") String categoryId,@Param("createBy") String createBy);
 	//		return find("from Article where id in (:p1)", new Parameter(new Object[]{ids}));

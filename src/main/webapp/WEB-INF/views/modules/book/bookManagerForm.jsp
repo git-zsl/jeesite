@@ -8,13 +8,11 @@
 		$(document).ready(function() {
 		    $("#firstClassificationId").click(function(){
                 var id = $("#firstClassificationId").val();
-                alert("xxxx")
                 var url = "${ctx}/book/bookManager/changeSecondClassification?firstClassId.id="+id;
                 $.ajax({
                     type: "GET",
                     url: url,
                     success: function(result){
-                        debugger
 						document.getElementById("secondClassificationId").options.length=0;
                         $("#s2id_secondClassificationId .select2-chosen").html("");
                         $("#secondClassificationId").append( "<option value=''></option>");
@@ -108,11 +106,12 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">是否推荐：</label>
-			<div class="controls">
-				<form:input path="isRecommend" htmlEscape="false" maxlength="1" class="input-xlarge "/>
-			</div>
+		<label class="control-label">是否推荐:</label>
+		<div class="controls">
+			<form:radiobuttons path="isRecommend" items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+			<span class="help-inline"></span>
 		</div>
+	</div>
 		<div class="control-group">
 			<label class="control-label">发布日期：</label>
 			<div class="controls">

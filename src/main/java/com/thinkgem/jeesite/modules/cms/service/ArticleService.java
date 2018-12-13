@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.cms.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -208,5 +209,14 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 	 */
 	public Integer findOwnNum(String categoryId,String createBy){
 		return dao.findOwnNum(categoryId,createBy);
+	}
+
+	/**
+	 * 统计一年12月份数据
+	 * @param
+	 * @eturn
+	 */
+	public Map<String,Object> findByYearCount(){
+		return dao.findByYearCount();
 	}
 }

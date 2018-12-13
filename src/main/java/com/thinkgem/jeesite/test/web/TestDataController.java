@@ -26,6 +26,7 @@ import com.thinkgem.jeesite.test.service.TestDataService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 单表生成Controller
@@ -90,6 +91,8 @@ public class TestDataController extends BaseController {
 	@RequiresPermissions("test:testData:view")
 	@RequestMapping(value = "demo")
 	public String demo(Article article, RedirectAttributes redirectAttributes,Model model) {
+		//查询一年的文章数量
+		Map<String, Object> byYearCount = articleService.findByYearCount();
 		List<Article> list = articleService.findArticles();
 		model.addAttribute("list",list);
 		return "/modules/test/echarts";
