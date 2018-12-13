@@ -75,11 +75,25 @@ public class BookManagerController extends BaseController {
 		List<Classificationtree> firstClassification = classificationtreeService.findList(tree2);
 		model.addAttribute("firstClassification", firstClassification);
 		//二级分组
-		tree1.setId("-1");
-		List<Classificationtree> secondClassification = classificationtreeService.findList(tree2);
+		List<Classificationtree> secondClassification = null;
+		if(!Objects.isNull(bookManager.getFirstClassId())){
+			 secondClassification = classificationtreeService.findByFirstClassificationId(bookManager.getFirstClassId());
+		}
 		model.addAttribute("secondClassification", secondClassification);
 		model.addAttribute("bookManager", bookManager);
 		return "modules/book/bookManagerForm";
+	}
+
+	@RequestMapping(value = "changeSecondClassification",method = RequestMethod.GET)
+	@ResponseBody
+	public List<Classificationtree> changeSecondClassification(BookManager bookManager, Model model){
+		//二级分组
+		List<Classificationtree> secondClassification = classificationtreeService.findByFirstClassificationId(bookManager.getFirstClassId());
+		if(secondClassification.isEmpty()){
+			return null;
+		}
+
+		return secondClassification;
 	}
 
 	@RequiresPermissions("book:bookManager:edit")
@@ -88,7 +102,7 @@ public class BookManagerController extends BaseController {
 		if (!beanValidator(model, bookManager)){
 			return form(bookManager, model);
 		}
-		if(StringUtils.isBlank(bookManager.getFirstClassId().getId()) || StringUtils.isBlank(bookManager.getSecondClassId().getId())){
+		if(StringUtils.isBlank(bookManager.getFirstClassId().getId())){
 			addMessage(redirectAttributes, "请选择分类");
 			return "redirect:"+Global.getAdminPath()+"/book/bookManager/form";
 		}

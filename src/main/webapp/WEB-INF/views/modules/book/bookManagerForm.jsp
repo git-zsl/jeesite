@@ -6,7 +6,26 @@
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			//$("#name").focus();
+		    $("#firstClassificationId").click(function(){
+                var id = $("#firstClassificationId").val();
+                alert("xxxx")
+                var url = "${ctx}/book/bookManager/changeSecondClassification?firstClassId.id="+id;
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    success: function(result){
+                        debugger
+						document.getElementById("secondClassificationId").options.length=0;
+                        $("#s2id_secondClassificationId .select2-chosen").html("");
+                        $("#secondClassificationId").append( "<option value=''></option>");
+                        $.each(result,function(index,item){
+                            $("#secondClassificationId").append( "<option value='"+item.id+"'>"+item.name+"</option>");
+                        });
+                    }
+                });
+			});
+
+
 			$("#inputForm").validate({
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
@@ -61,7 +80,7 @@
 		<div class="control-group">
 			<label class="control-label">图书类目：</label>
 			<div class="controls">
-				<form:select path="firstClassId" class="input-xlarge ">
+				<form:select id="firstClassificationId" path="firstClassId" class="input-xlarge ">
 					<form:option value="" label=""/>
 					<form:options items="${firstClassification}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select>
@@ -70,7 +89,7 @@
 		<div class="control-group">
 			<label class="control-label">图书分组：</label>
 			<div class="controls">
-				<form:select path="secondClassId" class="input-xlarge ">
+				<form:select id="secondClassificationId" path="secondClassId" class="input-xlarge ">
 					<form:option value="" label=""/>
 					<form:options items="${secondClassification}" itemLabel="name" itemValue="id" htmlEscape="false"/>
 				</form:select>

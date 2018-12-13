@@ -6,6 +6,9 @@ package com.thinkgem.jeesite.modules.classificationtree.dao;
 import com.thinkgem.jeesite.common.persistence.TreeDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.classificationtree.entity.Classificationtree;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 分类DAO接口
@@ -14,5 +17,6 @@ import com.thinkgem.jeesite.modules.classificationtree.entity.Classificationtree
  */
 @MyBatisDao
 public interface ClassificationtreeDao extends TreeDao<Classificationtree> {
-	
+
+	public List<Classificationtree> findByFirstClassificationId(@Param("parentId") String parentId);
 }

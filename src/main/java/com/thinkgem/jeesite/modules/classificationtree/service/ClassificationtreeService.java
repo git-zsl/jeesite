@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.classificationtree.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,11 @@ public class ClassificationtreeService extends TreeService<ClassificationtreeDao
 		}
 		return super.findList(classificationtree);
 	}
-	
+
+	public List<Classificationtree> findByFirstClassificationId(Classificationtree classificationtree) {
+		return dao.findByFirstClassificationId(classificationtree.getId());
+	}
+
 	@Transactional(readOnly = false)
 	public void save(Classificationtree classificationtree) {
 		super.save(classificationtree);
