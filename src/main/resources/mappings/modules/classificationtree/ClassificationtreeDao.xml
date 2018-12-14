@@ -17,6 +17,7 @@
 	</sql>
 	
 	<sql id="classificationtreeJoins">
+
 	</sql>
     
 	<select id="get" resultType="Classificationtree">
@@ -68,6 +69,17 @@
 			</if>
 		</where>
 		ORDER BY a.sort ASC
+	</select>
+
+	<select id="findListCount" resultType="map">
+		select
+			c.id,c.name,count(1) AS count
+		from book_manager a
+		left join classificationtree c on a.second_class_id = c.id
+		<where>
+			a.second_class_id in (select id from classificationtree where parent_id !='0')
+		</where>
+		GROUP BY c.id
 	</select>
 
 

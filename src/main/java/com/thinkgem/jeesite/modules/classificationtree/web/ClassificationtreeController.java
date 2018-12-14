@@ -132,7 +132,18 @@ public class ClassificationtreeController extends BaseController {
 	@ResponseBody
 	public ReturnEntity<List<Classificationtree>> findClassification() {
 		Classificationtree classificationtree = new Classificationtree();
+		List<Map<String, Object>> listCounts = classificationtreeService.findListCount();
 		List<Classificationtree> Classificationtrees = classificationtreeService.findList(classificationtree);
+		for (Classificationtree tree : Classificationtrees) {
+			for (Map<String, Object> map : listCounts) {
+				if(tree.getId().equals(map.get("id"))){
+					tree.setCount(map.get("count")+"");
+					break;
+				}
+				tree.setCount("");
+			}
+
+		}
 		return ReturnEntity.success(Classificationtrees,"查询分组信息成功");
 	}
 }

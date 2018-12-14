@@ -21,6 +21,7 @@ public class Classificationtree extends TreeEntity<Classificationtree> {
 	private String parentIds;		// 父ids
 	private String name;		// 分类名称
 	private Integer sort;		// 排序
+	private String count;       // 数量
 	
 	public Classificationtree() {
 		super();
@@ -68,5 +69,13 @@ public class Classificationtree extends TreeEntity<Classificationtree> {
 	
 	public String getParentId() {
 		return parent != null && parent.getId() != null ? parent.getId() : "0";
+	}
+
+	public String getCount() {
+		return count;
+	}
+
+	public void setCount(String count) {
+		this.count = count;
 	}
 }

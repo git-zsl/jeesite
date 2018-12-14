@@ -9,6 +9,7 @@ import com.thinkgem.jeesite.modules.classificationtree.entity.Classificationtree
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 分类DAO接口
@@ -19,4 +20,6 @@ import java.util.List;
 public interface ClassificationtreeDao extends TreeDao<Classificationtree> {
 
 	public List<Classificationtree> findByFirstClassificationId(@Param("parentId") String parentId);
+
+	public List<Map<String,Object>> findListCount();
 }
