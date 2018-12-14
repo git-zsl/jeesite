@@ -216,7 +216,7 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 	 * @param
 	 * @eturn
 	 */
-	public Map<String,Object> findByYearCount(){
+	public List<Map<String,Object>> findByYearCount(){
 		return dao.findByYearCount();
 	}
 }

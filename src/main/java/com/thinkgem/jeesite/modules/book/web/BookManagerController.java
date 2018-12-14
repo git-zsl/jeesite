@@ -159,6 +159,10 @@ public class BookManagerController extends BaseController {
 			}else{
 				bookManager.setSecondClassId(Classification);
 			}
+			if(!StringUtils.isBlank(map.get("isRecommend"))){
+				bookManager.setIsRecommend(map.get("isRecommend"));
+				return ReturnEntity.success(bookManagerService.findList(bookManager),"查询同类好书列表成功");
+			}
 		}
 		Page<BookManager> page = bookManagerService.findPage(page1, bookManager);
 		return ReturnEntity.success(page,"查询书籍列表成功");

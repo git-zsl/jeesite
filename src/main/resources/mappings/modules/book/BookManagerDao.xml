@@ -80,12 +80,15 @@
 			<if test="secondClassId != null and secondClassId.id != null and secondClassId.id != ''">
 				AND a.second_class_id = #{secondClassId.id}
 			</if>
+			<if test="isRecommend != null and isRecommend != ''">
+				AND a.is_recommend = #{isRecommend}
+			</if>
 		</where>
 		<choose>
-			<when test="softType !=null and softType != ''">
+			<when test="softType != null and softType != ''">
 				ORDER BY ${softType} DESC
 			</when>
-			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+			<when test="page != null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
