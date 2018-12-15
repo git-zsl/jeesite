@@ -60,7 +60,11 @@ public class Article extends DataEntity<Article> {
 		this();
 		this.id = id;
 	}
-	
+	public Article(String id,String title){
+		this();
+		this.title = title;
+	}
+
 	public Article(Category category){
 		this();
 		this.category = category;

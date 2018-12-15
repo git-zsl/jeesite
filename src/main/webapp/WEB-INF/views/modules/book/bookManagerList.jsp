@@ -19,6 +19,7 @@
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/book/bookManager/">书籍列表</a></li>
 		<shiro:hasPermission name="book:bookManager:edit"><li><a href="${ctx}/book/bookManager/form">书籍添加</a></li></shiro:hasPermission>
+		<shiro:hasPermission name="classificationtree:classificationtree:view"><li><a href="${ctx}/classificationtree/classificationtree">分类管理</a></li></shiro:hasPermission>
 	</ul>
 	<form:form id="searchForm" modelAttribute="bookManager" action="${ctx}/book/bookManager/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>

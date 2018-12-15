@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.cms.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public interface ArticleDao extends CrudDao<Article> {
 
 	public List<String> findTitle(Article article);
 
-	public List<Map<String,Object>> findByYearCount();
+	public HashMap<String,Object> findByYearCount();
 
 	public Integer findOwnNum(@Param("categoryId") String categoryId,@Param("createBy") String createBy);
 	//		return find("from Article where id in (:p1)", new Parameter(new Object[]{ids}));

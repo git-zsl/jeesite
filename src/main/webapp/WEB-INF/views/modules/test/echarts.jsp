@@ -36,27 +36,27 @@
 </style>
 <body>
 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-<div style="width:600px;height:100px;" class="ShaShiDi">
-    <div style="width:400px;height:100px;" class="ShaShiDi">
+<div style="width:200px;height:100px;" class="ShaShiDi">
+    <div style="width:400px;height:100px;float:left;" class="ShaShiDi">
         <ul class="nav nav-pills" role="tablist">
-            <li role="presentation"><a class="btn mycss myclore" href="${ctx}/cms/article/allList?init=2">Messages <span class="badge">42</span></a></li>
+            <li role="presentation"><a class="btn mycss myclore" href="${ctx}/cms/article/allList?init=2">待审核文章<span class="badge">${articleNum}</span></a></li>
+        </ul>
+    </div>
+   <%-- <div style="width:400px;height:100px;" class="ShaShiDi">
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation"><a class="btn mycss myclore" href="#">待审核文章 <span class="badge">42</span></a></li>
         </ul>
     </div>
     <div style="width:400px;height:100px;" class="ShaShiDi">
         <ul class="nav nav-pills" role="tablist">
-            <li role="presentation"><a class="btn mycss myclore" href="${ctx}/cms/article/allList">Messages <span class="badge">42</span></a></li>
+            <li role="presentation"><a class="btn mycss myclore" href="#">待审核文章 <span class="badge">42</span></a></li>
         </ul>
     </div>
     <div style="width:400px;height:100px;" class="ShaShiDi">
         <ul class="nav nav-pills" role="tablist">
-            <li role="presentation"><a class="btn mycss myclore" href="${ctx}/cms/article/allList">Messages <span class="badge">42</span></a></li>
+            <li role="presentation"><a class="btn mycss myclore" href="#">待审核文章 <span class="badge">42</span></a></li>
         </ul>
-    </div>
-    <div style="width:400px;height:100px;" class="ShaShiDi">
-        <ul class="nav nav-pills" role="tablist">
-            <li role="presentation"><a class="btn mycss myclore" href="${ctx}/cms/article/allList">Messages <span class="badge">42</span></a></li>
-        </ul>
-    </div>
+    </div>--%>
 
 
 
@@ -82,7 +82,7 @@
     var option1 = {
         //图表标题
         title: {
-            text: "简单线形图表及其配置展示", //正标题
+            text: "年度文章数量统计", //正标题
             link: "正标题链接", //正标题链接 点击可在新窗口中打开
             x: "center", //标题水平方向位置
            // subtext: "副标题", //副标题
@@ -144,7 +144,7 @@
             {
                 name: '增加量',
                 type: 'line',
-                data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+                data: ${data}
             }
         ]
     };

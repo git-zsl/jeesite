@@ -116,13 +116,19 @@ public class ArticleController extends BaseController {
         if(!StringUtils.isBlank(all)){
             path = "allList";
         }
+        if(StringUtils.isBlank(article.getIsTop())){
+            article.setIsTop(Global.NO);
+        }
+        if(StringUtils.isBlank(article.getIsRecommend())){
+            article.setIsRecommend(Global.NO);
+        }
         if (!beanValidator(model, article)) {
             return form(article, model, redirectAttributes,all);
         }
         articleService.save(article);
         addMessage(redirectAttributes, "保存文章'" + StringUtils.abbr(article.getTitle(), 50) + "'成功");
         String categoryId = article.getCategory() != null ? article.getCategory().getId() : null;
-        return "redirect:" + adminPath + "/cms/article/"+ path +"?repage&category.id=" + (categoryId != null ? categoryId : "");
+        return "redirect:" + adminPath + "/cms/article/"+ path +"?repage&delFlag=2&category.id=" + (categoryId != null ? categoryId : "");
     }
 
     @RequiresPermissions("cms:article:edit")
@@ -181,7 +187,7 @@ public class ArticleController extends BaseController {
     public String allList(Article article, HttpServletRequest request, HttpServletResponse response, Model model,@RequestParam(value="init",required = false) String init) {
         if(!StringUtils.isBlank(init)){
             article.setDelFlag("2");
-        }
+    }
         Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
         List<String> titles = articleService.findTitle(article);
         model.addAttribute("titles", titles);

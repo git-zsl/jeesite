@@ -175,6 +175,12 @@
 			</div>
 		</div>
 	<%--	<div class="control-group">
+			<label class="control-label">是否置顶:</label>
+			<div class="controls">
+				<form:input path="isTop" htmlEscape="false" maxlength="200" class="input-mini required digits"/>&nbsp;
+			</div>
+		</div>--%>
+	<%--	<div class="control-group">
 			<label class="control-label">推荐位:</label>
 			<div class="controls">
 				<form:checkboxes path="posidList" items="${fns:getDictList('cms_posid')}" itemLabel="label" itemValue="value" htmlEscape="false"/>

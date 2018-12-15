@@ -92,7 +92,7 @@ public class TestDataController extends BaseController {
 	@RequestMapping(value = "demo")
 	public String demo(Article article, RedirectAttributes redirectAttributes,Model model) {
 		//查询一年的文章数量
-		List<Map<String,Object>> byYearCount = articleService.findByYearCount();
+		Map<String,Object> byYearCount = articleService.findByYearCount();
 		List<Article> list = articleService.findArticles();
 		model.addAttribute("list",list);
 		return "/modules/test/echarts";

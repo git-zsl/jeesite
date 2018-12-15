@@ -3,10 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.cms.service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -216,7 +213,7 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 	 * @param
 	 * @eturn
 	 */
-	public List<Map<String,Object>> findByYearCount(){
+	public HashMap<String,Object> findByYearCount(){
 		return dao.findByYearCount();
 	}
 }

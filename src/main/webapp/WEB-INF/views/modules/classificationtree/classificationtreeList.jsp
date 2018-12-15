@@ -43,6 +43,7 @@
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/classificationtree/classificationtree/">分类列表</a></li>
 		<shiro:hasPermission name="classificationtree:classificationtree:edit"><li><a href="${ctx}/classificationtree/classificationtree/form">分类添加</a></li></shiro:hasPermission>
+		<shiro:hasPermission name="book:bookManager:edit"><li><a href="${ctx}/book/bookManager/">书籍列表</a></li></shiro:hasPermission>
 	</ul>
 	<form:form id="searchForm" modelAttribute="classificationtree" action="${ctx}/classificationtree/classificationtree/" method="post" class="breadcrumb form-search">
 		<ul class="ul-form">
