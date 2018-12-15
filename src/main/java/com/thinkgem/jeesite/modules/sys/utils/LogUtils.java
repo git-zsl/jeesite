@@ -9,7 +9,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.method.HandlerMethod;
 
 import com.google.common.collect.Lists;
@@ -36,12 +40,19 @@ public class LogUtils {
 	
 	private static LogDao logDao = SpringContextHolder.getBean(LogDao.class);
 	private static MenuDao menuDao = SpringContextHolder.getBean(MenuDao.class);
+
 	
 	/**
 	 * 保存日志
 	 */
 	public static void saveLog(HttpServletRequest request, String title){
 		saveLog(request, null, null, title);
+	}
+	/**
+	 * log.info日志
+	 */
+	public static Logger getLogInfo(Class t){
+		return LoggerFactory.getLogger(t);
 	}
 	
 	/**

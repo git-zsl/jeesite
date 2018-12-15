@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.modules.book.entity.BookManager;
+import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import org.apache.fop.util.LogUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -174,19 +176,27 @@ public class CategoryController extends BaseController {
 	@RequestMapping(value = "navigationBar",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity<List<Category>> navigationBar(Category category) {
-		category.setIsShowHome(Global.NO);
-		List<Category> categorys = categoryService.findNavigationBar(category);
-		List<Category> parentList = new ArrayList<>();
-		for (Category c : categorys) {
-			for (Category cc: categorys) {
-				if(!Global.NO.equals(cc.getParent().getId()) && c.getId().equals(cc.getParent().getId())){
-					c.getChildList().add(cc);
-				}
-			}
-			if(Global.NO.equals(c.getParent().getId())){
-				parentList.add(c);
-			}
-		}
+        List<Category> parentList = new ArrayList<>();
+	    try{
+            category.setIsShowHome(Global.NO);
+            List<Category> categorys = categoryService.findNavigationBar(category);
+            if(categorys.isEmpty()){
+                throw new RuntimeException("查询categorys为空");
+            }
+            for (Category c : categorys) {
+                for (Category cc: categorys) {
+                    if(!Global.NO.equals(cc.getParent().getId()) && c.getId().equals(cc.getParent().getId())){
+                        c.getChildList().add(cc);
+                    }
+                }
+                if(Global.NO.equals(c.getParent().getId())){
+                    parentList.add(c);
+                }
+            }
+        }catch(Exception e){
+            LogUtils.getLogInfo(CategoryController.class).info("系统出错",e);
+            return ReturnEntity.fail("系统出错，请联系管理员");
+        }
 		return ReturnEntity.success(parentList,"查询导航栏成功");
 	}
 }
