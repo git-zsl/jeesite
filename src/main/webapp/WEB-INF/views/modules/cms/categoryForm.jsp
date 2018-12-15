@@ -44,7 +44,7 @@
 			<label class="control-label">上级栏目:</label>
 			<div class="controls">
                 <sys:treeselect id="category" name="parent.id" value="${category.parent.id}" labelName="parent.name" labelValue="${category.parent.name}"
-					title="栏目" url="/cms/category/treeData" extId="${category.id}" cssClass="required"/>
+					title="栏目" url="/cms/category/treeData" extId="${category.id}"/>
 			</div>
 		</div>
 		<div class="control-group">

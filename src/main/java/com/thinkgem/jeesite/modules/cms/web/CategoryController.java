@@ -3,8 +3,10 @@
  */
 package com.thinkgem.jeesite.modules.cms.web;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -62,7 +64,7 @@ public class CategoryController extends BaseController {
 	public String list(Model model) {
 		List<Category> list = Lists.newArrayList();
 		List<Category> sourcelist = categoryService.findByUser(true, null);
-		Category.sortList(list, sourcelist, "1");
+		Category.sortList(list, sourcelist, Global.NO);
         model.addAttribute("list", list);
 		return "modules/cms/categoryList";
 	}
@@ -71,9 +73,13 @@ public class CategoryController extends BaseController {
 	@RequestMapping(value = "form")
 	public String form(Category category, Model model) {
 		if (category.getParent()==null||category.getParent().getId()==null){
-			category.setParent(new Category("1"));
+			category.setParent(new Category(Global.YES));
 		}
 		Category parent = categoryService.get(category.getParent().getId());
+		if(Objects.isNull(parent)){
+			parent = new Category(Global.NO);
+			parent.setOffice(UserUtils.getUser().getOffice());
+		}
 		category.setParent(parent);
 		if (category.getOffice()==null||category.getOffice().getId()==null){
 			category.setOffice(parent.getOffice());
@@ -170,6 +176,17 @@ public class CategoryController extends BaseController {
 	public ReturnEntity<List<Category>> navigationBar(Category category) {
 		category.setIsShowHome(Global.NO);
 		List<Category> categorys = categoryService.findNavigationBar(category);
-		return ReturnEntity.success(categorys,"查询导航栏成功");
+		List<Category> parentList = new ArrayList<>();
+		for (Category c : categorys) {
+			for (Category cc: categorys) {
+				if(!Global.NO.equals(cc.getParent().getId()) && c.getId().equals(cc.getParent().getId())){
+					c.getChildList().add(cc);
+				}
+			}
+			if(Global.NO.equals(c.getParent().getId())){
+				parentList.add(c);
+			}
+		}
+		return ReturnEntity.success(parentList,"查询导航栏成功");
 	}
 }
