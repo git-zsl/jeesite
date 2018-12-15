@@ -27,6 +27,7 @@
 <body>
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/cms/article/allList?category.id=${article.category.id}">列表</a></li>
+		<shiro:hasPermission name="classificationtree:classificationtree:view"><li><a href="${ctx}/classificationtree/classificationtree">分类管理</a></li></shiro:hasPermission>
 	</ul>
 	<form:form id="searchForm" modelAttribute="article" action="${ctx}/cms/article/allList" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
