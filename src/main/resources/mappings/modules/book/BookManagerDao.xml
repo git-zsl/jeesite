@@ -80,7 +80,7 @@
 			<if test="secondClassId != null and secondClassId.id != null and secondClassId.id != ''">
 				AND a.second_class_id = #{secondClassId.id}
 			</if>
-			<if test="isRecommend != null and isRecommend != ''">
+			<if test="isRecommend != null and isRecommend = '1'">
 				AND a.is_recommend = #{isRecommend}
 			</if>
 		</where>

@@ -241,4 +241,26 @@ public class ArticleController extends BaseController {
         }
         return ReturnEntity.success(articles, "查询广告成功");
     }
+
+    /**
+     * 获取全局文章内容接口
+     * param category.id （不必须）
+     */
+
+    @RequestMapping(value = "getAllArticle", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article,HttpServletRequest request,HttpServletResponse response){
+        try{
+            if(Global.YES.equals(article.getHits()+"")){
+                List<Article> list = articleService.findList(article);
+                return ReturnEntity.success(list,"获取阅读场景列表成功");
+            }else{
+                Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
+                return ReturnEntity.success(page,"获取数据成功");
+            }
+        }catch (Exception e){
+            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错",e);
+            return ReturnEntity.fail("程序内部出错");
+        }
+    }
 }

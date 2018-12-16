@@ -46,6 +46,7 @@ public class BookManager extends DataEntity<BookManager> {
 
 	
 	public BookManager() {
+		this.isRecommend = "0";
 		this.praiseNum = 0;		// 点赞数
 		this.collectNum = 0;		//收藏数
 		this.hits = 0;	   // 推荐数
@@ -55,6 +56,7 @@ public class BookManager extends DataEntity<BookManager> {
 
 	public BookManager(String id){
 		super(id);
+		this.isRecommend = "0";
 		this.praiseNum = 0;		// 点赞数
 		this.collectNum = 0;		//收藏数
 		this.hits = 0;	   // 推荐数

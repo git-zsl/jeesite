@@ -168,7 +168,7 @@
 				<form:input path="particulars" htmlEscape="false" maxlength="2000" class="input-xlarge "/>
 			</div>
 		</div>
-		<div class="control-group">
+<%--		<div class="control-group">
 			<label class="control-label">点赞数：</label>
 			<div class="controls">
 				<form:input path="praiseNum" htmlEscape="false" maxlength="255" class="input-xlarge "/>
@@ -191,7 +191,7 @@
 			<div class="controls">
 				<form:input path="hits" htmlEscape="false" maxlength="255" class="input-xlarge "/>
 			</div>
-		</div>
+		</div>--%>
 		<div class="form-actions">
 			<shiro:hasPermission name="book:bookManager:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>

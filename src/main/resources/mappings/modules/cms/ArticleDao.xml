@@ -86,6 +86,9 @@
             </if>
         </where>
         <choose>
+            <when test="hits != null and hits != ''">
+                ORDER BY a.hits DESC,a.update_date DESC
+            </when>
             <when test="page !=null and page.orderBy != null and page.orderBy != ''">
                 ORDER BY ${page.orderBy}
             </when>

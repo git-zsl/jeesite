@@ -150,6 +150,9 @@ public class BookManagerController extends BaseController {
 			book.setImagUrl(strs);
 			List<BookManager> books = new ArrayList<BookManager>();
 			books.add(book);
+			Integer hits = book.getHits();
+			book.setHits(++hits);
+			bookManagerService.save(book);
 			return ReturnEntity.success(books,"查询对应书籍成功");
 		}
 		if(!StringUtils.isBlank(map.get("parentId")) && !StringUtils.isBlank(map.get("id"))){
@@ -160,12 +163,19 @@ public class BookManagerController extends BaseController {
 				bookManager.setSecondClassId(Classification);
 			}
 			if(!StringUtils.isBlank(map.get("isRecommend"))){
-				bookManager.setIsRecommend(map.get("isRecommend"));
-				return ReturnEntity.success(bookManagerService.findList(bookManager),"查询同类好书列表成功");
+				if(!StringUtils.isBlank(map.get("getPage"))){
+					bookManager.setIsRecommend(map.get("isRecommend"));
+					return ReturnEntity.success(bookManagerService.findPage(page1, bookManager),"查询书籍列表成功");
+				}else{
+					bookManager.setIsRecommend(map.get("isRecommend"));
+					return ReturnEntity.success(bookManagerService.findList(bookManager),"查询同类好书列表成功");
+				}
 			}
+		}
+		if(!StringUtils.isBlank(map.get("isRecommend"))) {
+			bookManager.setIsRecommend(map.get("isRecommend"));
 		}
 		Page<BookManager> page = bookManagerService.findPage(page1, bookManager);
 		return ReturnEntity.success(page,"查询书籍列表成功");
 	}
-
 }
