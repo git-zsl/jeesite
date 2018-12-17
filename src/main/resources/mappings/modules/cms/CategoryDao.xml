@@ -50,7 +50,8 @@
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
-		a.is_show_home AS "isShowHome"
+		a.is_show_home AS "isShowHome",
+		a.subscriber AS "subscriber"
 	</sql>
 	
 	<sql id="cmsCategoryDaoJoins">
@@ -90,7 +91,8 @@
 			a.remarks AS "remarks",
 			a.del_flag AS "delFlag",
 			o.name AS "office.name",
-			a.is_show_home AS "isShowHome"
+			a.is_show_home AS "isShowHome",
+			a.subscriber AS "subscriber"
 		FROM cms_category a
 		JOIN sys_office o ON o.id = a.office_id
 		JOIN sys_user u ON u.id = a.create_by
@@ -183,7 +185,8 @@
 			update_date,
 			remarks,
 			del_flag,
-			is_show_home
+			is_show_home,
+			subscriber
 		) VALUES (
 			#{id},
 			#{parent.id},
@@ -212,13 +215,13 @@
 			#{updateDate},
 			#{remarks},
 			#{delFlag},
-			#{isShowHome}
+			#{isShowHome},
+			#{subscriber}
 		)
 	</insert>
 	
 	<update id="update">
 		UPDATE cms_category SET 	
-			
 			parent_id = #{parent.id},
 			parent_ids = #{parentIds},
 			site_id = #{site.id},
@@ -243,7 +246,8 @@
 			update_date = #{updateDate},
 			remarks = #{remarks},
 			del_flag = #{delFlag},
-			is_show_home = #{isShowHome}
+			is_show_home = #{isShowHome},
+			subscriber = #{subscriber}
 		WHERE id = #{id}
 	</update>
 	
@@ -314,11 +318,17 @@
 			<if test="isShowHome != null and isShowHome != ''">
 				AND a.is_show_home = #{isShowHome}
 			</if>
+			<if test=" id != null and id != ''">
+				AND a.parent_id = #{id}
+			</if>
 		</where>
 		<choose>
-			<when test="sort != null and sort !=''">
-				ORDER BY a.sort DESC
+			<when test="subscriber ='0'">
+				ORDER BY a.subscriber DESC
 			</when>
+			<otherwise>
+				ORDER BY a.sort DESC
+			</otherwise>
 		</choose>
 	</select>
 	<select id="findByParentIdsLike" resultType="Category">

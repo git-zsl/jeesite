@@ -171,7 +171,7 @@ public class CategoryController extends BaseController {
    	}
 
 	/**
-	 * 主页导航栏接口
+	 * 主页导航栏接口/(获取子栏目列表)
 	 */
 	@RequestMapping(value = "navigationBar",method = RequestMethod.POST)
 	@ResponseBody
@@ -180,6 +180,12 @@ public class CategoryController extends BaseController {
 	    try{
             category.setIsShowHome(Global.NO);
             List<Category> categorys = categoryService.findNavigationBar(category);
+			if(!StringUtils.isBlank(category.getId())){
+				return ReturnEntity.success(categorys,"查询子栏目成功");
+			}
+			if(category.getSubscriber() != 0){
+				return ReturnEntity.success(categorys,"查询热门栏目成功");
+			}
             if(categorys.isEmpty()){
                 throw new RuntimeException("查询categorys为空");
             }
@@ -199,4 +205,5 @@ public class CategoryController extends BaseController {
         }
 		return ReturnEntity.success(parentList,"查询导航栏成功");
 	}
+
 }

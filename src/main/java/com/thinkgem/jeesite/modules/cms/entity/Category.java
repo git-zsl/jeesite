@@ -50,11 +50,13 @@ public class Category extends TreeEntity<Category> {
     private Date endDate;	// 结束时间
     private String cnt;//信息量
     private String hits;//点击量
+	private Integer subscriber ;   //订阅量
 	
 	private List<Category> childList = Lists.newArrayList(); 	// 拥有子分类列表
 
 	public Category(){
 		super();
+		this.subscriber = 0;
 		this.module = "";
 		this.sort = 30;
 		this.inMenu = Global.HIDE;
@@ -336,4 +338,12 @@ public class Category extends TreeEntity<Category> {
    	public String getUrl() {
         return CmsUtils.getUrlDynamic(this);
    	}
+
+	public Integer getSubscriber() {
+		return subscriber;
+	}
+
+	public void setSubscriber(Integer subscriber) {
+		this.subscriber = subscriber;
+	}
 }
