@@ -26,7 +26,8 @@
 		c.name AS "category.name",
 		u.name AS "user.name",
 		a.is_top AS "isTop",
-		a.is_recommend AS "isRecommend"
+		a.is_recommend AS "isRecommend",
+		a.author AS "author"
 	</sql>
 
     <sql id="cmsArticleJoins">
@@ -131,6 +132,16 @@
         ORDER BY a.create_date desc
     </select>
 
+    <select id="findHostAuthors" resultType="String">
+        select a.author
+        from cms_article a
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+        </where>
+        GROUP BY a.author
+        ORDER BY a.hits desc
+    </select>
+
     <select id="findOwnNum" resultType="Integer">
         select count(id)
         from cms_article a
@@ -168,7 +179,8 @@
 			remarks,
 			del_flag,
 			is_top,
-		    is_recommend
+		    is_recommend,
+		    author
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -191,7 +203,8 @@
 			#{remarks},
 			#{delFlag},
 			#{isTop},
-		    #{isRecommend}
+		    #{isRecommend},
+		    #{author}
 		)
 	</insert>
 
@@ -216,7 +229,8 @@
 			remarks = #{remarks},
 			del_flag = #{delFlag},
 			is_top = #{isTop},
-		    is_recommend = #{isRecommend}
+		    is_recommend = #{isRecommend},
+		    author = #{author}
 		WHERE id = #{id}
 	</update>
 

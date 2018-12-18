@@ -43,7 +43,7 @@ public class Article extends DataEntity<Article> {
     private String isRecommend;  //是否推荐
     private String isTop;        //是否置顶
 	private ArticleData articleData;	//文章副表
-	
+	private String author;            //作者
 	private Date beginDate;	// 开始时间
 	private Date endDate;	// 结束时间
 	
@@ -264,6 +264,14 @@ public class Article extends DataEntity<Article> {
 
 	public void setIsTop(String isTop) {
 		this.isTop = isTop;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
 	}
 }
 

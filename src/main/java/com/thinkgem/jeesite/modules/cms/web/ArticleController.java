@@ -263,4 +263,22 @@ public class ArticleController extends BaseController {
             return ReturnEntity.fail("程序内部出错");
         }
     }
+
+
+    /**
+     * 获取热门作者接口
+     * param c
+     */
+
+    @RequestMapping(value = "getHostAuthor", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity<List<String>> getHostAuthor(@ModelAttribute Article article,HttpServletRequest request,HttpServletResponse response){
+        try{
+                List<String> list = articleService.findHostAuthors(article);
+                return ReturnEntity.success(list,"获取热门作者列表成功");
+        }catch (Exception e){
+            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错",e);
+            return ReturnEntity.fail("程序内部出错");
+        }
+    }
 }

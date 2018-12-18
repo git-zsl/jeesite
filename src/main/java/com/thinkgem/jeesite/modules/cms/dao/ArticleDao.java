@@ -29,6 +29,8 @@ public interface ArticleDao extends CrudDao<Article> {
 
 	public List<String> findTitle(Article article);
 
+	public List<String> findHostAuthors(Article article);
+
 	public HashMap<String,Object> findByYearCount();
 
 	public Integer findOwnNum(@Param("categoryId") String categoryId,@Param("createBy") String createBy);

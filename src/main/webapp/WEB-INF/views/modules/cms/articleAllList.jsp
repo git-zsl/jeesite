@@ -56,12 +56,13 @@
 	</form:form>
 	<sys:message content="${message}"/>
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
-		<thead><tr><th>栏目</th><th>标题</th><th>权重</th><th>点击数</th><th>发布者</th><th>更新时间</th><th>审核人</th><th>操作</th></tr></thead>
+		<thead><tr><th>栏目</th><th>标题</th><th>作者</th><th>权重</th><th>点击数</th><th>发布者</th><th>更新时间</th><th>审核人</th><th>操作</th></tr></thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="article">
 			<tr>
 				<td><a href="javascript:" onclick="$('#categoryId').val('${article.category.id}');$('#categoryName').val('${article.category.name}');$('#searchForm').submit();return false;">${article.category.name}</a></td>
 				<td><a href="${ctx}/cms/article/form?id=${article.id}" title="${article.title}">${fns:abbr(article.title,40)}</a></td>
+				<td>${author}</td>
 				<td>${article.weight}</td>
 				<td>${article.hits}</td>
 				<td>${article.user.name}</td>

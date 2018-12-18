@@ -67,6 +67,12 @@
 				</form:select>--%>
 			</div>
 		</div>
+		<div class="control-group">
+			<label class="control-label">作者:</label>
+			<div class="controls">
+				<form:input path="author" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
         <div id="linkBody" class="control-group" style="display:none">
             <label class="control-label">外部链接:</label>
             <div class="controls">

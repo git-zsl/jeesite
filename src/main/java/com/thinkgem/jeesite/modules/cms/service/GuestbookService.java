@@ -13,8 +13,8 @@ import com.thinkgem.jeesite.modules.cms.entity.Guestbook;
 
 /**
  * 留言Service
- * @author ThinkGem
- * @version 2013-01-15
+ * @author zsl
+ * @version
  */
 @Service
 @Transactional(readOnly = true)

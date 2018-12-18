@@ -27,8 +27,8 @@ import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 文章Service
- * @author ThinkGem
- * @version 2013-05-15
+ * @author zsl
+ * @version
  */
 @Service
 @Transactional(readOnly = true)
@@ -189,6 +189,10 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 	 */
 	public List<String> findTitle(Article article){
 		return dao.findTitle(article);
+	}
+
+	public List<String> findHostAuthors(Article article){
+		return dao.findHostAuthors(article);
 	}
 
 	public List<Article> findByCategoryIdIn(List<String> ids){
