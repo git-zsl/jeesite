@@ -46,7 +46,14 @@ public class Article extends DataEntity<Article> {
 	private String author;            //作者
 	private Date beginDate;	// 开始时间
 	private Date endDate;	// 结束时间
-	
+	private String company;   // 公司
+	private String phone;     //电话
+	private String area;      //地区
+	private String pay;       //薪资
+	private String education;    //学历
+	private String experience;    // 经验
+	private String posts;    // 岗位id
+
 	private User user;
     
 	public Article() {
@@ -272,6 +279,62 @@ public class Article extends DataEntity<Article> {
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	public String getCompany() {
+		return company;
+	}
+
+	public void setCompany(String company) {
+		this.company = company;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getArea() {
+		return area;
+	}
+
+	public void setArea(String area) {
+		this.area = area;
+	}
+
+	public String getPay() {
+		return pay;
+	}
+
+	public void setPay(String pay) {
+		this.pay = pay;
+	}
+
+	public String getEducation() {
+		return education;
+	}
+
+	public void setEducation(String education) {
+		this.education = education;
+	}
+
+	public String getExperience() {
+		return experience;
+	}
+
+	public void setExperience(String experience) {
+		this.experience = experience;
+	}
+
+	public String getPosts() {
+		return posts;
+	}
+
+	public void setPosts(String posts) {
+		this.posts = posts;
 	}
 }
 

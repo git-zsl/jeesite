@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.posts.dao.CmsPostsDao">
+    
+	<sql id="cmsPostsColumns">
+		a.id AS "id",
+		a.posts AS "posts"
+	</sql>
+	
+	<sql id="cmsPostsJoins">
+	</sql>
+    
+	<select id="get" resultType="CmsPosts">
+		SELECT 
+			<include refid="cmsPostsColumns"/>
+		FROM cms_posts a
+		<include refid="cmsPostsJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CmsPosts">
+		SELECT 
+			<include refid="cmsPostsColumns"/>
+		FROM cms_posts a
+		<include refid="cmsPostsJoins"/>
+		<where>
+			
+			<if test="posts != null and posts != ''">
+				AND a.posts = #{posts}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findPosts" resultType="CmsPosts">
+		SELECT
+		<include refid="cmsPostsColumns"/>
+		FROM cms_posts a
+		<include refid="cmsPostsJoins"/>
+		<!--<where>
+
+			<if test="posts != null and posts != ''">
+				AND a.posts = #{posts}
+			</if>
+		</where>-->
+				ORDER BY a.posts
+	</select>
+
+	<select id="findAllList" resultType="CmsPosts">
+		SELECT 
+			<include refid="cmsPostsColumns"/>
+		FROM cms_posts a
+		<include refid="cmsPostsJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO cms_posts(
+			id,
+			posts
+		) VALUES (
+			#{id},
+			#{posts}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cms_posts SET 	
+			posts = #{posts}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM cms_posts
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

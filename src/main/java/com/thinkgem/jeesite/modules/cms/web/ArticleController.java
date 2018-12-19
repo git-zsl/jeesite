@@ -12,9 +12,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.modules.cms.utils.TxtReadUtil;
 import com.thinkgem.jeesite.modules.crn.entity.UserCategoryNum;
 import com.thinkgem.jeesite.modules.custom.entity.CustomCategory;
 import com.thinkgem.jeesite.modules.custom.service.CustomCategoryService;
+import com.thinkgem.jeesite.modules.posts.entity.CmsPosts;
+import com.thinkgem.jeesite.modules.posts.service.CmsPostsService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -62,6 +65,8 @@ public class ArticleController extends BaseController {
     private SiteService siteService;
     @Autowired
     private CustomCategoryService customCategoryService;
+    @Autowired
+    private CmsPostsService cmsPostsService;
 
     @ModelAttribute
     public Article get(@RequestParam(required = false) String id) {
@@ -88,47 +93,70 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = "form")
-    public String form(Article article, Model model, RedirectAttributes redirectAttributes,@RequestParam(value="all",required = false) String all) {
-        // 如果当前传参有子节点，则选择取消传参选择
-        if (article.getCategory() != null && StringUtils.isNotBlank(article.getCategory().getId())) {
-            List<Category> list = categoryService.findByParentId(article.getCategory().getId(), Site.getCurrentSiteId());
-            if (list.size() > 0) {
-                article.setCategory(null);
-                return "modules/cms/articleForm";
-            } else {
-                article.setCategory(categoryService.get(article.getCategory().getId()));
+    public String form(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all) {
+        try {
+            model.addAttribute("postsList", cmsPostsService.findPosts(new CmsPosts()));
+            // 如果当前传参有子节点，则选择取消传参选择
+            if (article.getCategory() != null && StringUtils.isNotBlank(article.getCategory().getId())) {
+                List<Category> list = categoryService.findByParentId(article.getCategory().getId(), Site.getCurrentSiteId());
+                if (list.size() > 0) {
+                    /*article.setCategory(null);*/
+                    article.setArticleData(articleDataService.get(article.getId()));
+                    model.addAttribute("userId", UserUtils.getUser().getId());
+                    model.addAttribute("all", all);
+                    model.addAttribute("contentViewList", getTplContent());
+                    model.addAttribute("article_DEFAULT_TEMPLATE", Article.DEFAULT_TEMPLATE);
+                    model.addAttribute("article", article);
+                    CmsUtils.addViewConfigAttribute(model, article.getCategory());
+                    if (!StringUtils.isBlank(article.getCategory().getId())) {
+                        String txtContent = TxtReadUtil.getTxtContent(article.getCategory().getId());
+                        return txtContent != null ? txtContent : "modules/cms/articleForm";
+                    }
+                    return "modules/cms/articleForm";
+
+
+                } else {
+                    article.setCategory(categoryService.get(article.getCategory().getId()));
+                }
             }
+            article.setArticleData(articleDataService.get(article.getId()));
+            model.addAttribute("userId", UserUtils.getUser().getId());
+            model.addAttribute("all", all);
+            model.addAttribute("contentViewList", getTplContent());
+            model.addAttribute("article_DEFAULT_TEMPLATE", Article.DEFAULT_TEMPLATE);
+            model.addAttribute("article", article);
+            CmsUtils.addViewConfigAttribute(model, article.getCategory());
+            if (StringUtils.isBlank(article.getCategory().getId())) {
+                String txtContent = TxtReadUtil.getTxtContent(article.getCategory().getId());
+                return txtContent != null ? txtContent : "modules/cms/articleForm";
+            }
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info(e.getMessage());
+            e.printStackTrace();
         }
-        article.setArticleData(articleDataService.get(article.getId()));
-        model.addAttribute("userId", UserUtils.getUser().getId());
-        model.addAttribute("all", all);
-        model.addAttribute("contentViewList", getTplContent());
-        model.addAttribute("article_DEFAULT_TEMPLATE", Article.DEFAULT_TEMPLATE);
-        model.addAttribute("article", article);
-        CmsUtils.addViewConfigAttribute(model, article.getCategory());
         return "modules/cms/articleForm";
     }
 
     @RequiresPermissions("cms:article:edit")
     @RequestMapping(value = "save")
-    public String save(Article article, Model model, RedirectAttributes redirectAttributes,@RequestParam(value="all",required = false) String all) {
+    public String save(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all) {
         String path = "";
-        if(!StringUtils.isBlank(all)){
+        if (!StringUtils.isBlank(all)) {
             path = "allList";
         }
-        if(StringUtils.isBlank(article.getIsTop())){
+        if (StringUtils.isBlank(article.getIsTop())) {
             article.setIsTop(Global.NO);
         }
-        if(StringUtils.isBlank(article.getIsRecommend())){
+        if (StringUtils.isBlank(article.getIsRecommend())) {
             article.setIsRecommend(Global.NO);
         }
         if (!beanValidator(model, article)) {
-            return form(article, model, redirectAttributes,all);
+            return form(article, model, redirectAttributes, all);
         }
         articleService.save(article);
         addMessage(redirectAttributes, "保存文章'" + StringUtils.abbr(article.getTitle(), 50) + "'成功");
         String categoryId = article.getCategory() != null ? article.getCategory().getId() : null;
-        return "redirect:" + adminPath + "/cms/article/"+ path +"?repage&delFlag=2&category.id=" + (categoryId != null ? categoryId : "");
+        return "redirect:" + adminPath + "/cms/article/" + path + "?repage&delFlag=2&category.id=" + (categoryId != null ? categoryId : "");
     }
 
     @RequiresPermissions("cms:article:edit")
@@ -141,9 +169,9 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:edit")
     @RequestMapping(value = "delete")
-    public String delete(Article article, String categoryId, @RequestParam(required = false) Boolean isRe, RedirectAttributes redirectAttributes,@RequestParam(value="all",required = false) String all) {
+    public String delete(Article article, String categoryId, @RequestParam(required = false) Boolean isRe, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all) {
         String path = "";
-        if(!StringUtils.isBlank(all)){
+        if (!StringUtils.isBlank(all)) {
             path = "allList";
         }
         // 如果没有审核权限，则不允许删除或发布。
@@ -152,7 +180,7 @@ public class ArticleController extends BaseController {
         }
         articleService.delete(article, isRe);
         addMessage(redirectAttributes, (isRe ? "删除" : "发布") + "文章成功");
-        return "redirect:" + adminPath + "/cms/article/"+ path +"?repage&category.id=" + (categoryId != null ? categoryId : "");
+        return "redirect:" + adminPath + "/cms/article/" + path + "?repage&category.id=" + (categoryId != null ? categoryId : "");
     }
 
     /**
@@ -184,10 +212,10 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = "allList")
-    public String allList(Article article, HttpServletRequest request, HttpServletResponse response, Model model,@RequestParam(value="init",required = false) String init) {
-        if(!StringUtils.isBlank(init)){
+    public String allList(Article article, HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "init", required = false) String init) {
+        if (!StringUtils.isBlank(init)) {
             article.setDelFlag("2");
-    }
+        }
         Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
         List<String> titles = articleService.findTitle(article);
         model.addAttribute("titles", titles);
@@ -201,18 +229,18 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "adsList", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> adsList(Article article,Category category,HttpServletRequest request) {
+    public ReturnEntity<List<Article>> adsList(Article article, Category category, HttpServletRequest request) {
         List<Article> articles = null;
-        try{
+        try {
             CustomCategory gg = customCategoryService.findByMark(Global.GG);
-            if(Objects.isNull(gg)){
-                LogUtils.saveLog(request,gg,new Exception(),"没有找到对应的自定义栏目，请配置");
-                return ReturnEntity.success(null,"请先设置自定义栏目标志‘GG’");
+            if (Objects.isNull(gg)) {
+                LogUtils.saveLog(request, gg, new Exception(), "没有找到对应的自定义栏目，请配置");
+                return ReturnEntity.success(null, "请先设置自定义栏目标志‘GG’");
             }
             List<String> byParentIdNoSite = categoryService.findByParentIdNoSite(gg.getCategoryId());
             articles = articleService.findByCategoryIdIn(byParentIdNoSite);
-        }catch (Exception e){
-            LogUtils.saveLog(request,articles,e,"没有找到对应的自定义栏目，请配置");
+        } catch (Exception e) {
+            LogUtils.saveLog(request, articles, e, "没有找到对应的自定义栏目，请配置");
             return ReturnEntity.fail("系统内部错误成功，请联系管理员");
         }
         return ReturnEntity.success(articles, "查询广告成功");
@@ -224,19 +252,19 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "readScene", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> readScene(Article article,Category category,HttpServletRequest request) {
+    public ReturnEntity<List<Article>> readScene(Article article, Category category, HttpServletRequest request) {
         List<Article> articles = null;
-        try{
+        try {
             CustomCategory gg = customCategoryService.findByMark(Global.YDCJ);
-            if(Objects.isNull(gg)){
-                LogUtils.saveLog(request,gg,new Exception(),"没有找到对应的自定义栏目，请配置");
-                return ReturnEntity.success(null,"请先设置自定义栏目标志‘YDCJ’");
+            if (Objects.isNull(gg)) {
+                LogUtils.saveLog(request, gg, new Exception(), "没有找到对应的自定义栏目，请配置");
+                return ReturnEntity.success(null, "请先设置自定义栏目标志‘YDCJ’");
             }
             List<String> categoryIds = new ArrayList<>();
             categoryIds.add(gg.getCategoryId());
             articles = articleService.findByCategoryIdIn(categoryIds);
-        }catch (Exception e){
-            LogUtils.saveLog(request,articles,e,"没有找到对应的自定义栏目，请配置");
+        } catch (Exception e) {
+            LogUtils.saveLog(request, articles, e, "没有找到对应的自定义栏目，请配置");
             return ReturnEntity.fail("系统内部错误，请联系管理员");
         }
         return ReturnEntity.success(articles, "查询广告成功");
@@ -249,17 +277,17 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "getAllArticle", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article,HttpServletRequest request,HttpServletResponse response){
-        try{
-            if(Global.YES.equals(article.getHits()+"")){
+    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (Global.YES.equals(article.getHits() + "")) {
                 List<Article> list = articleService.findList(article);
-                return ReturnEntity.success(list,"获取阅读场景列表成功");
-            }else{
+                return ReturnEntity.success(list, "获取阅读场景列表成功");
+            } else {
                 Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
-                return ReturnEntity.success(page,"获取数据成功");
+                return ReturnEntity.success(page, "获取数据成功");
             }
-        }catch (Exception e){
-            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错",e);
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
             return ReturnEntity.fail("程序内部出错");
         }
     }
@@ -272,12 +300,12 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "getHostAuthor", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<String>> getHostAuthor(@ModelAttribute Article article,HttpServletRequest request,HttpServletResponse response){
-        try{
-                List<String> list = articleService.findHostAuthors(article);
-                return ReturnEntity.success(list,"获取热门作者列表成功");
-        }catch (Exception e){
-            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错",e);
+    public ReturnEntity<List<String>> getHostAuthor(@ModelAttribute Article article, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            List<String> list = articleService.findHostAuthors(article);
+            return ReturnEntity.success(list, "获取热门作者列表成功");
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
             return ReturnEntity.fail("程序内部出错");
         }
     }

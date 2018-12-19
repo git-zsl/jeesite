@@ -1,9 +1,12 @@
 package com.thinkgem.jeesite.modules.cms.utils;
 
+import com.thinkgem.jeesite.common.config.Global;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -119,7 +122,7 @@ public class SensitiveWordInit {
 	private Set<String> readSensitiveWordFile() throws Exception{
 		Set<String> set = null;
 
-		File file = new File("D:\\SensitiveWord.txt");    //读取文件
+		File file = new File(MessageFormat.format("{0}{1}",Global.getConfig("configBasePath"),Global.getConfig("filterWord")));
 		InputStreamReader read = new InputStreamReader(new FileInputStream(file),ENCODING);
 		try {
 			if(file.isFile() && file.exists()){      //文件流是否存在

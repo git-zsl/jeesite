@@ -27,7 +27,18 @@
 		u.name AS "user.name",
 		a.is_top AS "isTop",
 		a.is_recommend AS "isRecommend",
-		a.author AS "author"
+		a.author AS "author",
+        <include refid="cmsArticleJobColumns"/>
+	</sql>
+
+    <sql id="cmsArticleJobColumns">
+		a.company AS "company",
+		a.phone AS "phone",
+		a.area AS "area",
+		a.pay AS "pay",
+		a.education AS "education",
+		a.experience AS "experience",
+		a.posts AS "posts"
 	</sql>
 
     <sql id="cmsArticleJoins">
@@ -180,7 +191,14 @@
 			del_flag,
 			is_top,
 		    is_recommend,
-		    author
+		    author,
+		    company,
+            phone,
+            area,
+            pay,
+            education,
+            experience,
+            posts
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -204,7 +222,14 @@
 			#{delFlag},
 			#{isTop},
 		    #{isRecommend},
-		    #{author}
+		    #{author},
+		    #{company},
+		    #{phone},
+		    #{area},
+		    #{pay},
+		    #{education},
+		    #{experience},
+		    #{posts}
 		)
 	</insert>
 
@@ -230,7 +255,14 @@
 			del_flag = #{delFlag},
 			is_top = #{isTop},
 		    is_recommend = #{isRecommend},
-		    author = #{author}
+		    author = #{author},
+		    company = #{company},
+		    phone = #{phone},
+		    area = #{area},
+		    pay = #{pay},
+		    education = #{education},
+		    experience = #{experience},
+		    posts = #{posts}
 		WHERE id = #{id}
 	</update>
 
