@@ -109,8 +109,8 @@ public class ArticleController extends BaseController {
                     model.addAttribute("article", article);
                     CmsUtils.addViewConfigAttribute(model, article.getCategory());
                     if (!StringUtils.isBlank(article.getCategory().getId())) {
-                        String txtContent = TxtReadUtil.getTxtContent(article.getCategory().getId());
-                        return txtContent != null ? txtContent : "modules/cms/articleForm";
+                        String formContent = TxtReadUtil.getFormContent(article.getCategory().getId(), categoryService);
+                        return formContent != null ? formContent : "modules/cms/articleForm";
                     }
                     return "modules/cms/articleForm";
 
@@ -126,9 +126,9 @@ public class ArticleController extends BaseController {
             model.addAttribute("article_DEFAULT_TEMPLATE", Article.DEFAULT_TEMPLATE);
             model.addAttribute("article", article);
             CmsUtils.addViewConfigAttribute(model, article.getCategory());
-            if (StringUtils.isBlank(article.getCategory().getId())) {
-                String txtContent = TxtReadUtil.getTxtContent(article.getCategory().getId());
-                return txtContent != null ? txtContent : "modules/cms/articleForm";
+            if (!StringUtils.isBlank(article.getCategory().getId())) {
+                String formContent = TxtReadUtil.getFormContent(article.getCategory().getId(), categoryService);
+                return formContent != null ? formContent : "modules/cms/articleForm";
             }
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info(e.getMessage());
@@ -277,8 +277,11 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "getAllArticle", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, HttpServletRequest request, HttpServletResponse response) {
+    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value="categoryId",required = false)String categoryId,  HttpServletRequest request, HttpServletResponse response) {
         try {
+            if(!StringUtils.isBlank(categoryId)){
+                article.setCategory(new Category(categoryId));
+            }
             if (Global.YES.equals(article.getHits() + "")) {
                 List<Article> list = articleService.findList(article);
                 return ReturnEntity.success(list, "获取阅读场景列表成功");

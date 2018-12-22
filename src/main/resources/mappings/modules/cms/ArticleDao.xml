@@ -74,7 +74,7 @@
                 <if test="dbName == 'mssql'">'%'+#{posid}+'%'</if>
                 <if test="dbName == 'mysql'">CONCAT('%', #{posid}, '%')</if>
             </if>
-            <if test="category.id != null and category.id != ''">
+            <if test="category != null and category.id != null and category.id != ''">
                 AND (a.category_id = #{category.id}
                 <if test="category.parentIds != null and category.parentIds != ''">
                     or c.parent_ids like
