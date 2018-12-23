@@ -280,11 +280,13 @@ public class ArticleController extends BaseController {
     public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value="categoryId",required = false)String categoryId,  HttpServletRequest request, HttpServletResponse response) {
         try {
             if(!StringUtils.isBlank(categoryId)){
-                article.setCategory(new Category(categoryId));
+                Category category = new Category(categoryId);
+                category.setParentIds(categoryId);
+                article.setCategory(category);
             }
             if (Global.YES.equals(article.getHits() + "")) {
                 List<Article> list = articleService.findList(article);
-                return ReturnEntity.success(list, "获取阅读场景列表成功");
+                return ReturnEntity.success(list, "获取列表成功");
             } else {
                 Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
                 return ReturnEntity.success(page, "获取数据成功");

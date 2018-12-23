@@ -45,6 +45,7 @@
 		JOIN cms_category c ON c.id = a.category_id
 		JOIN sys_office o ON o.id = c.office_id
 		JOIN sys_user u ON u.id = a.create_by
+		JOIN cms_posts p ON p.id = a.posts
 	</sql>
 
     <select id="get" resultType="Article">
@@ -87,6 +88,17 @@
             <if test="image != null and image != ''">
                 AND a.image = #{image}
             </if>
+            <if test="company != null and company != ''">
+                AND (a.company like
+                <if test="dbName == 'oracle'">'%'||#{company}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{company}+'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{company}, '%')</if>
+                or p.posts like
+                <if test="dbName == 'oracle'">'%'||#{company}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{company}+'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{company}, '%')</if>
+                )
+            </if>
             <if test="createBy != null and createBy.id != null and createBy.id != ''">
                 AND a.create_by = #{createBy.id}
             </if>
@@ -117,6 +129,34 @@
         <include refid="cmsArticleJoins"/>
         <where>
             a.del_flag = #{DEL_FLAG_NORMAL}
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.weight DESC, a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findJobList" resultType="Article">
+        SELECT
+        <include refid="cmsArticleColumns"/>
+        FROM cms_article a
+        <include refid="cmsArticleJoins"/>
+        <where>
+                a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="category != null and category.id != null and category.id != ''">
+                AND (a.category_id = #{category.id}
+            </if>
+            <if test="category.parentIds != null and category.parentIds != ''">
+                or c.parent_ids like
+                <if test="dbName == 'oracle'">'%'||#{category.id}||'%'</if>
+                <if test="dbName == 'mssql'">'%,'+#{category.id}+',%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%,', #{category.id}, ',%')</if>
+            </if>
+            )
         </where>
         <choose>
             <when test="page !=null and page.orderBy != null and page.orderBy != ''">

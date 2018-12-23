@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.cms.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -189,5 +190,20 @@ public class CategoryService extends TreeService<CategoryDao, Category> {
 
 	public List<Category> findNavigationBar(Category category) {
 		return dao.findNavigationBar(category);
+	}
+
+	public List<Category> findChildNavigationBar(Category category) {
+		findChild(category.getChildList(),category);
+		return category.getChildList();
+	}
+
+	public void findChild(List<Category> allChildNavigationBars,Category category){
+		List<Category> navigationBar = dao.findNavigationBar(category);
+		allChildNavigationBars.addAll(navigationBar);
+		if(!navigationBar.isEmpty()){
+			for (Category c : navigationBar) {
+				findChild(c.getChildList(),c);
+			}
+		}
 	}
 }

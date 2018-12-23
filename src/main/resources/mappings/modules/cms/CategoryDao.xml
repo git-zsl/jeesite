@@ -307,6 +307,14 @@
 				AND a.parent_id  = #{id}
 			</if>
 		</where>
+		<choose>
+			<when test="subscriber ='0'">
+				ORDER BY a.subscriber DESC
+			</when>
+			<otherwise>
+				ORDER BY a.sort DESC
+			</otherwise>
+		</choose>
 	</select>
 
 	<select id="findNavigationBar" resultType="Category">
@@ -324,7 +332,7 @@
 		</where>
 		<choose>
 			<when test="subscriber ='0'">
-				ORDER BY a.subscriber DESC
+				ORDER BY a.subscriber DESC,a.sort ASC
 			</when>
 			<otherwise>
 				ORDER BY a.sort DESC

@@ -175,20 +175,23 @@ public class CategoryController extends BaseController {
 	 */
 	@RequestMapping(value = "navigationBar",method = RequestMethod.POST)
 	@ResponseBody
-	public ReturnEntity<List<Category>> navigationBar(Category category) {
+	public ReturnEntity<List<Category>> navigationBar(Category category,@RequestParam(value = "allchildcategory",required = false) String allchildcategory) {
         List<Category> parentList = new ArrayList<>();
 	    try{
             category.setIsShowHome(Global.NO);
             List<Category> categorys = categoryService.findNavigationBar(category);
-			if(!StringUtils.isBlank(category.getId())){
-				return ReturnEntity.success(categorys,"查询子栏目成功");
+			if(!StringUtils.isBlank(category.getId()) && StringUtils.isBlank(allchildcategory)){
+				return ReturnEntity.success(categorys,"查询对应栏目成功");
 			}
-			if(category.getSubscriber() != 0){
+			if(category.getSubscriber() != 0 && StringUtils.isBlank(allchildcategory)){
 				return ReturnEntity.success(categorys,"查询热门栏目成功");
 			}
             if(categorys.isEmpty()){
                 throw new RuntimeException("查询categorys为空");
             }
+			if(!StringUtils.isBlank(allchildcategory) && !StringUtils.isBlank(category.getId())){
+				return ReturnEntity.success(categoryService.findChildNavigationBar(category),"查询当前栏目及以下子栏目成功") ;
+			}
             for (Category c : categorys) {
                 for (Category cc: categorys) {
                     if(!Global.NO.equals(cc.getParent().getId()) && c.getId().equals(cc.getParent().getId())){
@@ -203,7 +206,6 @@ public class CategoryController extends BaseController {
             LogUtils.getLogInfo(CategoryController.class).info("系统出错",e);
             return ReturnEntity.fail("系统出错，请联系管理员");
         }
-		return ReturnEntity.success(parentList,"查询导航栏成功");
+		return ReturnEntity.success(parentList,"查询栏目成功");
 	}
-
 }
