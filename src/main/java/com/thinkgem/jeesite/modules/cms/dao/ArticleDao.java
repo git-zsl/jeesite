@@ -29,7 +29,7 @@ public interface ArticleDao extends CrudDao<Article> {
 
 	public List<String> findTitle(Article article);
 
-	public List<String> findHostAuthors(Article article);
+	public List<Article> findHostAuthors(Article article);
 
 	public HashMap<String,Object> findByYearCount();
 

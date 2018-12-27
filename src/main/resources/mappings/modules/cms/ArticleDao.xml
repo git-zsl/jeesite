@@ -25,11 +25,42 @@
 		a.del_flag AS "delFlag",
 		c.name AS "category.name",
 		u.name AS "user.name",
+        u.photo AS "user.photo",
 		a.is_top AS "isTop",
 		a.is_recommend AS "isRecommend",
 		a.author AS "author",
         <include refid="cmsArticleJobColumns"/>
 	</sql>
+
+    <sql id="cmsArticleAuthorColumns">
+        DISTINCT a.author AS "author",
+        a.id AS "id",
+        a.category_id AS "category.id",
+        a.title AS "title",
+        a.link AS "link",
+        a.color AS "color",
+        a.image AS "image",
+        a.keywords AS "keywords",
+        a.description AS "description",
+        a.weight AS "weight",
+        a.weight_date AS "weightDate",
+        a.hits AS "hits",
+        a.posid AS "posid",
+        a.custom_content_view AS "customContentView",
+        a.view_config AS "viewConfig",
+        a.create_by AS "createBy.id",
+        a.create_date AS "createDate",
+        a.update_by AS "updateBy.id",
+        a.update_date AS "updateDate",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag",
+        c.name AS "category.name",
+        u.name AS "user.name",
+        u.photo AS "user.photo",
+        a.is_top AS "isTop",
+        a.is_recommend AS "isRecommend",
+        <include refid="cmsArticleJobColumns"/>
+    </sql>
 
     <sql id="cmsArticleJobColumns">
 		a.company AS "company",
@@ -41,11 +72,17 @@
 		a.posts AS "posts"
 	</sql>
 
-    <sql id="cmsArticleJoins">
+    <sql id="cmsJobArticleJoins">
 		JOIN cms_category c ON c.id = a.category_id
 		JOIN sys_office o ON o.id = c.office_id
 		JOIN sys_user u ON u.id = a.create_by
 		JOIN cms_posts p ON p.id = a.posts
+	</sql>
+
+    <sql id="cmsArticleJoins">
+		JOIN cms_category c ON c.id = a.category_id
+		JOIN sys_office o ON o.id = c.office_id
+		JOIN sys_user u ON u.id = a.create_by
 	</sql>
 
     <select id="get" resultType="Article">
@@ -144,7 +181,7 @@
         SELECT
         <include refid="cmsArticleColumns"/>
         FROM cms_article a
-        <include refid="cmsArticleJoins"/>
+        <include refid="cmsJobArticleJoins"/>
         <where>
                 a.del_flag = #{DEL_FLAG_NORMAL}
             <if test="category != null and category.id != null and category.id != ''">
@@ -183,11 +220,14 @@
         ORDER BY a.create_date desc
     </select>
 
-    <select id="findHostAuthors" resultType="String">
-        select a.author
-        from cms_article a
+    <select id="findHostAuthors" resultType="Article">
+        SELECT
+        <include refid="cmsArticleAuthorColumns"/>
+        FROM cms_article a
+        <include refid="cmsArticleJoins"/>
         <where>
             a.del_flag = #{DEL_FLAG_NORMAL}
+            AND a.author is not null
         </where>
         GROUP BY a.author
         ORDER BY a.hits desc

@@ -335,7 +335,7 @@
 				ORDER BY a.subscriber DESC,a.sort ASC
 			</when>
 			<otherwise>
-				ORDER BY a.sort DESC
+				ORDER BY a.sort ASC
 			</otherwise>
 		</choose>
 	</select>
