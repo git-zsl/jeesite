@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.sys.web;
 
 import com.google.common.collect.Maps;
 import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.security.shiro.session.SessionDAO;
 import com.thinkgem.jeesite.common.servlet.ValidateCodeServlet;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
@@ -21,10 +22,13 @@ import com.thinkgem.jeesite.modules.sys.service.HomeLoginService;
 import com.thinkgem.jeesite.modules.sys.service.OfficeService;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
 import com.thinkgem.jeesite.modules.sys.utils.EmailUtils;
+import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LoginUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.cache.Cache;
+import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,8 +38,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 登录Controller
@@ -49,12 +52,14 @@ public class HomeLoginController extends BaseController {
     private SessionDAO sessionDAO;
     @Autowired
     private HomeLoginService homeLoginService;
-
+    @Autowired
+    private CacheManager cacheManager;
+    private static final String TRUE = "true";
 
     /**
      * 管理登录
      */
-    @RequestMapping(value = "h/homeLogin", method = RequestMethod.GET)
+    @RequestMapping(value = "/h/homeLogin", method = RequestMethod.POST)
     public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
         System.out.println(homePath);
         System.out.println(Global.getConfig("homePath"));
@@ -81,10 +86,10 @@ public class HomeLoginController extends BaseController {
     /**
      * 登录失败，真正登录的POST请求由Filter完成
      */
-    @RequestMapping(value = "h/homeLogin", method = RequestMethod.POST)
+    @RequestMapping(value = "/h/homeLogin", method = RequestMethod.GET)
     @ResponseBody
-    public String loginFail(@ModelAttribute Map<String, String> map, boolean isCompany, HttpServletRequest request, User user) {
-        String email = map.get("email");
+    public ReturnEntity<String> loginFail(@RequestParam Map<String, String> map, boolean isCompany, HttpServletRequest request, User user) {
+        /*String email = map.get("email");
         if (StringUtils.isBlank(map.get("loginName")) && StringUtils.isBlank(email)) {
             return "用户名不能为空,或者邮箱不能为空";
         }
@@ -93,21 +98,63 @@ public class HomeLoginController extends BaseController {
             //验证token
             LoginUtils.validatePassword((String) request.getSession().getAttribute(map.get("loginName")), map.get("token"));
             return "已经登录";
+        }*/
+        try{
+            String loginName = map.get("loginName");
+            Cache<String, String> cache = cacheManager.getCache(loginName);
+            Set<String> keys = cache.keys();
+            if(StringUtils.isBlank(loginName) || keys.size() == 0){
+                LogUtils.getLogInfo(HomeLoginController.class).info("邮箱验证失败,loginName为空");
+                return ReturnEntity.fail("邮箱验证失败,loginName为空");
+            }
+            for (Iterator<String> it = keys.iterator(); it.hasNext();){
+                String key = it.next();
+                map.put(key,cache.get(key));
+            }
+            //开始注册
+            homeLoginService.signIn(isCompany, map);
+            //清除缓存map
+            CacheUtils.removeAll(loginName);
+            //生成token
+            //*********后续补充**********
+        }catch (Exception e){
+            e.printStackTrace();
+            LogUtils.getLogInfo(HomeLoginController.class).info("邮注册失败",e);
+            return ReturnEntity.fail("注册失败");
         }
-        //开始注册
-        homeLoginService.signIn(isCompany, map);
-        //生成token
-
-
-        return "modules/sys/sysLogin";
+        return ReturnEntity.success("注册成功");
     }
         /**
          * 邮箱认证
          */
-        @RequestMapping(value = "h/homeLogin", method = RequestMethod.POST)
+        @RequestMapping(value = "/h/email", method = RequestMethod.POST)
         @ResponseBody
-        public void sentValidateEmail(@ModelAttribute Map<String, String> map, boolean isCompany){
-            EmailUtils.sendHtmlMail(new Email("328875024@qq.com","审核失败","资料缺失，请重新提交资料审核"));
+        public ReturnEntity<String> sentValidateEmail(@RequestParam Map<String, String> map){
+            try{
+                String email = map.get("email");
+                String loginName = map.get("loginName");
+                String isCompany = map.get("isCompany");
+                if(TRUE.equals(isCompany)){
+                    map.put("isCompany","true");
+                }else{
+                    map.put("isCompany","false");
+                }
+                if (StringUtils.isBlank(map.get("loginName")) && StringUtils.isBlank(email)) {
+                    return ReturnEntity.fail("用户名或者邮箱不能为空");
+                }
+                User byLoginName = UserUtils.getByLoginName(loginName);
+                if(Objects.isNull(byLoginName)){
+                    String content = "<a href=http://localhost:8080/zsl/h/homeLogin?loginName="+loginName+"&isCompany="+isCompany+">请点击完成此处激活帐号完成注册</a><br/>";
+                    EmailUtils.sendHtmlMail(new Email(email,"注册验证",content));
+                    CacheUtils.putMapAll(loginName,map);
+                    return ReturnEntity.success("邮件发送成功");
+                }
+            }catch (Exception e){
+                LogUtils.getLogInfo(HomeLoginController.class).info("邮箱认证出错",e);
+                e.printStackTrace();
+                return ReturnEntity.fail("系统出错，请联系管理员");
+            }
+            return ReturnEntity.fail("当前用户已存在");
         }
 
     /**

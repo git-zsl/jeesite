@@ -4,8 +4,10 @@
 package com.thinkgem.jeesite.common.utils;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheManager;
 import org.slf4j.Logger;
@@ -14,7 +16,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Cache工具类
  * @author ThinkGem
- * @version 2013-5-29
+ * @version
  */
 public class CacheUtils {
 	
@@ -114,7 +116,18 @@ public class CacheUtils {
 		}
 		logger.info("清理缓存： {} => {}", cacheName, keys);
 	}
-	
+
+	/**
+	 * 把map写入缓存中
+	 * @param cacheName
+	 */
+	public static void putMapAll(String cacheName,Map<String,String> map) {
+		for (Map.Entry<String, String> entry : map.entrySet()) {
+			CacheUtils.put(cacheName,entry.getKey(),entry.getValue());
+		}
+		logger.info("写入缓存：{}成功", cacheName);
+	}
+
 	/**
 	 * 获取缓存键名，多数据源下增加数据源名称前缀
 	 * @param key
@@ -133,7 +146,7 @@ public class CacheUtils {
 	 * @param cacheName
 	 * @return
 	 */
-	private static Cache<String, Object> getCache(String cacheName){
+	public static Cache<String, Object> getCache(String cacheName){
 		Cache<String, Object> cache = cacheManager.getCache(cacheName);
 		if (cache == null){
 			throw new RuntimeException("当前系统中没有定义“"+cacheName+"”这个缓存。");
