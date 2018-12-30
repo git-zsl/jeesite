@@ -61,6 +61,35 @@
         a.is_recommend AS "isRecommend",
         <include refid="cmsArticleJobColumns"/>
     </sql>
+    <sql id="cmsArticleKeywordsColumns">
+        DISTINCT  a.keywords AS "keywords",
+        a.id AS "id",
+        a.category_id AS "category.id",
+        a.title AS "title",
+        a.link AS "link",
+        a.color AS "color",
+        a.image AS "image",
+        a.author AS "author",
+        a.description AS "description",
+        a.weight AS "weight",
+        a.weight_date AS "weightDate",
+        a.hits AS "hits",
+        a.posid AS "posid",
+        a.custom_content_view AS "customContentView",
+        a.view_config AS "viewConfig",
+        a.create_by AS "createBy.id",
+        a.create_date AS "createDate",
+        a.update_by AS "updateBy.id",
+        a.update_date AS "updateDate",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag",
+        c.name AS "category.name",
+        u.name AS "user.name",
+        u.photo AS "user.photo",
+        a.is_top AS "isTop",
+        a.is_recommend AS "isRecommend",
+        <include refid="cmsArticleJobColumns"/>
+    </sql>
 
     <sql id="cmsArticleJobColumns">
 		a.company AS "company",
@@ -105,6 +134,12 @@
                 <if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
                 <if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
                 <if test="dbName == 'mysql'">CONCAT('%', #{title}, '%')</if>
+            </if>
+            <if test="keywords != null and keywords != ''">
+                AND a.keywords LIKE
+                <if test="dbName == 'oracle'">'%'||#{keywords}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{keywords}+'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{keywords}, '%')</if>
             </if>
             <if test="posid != null and posid != ''">
                 AND a.posid LIKE
@@ -230,6 +265,22 @@
             AND a.author is not null
         </where>
         GROUP BY a.author
+        ORDER BY a.hits desc
+    </select>
+
+    <select id="findHostKeywords" resultType="Article">
+        SELECT
+        <include refid="cmsArticleKeywordsColumns"/>
+        FROM cms_article a
+        <include refid="cmsArticleJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            AND a.keywords is not null
+            <if test="category != null and category.id != null and category.id != ''">
+                AND a.category_id = #{category.id}
+            </if>
+        </where>
+        GROUP BY a.keywords
         ORDER BY a.hits desc
     </select>
 

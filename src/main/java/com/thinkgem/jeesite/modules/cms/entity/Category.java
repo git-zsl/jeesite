@@ -19,7 +19,7 @@ import com.thinkgem.jeesite.modules.sys.entity.Office;
  * @author ThinkGem
  * @version 2013-05-15
  */
-public class Category extends TreeEntity<Category> {
+public class Category extends TreeEntity<Category>  implements Comparable<Category>{
 
     public static final String DEFAULT_TEMPLATE = "frontList";
 
@@ -346,4 +346,13 @@ public class Category extends TreeEntity<Category> {
 	public void setSubscriber(Integer subscriber) {
 		this.subscriber = subscriber;
 	}
+
+	@Override
+	public int compareTo(Category c) {
+		int i = this.getSort() - c.getSort();
+		return i;
+	}
+
+
+
 }

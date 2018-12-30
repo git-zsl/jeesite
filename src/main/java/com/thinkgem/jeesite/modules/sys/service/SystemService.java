@@ -38,7 +38,7 @@ import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 /**
  * 系统管理，安全相关实体的管理类,包括用户、角色、菜单.
  * @author ThinkGem
- * @version 2013-12-05
+ * @version
  */
 @Service
 @Transactional(readOnly = true)
@@ -183,7 +183,28 @@ public class SystemService extends BaseService implements InitializingBean {
 //			systemRealm.clearAllCachedAuthorizationInfo();
 		}
 	}
-	
+
+	/**
+	 * 主页注册
+	 * @param user
+	 */
+	@Transactional(readOnly = false)
+	public void createUser(User user) {
+		if (StringUtils.isBlank(user.getId())){
+			user.preInsert();
+			userDao.insert(user);
+		}else{
+			// 清除原用户机构用户缓存
+			User oldUser = userDao.get(user.getId());
+			if (oldUser.getOffice() != null && oldUser.getOffice().getId() != null){
+				CacheUtils.remove(UserUtils.USER_CACHE, UserUtils.USER_CACHE_LIST_BY_OFFICE_ID_ + oldUser.getOffice().getId());
+			}
+			// 更新用户数据
+			user.preUpdate();
+			userDao.update(user);
+		}
+	}
+
 	@Transactional(readOnly = false)
 	public void updateUserInfo(User user) {
 		user.preUpdate();

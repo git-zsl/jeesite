@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.modules.cms.entity.*;
+import com.thinkgem.jeesite.modules.cms.service.*;
 import com.thinkgem.jeesite.modules.cms.utils.TxtReadUtil;
 import com.thinkgem.jeesite.modules.crn.entity.UserCategoryNum;
 import com.thinkgem.jeesite.modules.custom.entity.CustomCategory;
@@ -31,14 +33,6 @@ import com.thinkgem.jeesite.common.mapper.JsonMapper;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.modules.cms.entity.Article;
-import com.thinkgem.jeesite.modules.cms.entity.Category;
-import com.thinkgem.jeesite.modules.cms.entity.Site;
-import com.thinkgem.jeesite.modules.cms.service.ArticleDataService;
-import com.thinkgem.jeesite.modules.cms.service.ArticleService;
-import com.thinkgem.jeesite.modules.cms.service.CategoryService;
-import com.thinkgem.jeesite.modules.cms.service.FileTplService;
-import com.thinkgem.jeesite.modules.cms.service.SiteService;
 import com.thinkgem.jeesite.modules.cms.utils.CmsUtils;
 import com.thinkgem.jeesite.modules.cms.utils.TplUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -67,6 +61,8 @@ public class ArticleController extends BaseController {
     private CustomCategoryService customCategoryService;
     @Autowired
     private CmsPostsService cmsPostsService;
+    @Autowired
+    private CommentService commentService;
 
     @ModelAttribute
     public Article get(@RequestParam(required = false) String id) {
@@ -314,4 +310,60 @@ public class ArticleController extends BaseController {
             return ReturnEntity.fail("程序内部出错");
         }
     }
+
+    /**
+     * 热门关键词
+     * keywords
+     */
+    @RequestMapping(value = "getHostKeywords", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity<List<Article>> getHostKeywords(@ModelAttribute Article article,  @RequestParam(value="categoryId",required = false)String categoryId,HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if(!StringUtils.isBlank(categoryId)){
+                Category category = new Category(categoryId);
+                category.setParentIds(categoryId);
+                article.setCategory(category);
+            }
+            List<Article> hostKeywords = articleService.findHostKeywords(article);
+            return ReturnEntity.success(hostKeywords, "获取热门keywords列表成功");
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            return ReturnEntity.fail("程序内部出错");
+        }
+    }
+
+    /**
+     * 文章详情
+     * content
+     */
+    @RequestMapping(value = "getArticleContent", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity<List<Article>> getArticleContent(@ModelAttribute Article article){
+        try {
+            ArticleData articleData = articleDataService.get(article.getId());
+            return ReturnEntity.success(articleData, "获取文章详情成功");
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            return ReturnEntity.fail("程序内部出错");
+        }
+    }
+
+    /**
+     * 评论详情
+     * comment
+     */
+    @RequestMapping(value = "getArticleComment", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity<List<Article>> getArticleComment(@ModelAttribute Article article, HttpServletRequest request, HttpServletResponse response){
+        try {
+            Comment comment = new Comment();
+            comment.setContentId(article.getId());
+            Page<Comment> page = commentService.findPage(new Page<Comment>(request, response), comment);
+            return ReturnEntity.success(page, "获取评论列表成功");
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            return ReturnEntity.fail("程序内部出错");
+        }
+    }
+
 }

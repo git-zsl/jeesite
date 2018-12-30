@@ -47,7 +47,13 @@ public abstract class BaseController {
 	 */
 	@Value("${adminPath}")
 	protected String adminPath;
-	
+
+	/**
+	 * 主页基础路径
+	 */
+	@Value("${homePath}")
+	protected String homePath;
+
 	/**
 	 * 前端基础路径
 	 */

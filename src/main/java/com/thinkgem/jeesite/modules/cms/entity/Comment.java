@@ -33,7 +33,7 @@ public class Comment extends DataEntity<Comment> {
 
 	public Comment() {
 		super();
-		this.delFlag = DEL_FLAG_AUDIT;
+		this.delFlag = DEL_FLAG_NORMAL;
 	}
 	
 	public Comment(String id){
