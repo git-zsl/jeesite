@@ -4,7 +4,6 @@ import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
 import com.thinkgem.jeesite.modules.crn.entity.UserCategoryNum;
 import com.thinkgem.jeesite.modules.crn.service.UserCategoryNumService;
-import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class SaveFilter implements Filter {
     private FilterConfig filterConfig;

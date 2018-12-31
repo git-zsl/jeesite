@@ -14,7 +14,7 @@
 	<bean name="shiroFilterChainDefinitions" class="java.lang.String">
 		<constructor-arg>
 			<value>
-				${homePath}/** = anon
+				/h/** = anon
 				${adminPath}//book/bookManager/bookSoft anon
 				${adminPath}/classificationtree/classificationtree/findClassification anon
 				${adminPath}//cms/category/navigationBar anon

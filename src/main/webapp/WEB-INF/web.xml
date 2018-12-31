@@ -85,6 +85,15 @@
 		<url-pattern>/a/cms/comment/save</url-pattern>
 	</filter-mapping>
 
+	<!-- SaveFilter -->
+	<filter>
+		<filter-name>HomeLoginVerificationFilter</filter-name>
+		<filter-class>com.thinkgem.jeesite.common.filter.HomeLoginVerificationFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>HomeLoginVerificationFilter</filter-name>
+		<url-pattern>/h/*</url-pattern>
+	</filter-mapping>
 	<!-- SiteMesh -->
 	<filter>
 		<filter-name>sitemeshFilter</filter-name>

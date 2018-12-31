@@ -49,6 +49,7 @@ public class User extends DataEntity<User> {
 	
 	private String oldLoginIp;	// 上次登陆IP
 	private Date oldLoginDate;	// 上次登陆日期
+	private String token; // token
 	
 	private Role role;	// 根据角色查询用户条件
 	
@@ -241,6 +242,14 @@ public class User extends DataEntity<User> {
 
 	public void setNewPassword(String newPassword) {
 		this.newPassword = newPassword;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	public String getOldLoginIp() {
