@@ -84,6 +84,11 @@ public class Global {
 	public static final String USERFILES_BASE_URL = "/userfiles/";
 
 	/**
+	 * zsl
+	 */
+	public static final String ZSL = "zsl";
+
+	/**
 	 * 获取配置
 	 *
 	 * @see ${fns:getConfig('adminPath')}

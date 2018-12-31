@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -89,16 +90,7 @@ public class HomeLoginController extends BaseController {
     @RequestMapping(value = "/h/homeLogin", method = RequestMethod.GET)
     @ResponseBody
     public ReturnEntity<String> loginFail(@RequestParam Map<String, String> map, boolean isCompany, HttpServletRequest request, User user) {
-        /*String email = map.get("email");
-        if (StringUtils.isBlank(map.get("loginName")) && StringUtils.isBlank(email)) {
-            return "用户名不能为空,或者邮箱不能为空";
-        }
-        // 如果已经登录，则跳转到管理首页
-        if (!StringUtils.isBlank(map.get("token"))) {
-            //验证token
-            LoginUtils.validatePassword((String) request.getSession().getAttribute(map.get("loginName")), map.get("token"));
-            return "已经登录";
-        }*/
+        String token = "";
         try{
             String loginName = map.get("loginName");
             Cache<String, String> cache = cacheManager.getCache(loginName);
@@ -116,13 +108,14 @@ public class HomeLoginController extends BaseController {
             //清除缓存map
             CacheUtils.removeAll(loginName);
             //生成token
+            token = LoginUtils.entryptPassword(MessageFormat.format("{}{}",loginName,Global.ZSL));
             //*********后续补充**********
         }catch (Exception e){
             e.printStackTrace();
             LogUtils.getLogInfo(HomeLoginController.class).info("邮注册失败",e);
             return ReturnEntity.fail("注册失败");
         }
-        return ReturnEntity.success("注册成功");
+        return ReturnEntity.success("注册成功",token);
     }
         /**
          * 邮箱认证
@@ -227,4 +220,27 @@ public class HomeLoginController extends BaseController {
         return loginFailNum >= 3;
     }
 
+
+    /**
+     * 管理登录
+     */
+    @RequestMapping(value = "/h/ValidateLoginName", method = RequestMethod.POST)
+    public ReturnEntity<String> ValidateLoginName(@RequestParam Map<String,String> map){
+        try{
+            String loginName = map.get("loginName");
+            if(StringUtils.isBlank(loginName)){
+                LogUtils.getLogInfo(HomeLoginController.class).info("用户名不能为空");
+               return ReturnEntity.fail("用户名不能为空");
+            }
+            User byLoginName = UserUtils.getByLoginName(loginName);
+            if(Objects.isNull(byLoginName)){
+                return ReturnEntity.success("当前用户名可以使用");
+            }
+        }catch (Exception e){
+            LogUtils.getLogInfo(HomeLoginController.class).info("查询出错",e);
+            e.printStackTrace();
+            return ReturnEntity.fail("系统内部出错");
+        }
+        return ReturnEntity.fail("当前用户名已存在");
+    }
 }
