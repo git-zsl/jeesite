@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.cms.web;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -90,20 +91,27 @@ public class CommentController extends BaseController {
 		Page<Comment> page =null;
 		try{
 			page = commentService.findconsultationPage(new Page<Comment>(request, response), comment);
-			List<Comment> comments = new ArrayList<>();
+			List<Comment> comments =new ArrayList<>();
 			if(!page.getList().isEmpty()){
 				for (Comment c : page.getList()) {
-					if(!StringUtils.isBlank(c.getParentContentId())){
-						Comment comment1 = commentService.get(c.getParentContentId());
-						for (Comment cc :page.getList()) {
-							if(cc.getId().equals(comment1.getId())){
-								cc.getChildComments().add(c);
-								break;
-							}
+					c.setCommentNum("0");
+					for (Comment cc : page.getList()) {
+						if(c.getId().equals(cc.getParentContentId())){
+							c.getChildComments().add(cc);
+							c.setCommentNum(Integer.parseInt(c.getCommentNum())+1+"");
 						}
-						continue;
 					}
-					comments.add(c);
+					if(StringUtils.isBlank(c.getParentContentId())){
+						comments.add(c);
+					}
+				}
+			}
+			//统计评论数量
+			for (Comment c : comments) {
+				int i = 0;
+				if(!c.getChildComments().isEmpty()){
+					int childNum = commentService.findChildNum(c,i);
+					c.setCommentNum(childNum + "");
 				}
 			}
 			page.setList(comments);

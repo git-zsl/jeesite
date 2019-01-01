@@ -11,16 +11,22 @@
 		a.name AS "name",
 		a.ip AS "ip",
 		a.create_date AS "createDate",
+		a.create_by AS "createBy.id",
 		a.audit_user_id AS "auditUser.id",
 		a.audit_date AS "auditDate",
 		a.del_flag AS "delFlag",
 		a.parent_content_id AS "parentContentId",
 		a.is_top AS "isTop",
 		a.is_recommend AS "isRecommend",
-		a.comment_num AS "commentNum"
+		a.comment_num AS "commentNum",
+		c.name AS "category.name",
+		u.name AS "user.name"
 	</sql>
 	
 	<sql id="cmsCommentDaoJoins">
+		JOIN cms_category c ON c.id = a.category_id
+		JOIN sys_office o ON o.id = c.office_id
+		JOIN sys_user u ON u.id = a.create_by
 	</sql>
     
 	<select id="get" resultType="Comment">
@@ -106,6 +112,7 @@
 			name,
 			ip,
 			create_date,
+			create_by,
 			audit_user_id,
 			audit_date,
 			del_flag,
@@ -122,6 +129,7 @@
 			#{name},
 			#{ip},
 			#{createDate},
+			#{createBy.id},
 			#{auditUser.id},
 			#{auditDate},
 			#{delFlag},
@@ -141,6 +149,7 @@
 			name = #{name},
 			ip = #{ip},
 			create_date = #{createDate},
+			create_by = #{createBy.id},
 			audit_user_id = #{auditUser.id},
 			audit_date = #{auditDate},
 			del_flag = #{delFlag},

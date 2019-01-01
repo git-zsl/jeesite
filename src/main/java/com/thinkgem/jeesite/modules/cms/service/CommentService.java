@@ -3,6 +3,8 @@
  */
 package com.thinkgem.jeesite.modules.cms.service;
 
+import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.modules.cms.entity.Category;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,8 +13,12 @@ import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.modules.cms.dao.CommentDao;
 import com.thinkgem.jeesite.modules.cms.entity.Comment;
 
+import java.util.List;
+import java.util.Objects;
+
 /**
  * 评论Service
+ *
  * @author ThinkGem
  * @version 2013-01-15
  */
@@ -20,7 +26,7 @@ import com.thinkgem.jeesite.modules.cms.entity.Comment;
 @Transactional(readOnly = true)
 public class CommentService extends CrudService<CommentDao, Comment> {
 
-	public Page<Comment> findPage(Page<Comment> page, Comment comment) {
+    public Page<Comment> findPage(Page<Comment> page, Comment comment) {
 //		DetachedCriteria dc = commentDao.createDetachedCriteria();
 //		if (StringUtils.isNotBlank(comment.getContentId())){
 //			dc.add(Restrictions.eq("contentId", comment.getContentId()));
@@ -31,16 +37,32 @@ public class CommentService extends CrudService<CommentDao, Comment> {
 //		dc.add(Restrictions.eq(Comment.FIELD_DEL_FLAG, comment.getDelFlag()));
 //		dc.addOrder(Order.desc("id"));
 //		return commentDao.find(page, dc);
-		comment.getSqlMap().put("dsf", dataScopeFilter(comment.getCurrentUser(), "o", "u"));
-		
-		return super.findPage(page, comment);
-	}
-	public Page<Comment> findconsultationPage(Page<Comment> page, Comment comment) {
-		return super.findconsultationPage(page, comment);
-	}
+        comment.getSqlMap().put("dsf", dataScopeFilter(comment.getCurrentUser(), "o", "u"));
 
-	@Transactional(readOnly = false)
-	public void delete(Comment entity, Boolean isRe) {
-		super.delete(entity);
-	}
+        return super.findPage(page, comment);
+    }
+
+    public Page<Comment> findconsultationPage(Page<Comment> page, Comment comment) {
+        return super.findconsultationPage(page, comment);
+    }
+
+    @Transactional(readOnly = false)
+    public void delete(Comment entity, Boolean isRe) {
+        super.delete(entity);
+    }
+
+
+    public int findChildNum(Comment comment, int i) {
+        return ChildNum(comment,i);
+    }
+
+    public int ChildNum(Comment comment, int i) {
+        i += comment.getChildComments().size();
+        for (Comment c : comment.getChildComments()) {
+            if(!c.getChildComments().isEmpty()){
+                i = ChildNum(c,i);
+            }
+        }
+        return i;
+    }
 }

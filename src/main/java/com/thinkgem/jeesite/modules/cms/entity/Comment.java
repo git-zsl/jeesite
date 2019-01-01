@@ -38,6 +38,7 @@ public class Comment extends DataEntity<Comment> {
 	private String isTop;  // 是否置顶
 	private String isRecommend; //是否推荐
 	private String commentNum;   //评论数
+	private User user;
 
 	public Comment() {
 		super();
@@ -183,5 +184,13 @@ public class Comment extends DataEntity<Comment> {
 
 	public void setChildComments(List<Comment> childComments) {
 		this.childComments = childComments;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }
