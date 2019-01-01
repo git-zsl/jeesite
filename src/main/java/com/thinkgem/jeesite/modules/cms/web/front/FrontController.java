@@ -296,8 +296,10 @@ public class FrontController extends BaseController{
 				if (StringUtils.isNotBlank(replyId)){
 					Comment replyComment = commentService.get(replyId);
 					if (replyComment != null){
-						comment.setContent("<div class=\"reply\">"+replyComment.getName()+":<br/>"
-								+replyComment.getContent()+"</div>"+content);
+						comment.setParentContentId(replyId);
+						/*comment.setContent("<div class=\"reply\">"+replyComment.getName()+":<br/>"
+								+replyComment.getContent()+"</div>"+content);*/
+						comment.setContent(content);
 					}else{
 						comment.setContent(content);
 					}

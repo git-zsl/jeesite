@@ -7,6 +7,8 @@ import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.cms.entity.Comment;
 
+import java.util.List;
+
 /**
  * 评论DAO接口
  * @author ThinkGem

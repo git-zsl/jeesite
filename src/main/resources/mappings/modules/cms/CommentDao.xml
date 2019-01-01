@@ -13,7 +13,11 @@
 		a.create_date AS "createDate",
 		a.audit_user_id AS "auditUser.id",
 		a.audit_date AS "auditDate",
-		a.del_flag AS "delFlag"
+		a.del_flag AS "delFlag",
+		a.parent_content_id AS "parentContentId",
+		a.is_top AS "isTop",
+		a.is_recommend AS "isRecommend",
+		a.comment_num AS "commentNum"
 	</sql>
 	
 	<sql id="cmsCommentDaoJoins">
@@ -50,7 +54,30 @@
 			</otherwise>
 		</choose>
 	</select>
-	
+	<select id="findconsultationList" resultType="Comment">
+		SELECT
+			<include refid="cmsCommentDaoColumns"/>
+		FROM cms_comment a
+		<include refid="cmsCommentDaoJoins"/>
+		<where>
+			a.del_flag = #{delFlag}
+			<if test="title != null and title != ''">
+				AND a.title LIKE
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">CONCAT('%', #{title}, '%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
 	<select id="findAllList" resultType="Comment">
 		SELECT 
 			<include refid="cmsCommentDaoColumns"/>
@@ -81,7 +108,11 @@
 			create_date,
 			audit_user_id,
 			audit_date,
-			del_flag
+			del_flag,
+			parent_content_id,
+			is_top,
+		    is_recommend,
+		    comment_num
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -93,13 +124,16 @@
 			#{createDate},
 			#{auditUser.id},
 			#{auditDate},
-			#{delFlag}
+			#{delFlag},
+			#{parentContentId},
+			#{isTop},
+			#{isRecommend},
+			#{commentNum}
 		)
 	</insert>
 	
 	<update id="update">
 		UPDATE cms_comment SET 	
-			
 			category_id = #{category.id},
 			content_id = #{contentId},
 			title = #{title},
@@ -109,7 +143,11 @@
 			create_date = #{createDate},
 			audit_user_id = #{auditUser.id},
 			audit_date = #{auditDate},
-			del_flag = #{delFlag}
+			del_flag = #{delFlag},
+			parent_content_id = #{parentContentId},
+			is_top = #{isTop},
+		    is_recommend = #{isRecommend},
+		    comment_num = #{commentNum}
 		WHERE id = #{id}
 	</update>
 	
