@@ -56,7 +56,7 @@
 		AND a.parent_ids != "0,"
 	</select>
 
-	<select id="findompanyListByName" resultType="Office">
+	<select id="findCompanyListByName" resultType="Office">
 		SELECT *
 		FROM sys_office a
 		WHERE a.name = #{name}

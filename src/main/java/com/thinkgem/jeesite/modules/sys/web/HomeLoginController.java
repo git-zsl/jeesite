@@ -47,11 +47,10 @@ public class HomeLoginController extends BaseController {
     private CacheManager cacheManager;
     private static final String TRUE = "true";
     private Class clazz = HomeLoginController.class;
-
     /**
      * token验证失败
      */
-    @RequestMapping(value = "/h/loginFail", method = RequestMethod.GET)
+    @RequestMapping(value = "/loginFail")
     @ResponseBody
     public ReturnEntity<String> login(HttpServletRequest request, HttpServletResponse response, Model model) {
         LogUtils.getLogInfo(clazz).info("token无效，请重新登录");
@@ -59,18 +58,17 @@ public class HomeLoginController extends BaseController {
     }
 
     /**
-     * 用户注册
+     * 验证邮箱后用户注册
      */
-    @RequestMapping(value = "/h/homeLogin", method = RequestMethod.GET)
-    @ResponseBody
-    public ReturnEntity<String> loginFail(@RequestParam Map<String, String> map, boolean isCompany, HttpServletRequest request, User user) {
+    @RequestMapping(value = "/homeLogin", method = RequestMethod.GET)
+    public String loginFail(@RequestParam Map<String, String> map, boolean isCompany, HttpServletRequest request, User user) {
+        String loginName = map.get("loginName");
         try{
-            String loginName = map.get("loginName");
             Cache<String, String> cache = cacheManager.getCache(loginName);
             Set<String> keys = cache.keys();
             if(StringUtils.isBlank(loginName) || keys.size() == 0){
                 LogUtils.getLogInfo(clazz).info("邮箱验证失败,loginName为空");
-                return ReturnEntity.fail("邮箱验证失败,loginName为空");
+                return "redirect:http://www.baidu.com";
             }
             for (Iterator<String> it = keys.iterator(); it.hasNext();){
                 String key = it.next();
@@ -82,32 +80,44 @@ public class HomeLoginController extends BaseController {
             CacheUtils.removeAll(loginName);
         }catch (Exception e){
             e.printStackTrace();
+            //清除缓存map
+            CacheUtils.removeAll(loginName);
             LogUtils.getLogInfo(clazz).info("邮注册失败",e);
-            return ReturnEntity.fail("注册失败");
+            return "redirect:http://www.baidu.com";
         }
-        return ReturnEntity.success("注册成功");
+        return "redirect:http://139.159.200.137:8081/";
     }
         /**
          * 邮箱认证
          */
-        @RequestMapping(value = "/h/email", method = RequestMethod.POST)
+        @RequestMapping(value = "/email", method = RequestMethod.POST)
         @ResponseBody
         public ReturnEntity<String> sentValidateEmail(@RequestParam Map<String, String> map){
             try{
                 String email = map.get("email");
                 String loginName = map.get("loginName");
                 String isCompany = map.get("isCompany");
+                //清除缓存map
+                CacheUtils.removeAll(loginName);
                 if(TRUE.equals(isCompany)){
                     map.put("isCompany","true");
+                    String companyId = UserUtils.getCompanyId(Global.OFFICE_TYPE_2);
+                    map.put("companyId",companyId);
+                    //需要增加部门（部门字段未添加）
                 }else{
+                    String officeId = UserUtils.getOfficeId(Global.OFFICE_TYPE_1);
+                    String companyId = UserUtils.getCompanyId(Global.OFFICE_TYPE_1);
+                    map.put("officeId",officeId);
+                    map.put("companyId",companyId);
                     map.put("isCompany","false");
+                    map.put("name",loginName);
                 }
                 if (StringUtils.isBlank(map.get("loginName")) && StringUtils.isBlank(email)) {
                     return ReturnEntity.fail("用户名或者邮箱不能为空");
                 }
                 User byLoginName = UserUtils.getByLoginName(loginName);
                 if(Objects.isNull(byLoginName)){
-                    String content = "<a href=http://localhost:8080/zsl/h/homeLogin?loginName="+loginName+"&isCompany="+isCompany+">请点击完成此处激活帐号完成注册</a><br/>";
+                    String content = "<a href=http://localhost:8080/zsl/homeLogin?loginName="+loginName+"&isCompany="+isCompany+">请点击完成此处激活帐号完成注册</a><br/>";
                     EmailUtils.sendHtmlMail(new Email(email,"注册验证",content));
                     CacheUtils.putMapAll(loginName,map);
                     return ReturnEntity.success("邮件发送成功");
@@ -123,7 +133,7 @@ public class HomeLoginController extends BaseController {
     /**
      * 用户名验证
      */
-    @RequestMapping(value = "/h/ValidateLoginName", method = RequestMethod.POST)
+    @RequestMapping(value = "/ValidateLoginName", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<String> ValidateLoginName(@RequestParam Map<String,String> map){
         try{
@@ -147,7 +157,7 @@ public class HomeLoginController extends BaseController {
     /**
      * 用户登录
      */
-    @RequestMapping(value = "/h/loginSuccess", method = RequestMethod.POST)
+    @RequestMapping(value = "/loginSuccess", method = RequestMethod.POST)
     public ReturnEntity<String> loginSuccess(@RequestParam Map<String,String> map){
         try{
             String token = "";

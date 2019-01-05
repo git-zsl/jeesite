@@ -3,14 +3,13 @@
  */
 package com.thinkgem.jeesite.modules.cms.web;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.supcan.treelist.cols.Col;
+import com.thinkgem.jeesite.common.supcan.treelist.cols.Group;
 import com.thinkgem.jeesite.modules.book.entity.BookManager;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -202,6 +201,18 @@ public class CategoryController extends BaseController {
                     parentList.add(c);
                 }
             }
+            //排序
+			Collections.sort(parentList, new Comparator<Category>() {
+				@Override
+				public int compare(Category o1, Category o2) {
+					if (o1.getSort() > o2.getSort()){
+						return 1;
+					}else if (o1.getSort() < o2.getSort()){
+						return -1;
+					}
+					return 0;
+				}
+			});
         }catch(Exception e){
             LogUtils.getLogInfo(CategoryController.class).info("系统出错",e);
             return ReturnEntity.fail("系统出错，请联系管理员");

@@ -300,6 +300,7 @@ public class FrontController extends BaseController{
 						/*comment.setContent("<div class=\"reply\">"+replyComment.getName()+":<br/>"
 								+replyComment.getContent()+"</div>"+content);*/
 						comment.setContent(content);
+						commentService.findParentCommentAndSet(replyComment);
 					}else{
 						comment.setContent(content);
 					}

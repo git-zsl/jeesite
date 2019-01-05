@@ -459,7 +459,7 @@ public class UserController extends BaseController {
 	public String companyList(User user, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Office office = new Office();
 		office.setName("企业用户");
-		List<Office> listByName = officeService.findompanyListByName(office);
+		List<Office> listByName = officeService.findCompanyListByName(office);
 		if(!listByName.isEmpty()){
 			user.setOffice(listByName.get(0));
 		}

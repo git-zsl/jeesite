@@ -11,6 +11,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
@@ -88,17 +89,16 @@ public class CommentController extends BaseController {
 	@RequestMapping(value = "consultationList",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity<Page<Comment>> findConsultationList(@ModelAttribute Comment comment, HttpServletRequest request, HttpServletResponse response) {
-		Page<Comment> page =null;
+		Page<Comment> page = new Page<Comment>(request, response);
+		List<Comment> lists = new ArrayList<Comment>();
+		List<Comment> comments =new ArrayList<>();
 		try{
-			page = commentService.findconsultationPage(new Page<Comment>(request, response), comment);
-			List<Comment> comments =new ArrayList<>();
-			if(!page.getList().isEmpty()){
-				for (Comment c : page.getList()) {
-					c.setCommentNum("0");
-					for (Comment cc : page.getList()) {
+			List<Comment> list = commentService.findconsultationList(comment);
+			if(!list.isEmpty()){
+				for (Comment c : list) {
+					for (Comment cc : list) {
 						if(c.getId().equals(cc.getParentContentId())){
 							c.getChildComments().add(cc);
-							c.setCommentNum(Integer.parseInt(c.getCommentNum())+1+"");
 						}
 					}
 					if(StringUtils.isBlank(c.getParentContentId())){
@@ -107,19 +107,36 @@ public class CommentController extends BaseController {
 				}
 			}
 			//统计评论数量
-			for (Comment c : comments) {
+		/*	for (Comment c : comments) {
 				int i = 0;
 				if(!c.getChildComments().isEmpty()){
 					int childNum = commentService.findChildNum(c,i);
 					c.setCommentNum(childNum + "");
 				}
+			}*/
+			//模拟分页
+		/*	for (int i = 0; i < comments.size(); i++) {
+				if( i >= ((page.getPageNo()-1)*page.getPageSize()) && i <= (page.getPageNo()*page.getPageSize()-1)){
+					lists.add(comments.get(i));
+				}
 			}
+			page.setList(lists);*/
+		//不分页
 			page.setList(comments);
+			if(Global.YES.equals(comment.getIsRecommend())){
+				for (Comment c : comments) {
+					if(Global.YES.equals(c.getIsRecommend())){
+						lists.add(c);
+					}
+				}
+				page.setList(lists);
+				return ReturnEntity.success(lists,"获取推荐评论列表成功");
+			}
 		}catch (Exception e){
 			LogUtils.getLogInfo(CommentController.class).info("程序出错",e);
 			e.printStackTrace();
 			ReturnEntity.fail("程序出错");
 		}
-		return ReturnEntity.success(page,"获取评论列表成功");
+		return ReturnEntity.success(comments,"获取评论列表成功");
 	}
 }

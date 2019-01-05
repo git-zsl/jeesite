@@ -80,9 +80,9 @@ public class ArticleController extends BaseController {
         if (!user.isAdmin()) {
             article.setCreateBy(user);
         }
-        Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
         List<String> titles = articleService.findTitle(article);
         model.addAttribute("titles", titles);
+        Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
         model.addAttribute("page", page);
         return "modules/cms/articleList";
     }

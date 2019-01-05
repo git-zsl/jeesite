@@ -46,15 +46,20 @@ public class CommentService extends CrudService<CommentDao, Comment> {
         return super.findconsultationPage(page, comment);
     }
 
+    public List<Comment> findconsultationList(Comment comment) {
+        return dao.findconsultationList(comment);
+    }
+
     @Transactional(readOnly = false)
     public void delete(Comment entity, Boolean isRe) {
         super.delete(entity);
     }
 
-
+    @Transactional(readOnly = false)
     public int findChildNum(Comment comment, int i) {
         return ChildNum(comment,i);
     }
+
 
     public int ChildNum(Comment comment, int i) {
         i += comment.getChildComments().size();
@@ -65,4 +70,19 @@ public class CommentService extends CrudService<CommentDao, Comment> {
         }
         return i;
     }
+    @Transactional(readOnly = false)
+    public void findParentCommentAndSet(Comment comment){
+        updateCommentNum(comment);
+    }
+
+    @Transactional(readOnly = false)
+    public void updateCommentNum(Comment comment){
+        comment.setCommentNum(Integer.parseInt(comment.getCommentNum())+1+"");
+        super.save(comment);
+        List<Comment> parents = dao.findParent(comment);
+        if(!parents.isEmpty()){
+            findParentCommentAndSet(parents.get(0));
+        }
+    }
+
 }

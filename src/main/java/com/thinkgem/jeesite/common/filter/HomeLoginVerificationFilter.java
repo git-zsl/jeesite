@@ -48,9 +48,11 @@ public class HomeLoginVerificationFilter implements Filter {
                     filterChain.doFilter(request, response);
                     return;
                 }
-                req.getRequestDispatcher("/h/loginFail").forward(request,response);
+                req.getRequestDispatcher("/loginFail").forward(request,response);
                 return;
             }
+        req.getRequestDispatcher("/loginFail").forward(request,response);
+        return;
     }
 
     @Override

@@ -54,9 +54,9 @@ public class OfficeService extends TreeService<OfficeDao, Office> {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Office> findompanyListByName(Office office){
+	public List<Office> findCompanyListByName(Office office){
 		if(!java.util.Objects.isNull(office)){
-			return dao.findompanyListByName(office);
+			return dao.findCompanyListByName(office);
 		}
 		return  new ArrayList<Office>();
 	}

@@ -45,6 +45,7 @@ public class Comment extends DataEntity<Comment> {
 		this.delFlag = DEL_FLAG_NORMAL;
 		this.isTop = Global.NO;
 		this.isRecommend = Global.NO;
+		this.commentNum = Global.NO;
 	}
 	
 	public Comment(String id){

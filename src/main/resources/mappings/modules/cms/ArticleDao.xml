@@ -247,7 +247,7 @@
         on c.id = a.category_id
         <where>
             1=1
-            <if test="category.name != null and category.name !=''">
+            <if test="category != null and category.name != null and category.name !=''">
                 AND c.name = #{category.name}
             </if>
         </where>

@@ -39,20 +39,10 @@ public class HomeLoginService extends BaseService {
         user.setLoginName(map.get("loginName"));
         user.setName(map.get("name"));
         user.setPassword(LoginUtils.entryptPassword(map.get("password")));
-        if(isCompany){
-            Office office = new Office();
-            office.setName(COMPANY);
-            listByName = officeService.findListByName(office);
-            user.setCompany(listByName.get(0));
-            //添加公司名
-            //........
-        }else{
-            Office office = new Office();
-            office.setName(PERSONAL);
-            listByName = officeService.findListByName(office);
-            user.setCompany(listByName.get(0));
-            user.setOffice(listByName.get(0));
-        }
+        Office office= officeService.get(map.get("officeId"));
+        Office company= officeService.get(map.get("companyId"));
+        user.setOffice(office);
+        user.setCompany(company);
         systemService.createUser(user);
     }
 

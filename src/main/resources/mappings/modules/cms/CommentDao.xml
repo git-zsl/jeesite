@@ -36,7 +36,15 @@
 		<include refid="cmsCommentDaoJoins"/>
 		WHERE a.id = #{id}
 	</select>
-	
+
+	<select id="findParent" resultType="Comment">
+		SELECT
+			<include refid="cmsCommentDaoColumns"/>
+		FROM cms_comment a
+		<include refid="cmsCommentDaoJoins"/>
+		WHERE a.id = #{parentContentId}
+	</select>
+
 	<select id="findList" resultType="Comment">
 		SELECT 
 			<include refid="cmsCommentDaoColumns"/>
@@ -73,13 +81,17 @@
 					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
 					<if test="dbName == 'mysql'">CONCAT('%', #{title}, '%')</if>
 			</if>
+			<if test="parentContentId != null and parentContentId != ''">
+				AND a.parent_content_id is null
+				AND a.comment_num = '0'
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.create_date DESC
+				ORDER BY a.create_date DESC ,a.is_top DESC
 			</otherwise>
 		</choose>
 	</select>

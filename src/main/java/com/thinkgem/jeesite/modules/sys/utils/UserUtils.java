@@ -228,7 +228,32 @@ public class UserUtils {
 	public static Subject getSubject(){
 		return SecurityUtils.getSubject();
 	}
-	
+
+	/**
+	 * 按名称获取部门ID
+	 */
+	public static String getOfficeId(String name){
+		Office office = new Office();
+		office.setName(name);
+		List<Office> listByName = officeDao.findListByName(office);
+		if(listByName.isEmpty()){
+			return null;
+		}
+		return listByName.get(0).getId();
+	}
+	/**
+	 * 按名称获取公司ID
+	 */
+	public static String getCompanyId(String name){
+		Office office = new Office();
+		office.setName(name);
+		List<Office> listByName = officeDao.findCompanyListByName(office);
+		if(listByName.isEmpty()){
+			return null;
+		}
+		return listByName.get(0).getId();
+	}
+
 	/**
 	 * 获取当前登录者对象
 	 */

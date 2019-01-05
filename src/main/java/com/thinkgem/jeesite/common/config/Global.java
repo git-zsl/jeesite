@@ -79,6 +79,12 @@ public class Global {
 	public static final String FALSE = "false";
 
 	/**
+	 * 个人用户/企业用户
+	 */
+	public static final String OFFICE_TYPE_1 = "个人用户";
+	public static final String OFFICE_TYPE_2 = "企业用户";
+
+	/**
 	 * 上传文件基础虚拟路径
 	 */
 	public static final String USERFILES_BASE_URL = "/userfiles/";

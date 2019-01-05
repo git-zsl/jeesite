@@ -13,11 +13,20 @@ import java.util.List;
 /**
  * 机构DAO接口
  * @author ThinkGem
- * @version 2014-05-16
- */
+ * @version
+ * */
 @MyBatisDao
 public interface OfficeDao extends TreeDao<Office> {
+	/**
+	 * 查找部门名称
+	 * @param office
+	 * @return
+	 */
 	public List<Office> findListByName(Office office);
-
-	public List<Office> findompanyListByName(Office office);
+	/**
+	 * 查找公司名称
+	 * @param office
+	 * @return
+	 */
+	public List<Office> findCompanyListByName(Office office);
 }
