@@ -8,6 +8,7 @@ import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LoginUtils;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.activiti.engine.IdentityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,12 +41,16 @@ public class HomeLoginService extends BaseService {
         user.setLoginName(map.get("loginName"));
         user.setName(map.get("name"));
         String password = LoginUtils.entryptPassword(map.get("password"));
+        LogUtils.getLogInfo(HomeLoginService.class).info("plainPassword:"+map.get("password"));
         LogUtils.getLogInfo(HomeLoginService.class).info("password为:"+password);
         user.setPassword(password);
         Office office= officeService.get(map.get("officeId"));
         Office company= officeService.get(map.get("companyId"));
         user.setOffice(office);
         user.setCompany(company);
+        User user1 = UserUtils.get("1");
+        user.setCreateBy(user1);
+        user.setUpdateBy(user1);
         systemService.createUser(user);
     }
 
