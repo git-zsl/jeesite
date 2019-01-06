@@ -12,6 +12,7 @@ public class EmailUtils {
     /**
      * 进行base64加密，防止中文乱码
      */
+    private static Class clazz = EmailUtils.class;
     private static String changeEncode(String str) {
         try {
             // "B"代表Base64
@@ -58,7 +59,18 @@ public class EmailUtils {
             // 将MiniMultipart对象设置为邮件内容
             message.setContent(multipart);
             message.saveChanges();
+            StringBuffer sb = new StringBuffer();
+            sb.append(" SMTP服务器地址:"+email.getSmtpServer())
+                    .append("端口:"+email.getPort())
+                    .append("发送人邮箱地址:"+email.getFromUserName())
+                    .append("登录SMTP服务器的密码:"+email.getFromUserPassword())
+                    .append("收件人"+email.getToUser())
+                    .append("邮件主题"+email.getSubject())
+                    .append("邮件正文"+email.getContent());
+            LogUtils.getLogInfo(clazz).info(sb.toString());
+            LogUtils.getLogInfo(clazz).info("发送邮件成功");
         } catch (Exception e) {
+            LogUtils.getLogInfo(clazz).info("发邮件失败",e);
             e.printStackTrace();
             return false;
         }
@@ -78,9 +90,9 @@ public class EmailUtils {
     public static void main(String[] args) {
         EmailUtils util = new EmailUtils();
         String content = "这是一个测试邮件内容%s";
-        content =  content.format(content, "111","222");
+        content = content.format(content, "111", "222");
         System.out.println(content);
-        Email info = new Email("328875024@qq.com","这是测试标题", "<p>这是一个测试邮件</p>");
+        Email info = new Email("328875024@qq.com", "这是测试标题", "<p>这是一个测试邮件</p>");
         util.sendHtmlMail(info);
     }
 }

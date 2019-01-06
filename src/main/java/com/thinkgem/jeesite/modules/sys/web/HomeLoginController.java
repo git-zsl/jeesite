@@ -98,7 +98,7 @@ public class HomeLoginController extends BaseController {
                 String loginName = map.get("loginName");
                 String isCompany = map.get("isCompany");
                 //清除缓存map
-                CacheUtils.removeAll(loginName);
+                    CacheUtils.removeAll(loginName);
                 if(TRUE.equals(isCompany)){
                     map.put("isCompany","true");
                     String companyId = UserUtils.getCompanyId(Global.OFFICE_TYPE_2);
@@ -117,7 +117,7 @@ public class HomeLoginController extends BaseController {
                 }
                 User byLoginName = UserUtils.getByLoginName(loginName);
                 if(Objects.isNull(byLoginName)){
-                    String content = "<a href=http://localhost:8080/zsl/homeLogin?loginName="+loginName+"&isCompany="+isCompany+">请点击完成此处激活帐号完成注册</a><br/>";
+                    String content = "<a href=http://"+ Global.getConfig("serverAddress")+"/homeLogin?loginName="+loginName+"&isCompany="+isCompany+">请点击完成此处激活帐号完成注册</a><br/>";
                     EmailUtils.sendHtmlMail(new Email(email,"注册验证",content));
                     CacheUtils.putMapAll(loginName,map);
                     return ReturnEntity.success("邮件发送成功");
