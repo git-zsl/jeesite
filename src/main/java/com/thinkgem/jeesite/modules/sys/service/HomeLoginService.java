@@ -54,4 +54,19 @@ public class HomeLoginService extends BaseService {
         systemService.createUser(user);
     }
 
+    /**
+     * 个人用户封装数据
+     */
+    public Map<String, String> setpersonalParmas(Map<String, String> map){
+
+        return map;
+    }
+
+    /**
+     * 企业用户封装数据
+     */
+    public Map<String, String> setCompanyParmas(Map<String, String> map){
+
+        return map;
+    }
 }

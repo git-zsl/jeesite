@@ -3,13 +3,16 @@
  */
 package com.thinkgem.jeesite.modules.sys.web;
 
+import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.sys.entity.Area;
 import com.thinkgem.jeesite.modules.sys.entity.Email;
 import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.service.AreaService;
 import com.thinkgem.jeesite.modules.sys.service.HomeLoginService;
 import com.thinkgem.jeesite.modules.sys.utils.EmailUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
@@ -24,14 +27,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 登录Controller
@@ -43,6 +44,8 @@ public class HomeLoginController extends BaseController {
 
     @Autowired
     private HomeLoginService homeLoginService;
+    @Autowired
+    private AreaService areaService;
     @Autowired
     private CacheManager cacheManager;
     private static final String TRUE = "true";
@@ -92,11 +95,13 @@ public class HomeLoginController extends BaseController {
          */
         @RequestMapping(value = "/email", method = RequestMethod.POST)
         @ResponseBody
-        public ReturnEntity<String> sentValidateEmail(@RequestParam Map<String, String> map){
+        public ReturnEntity<String> sentValidateEmail(@RequestParam Map<String, String> map,@RequestParam(value = "image",required = false) MultipartFile image,@RequestParam(value = "image",required = false) MultipartFile file){
             try{
+                //个人用户字段
                 String email = map.get("email");
                 String loginName = map.get("loginName");
                 String isCompany = map.get("isCompany");
+                //企业用户字段
                 //清除缓存map
                     CacheUtils.removeAll(loginName);
                 if(TRUE.equals(isCompany)){
@@ -104,6 +109,7 @@ public class HomeLoginController extends BaseController {
                     String companyId = UserUtils.getCompanyId(Global.OFFICE_TYPE_2);
                     map.put("companyId",companyId);
                     //需要增加部门（部门字段未添加）
+
                 }else{
                     String officeId = UserUtils.getOfficeId(Global.OFFICE_TYPE_1);
                     String companyId = UserUtils.getCompanyId(Global.OFFICE_TYPE_1);
@@ -158,6 +164,7 @@ public class HomeLoginController extends BaseController {
      * 用户登录
      */
     @RequestMapping(value = "/loginSuccess", method = RequestMethod.POST)
+    @ResponseBody
     public ReturnEntity<String> loginSuccess(@RequestParam Map<String,String> map){
         try{
             String token = "";
@@ -176,7 +183,9 @@ public class HomeLoginController extends BaseController {
             //验证密码
             if(LoginUtils.validatePassword(password,byLoginName.getPassword())){
                 //生成token
-                token = LoginUtils.entryptPassword(MessageFormat.format("{}{}",loginName,Global.ZSL));
+               /* String format = MessageFormat.format("{}{}", loginName, Global.ZSL);*/
+                String format = loginName + Global.ZSL;
+                token = LoginUtils.entryptPassword(format);
                 byLoginName.setToken(token);
                 return ReturnEntity.success(byLoginName,"登录成功");
             }
@@ -185,5 +194,25 @@ public class HomeLoginController extends BaseController {
             return ReturnEntity.fail("程序出错");
         }
         return ReturnEntity.success("登录成功");
+    }
+
+    /**
+     * 省市区接口
+     */
+    @RequestMapping("/getArea")
+    @ResponseBody
+    public ReturnEntity<Area> getAreaData(){
+        List<Area> areas = Lists.newArrayList();
+        try{
+            List<Area> list = areaService.findTopArea();
+            for (Area area : list) {
+                areas.add( areaService.findChildArea(area).get(0));
+            }
+        }catch (Exception e){
+            LogUtils.getLogInfo(clazz).info("获取省市区失败",e);
+            e.printStackTrace();
+            return ReturnEntity.fail("获取省市区失败");
+        }
+        return ReturnEntity.success(areas,"获取省市区成功");
     }
 }

@@ -3,9 +3,12 @@
  */
 package com.thinkgem.jeesite.modules.sys.entity;
 
+import com.google.common.collect.Lists;
 import org.hibernate.validator.constraints.Length;
 
 import com.thinkgem.jeesite.common.persistence.TreeEntity;
+
+import java.util.List;
 
 /**
  * 区域Entity
@@ -21,6 +24,7 @@ public class Area extends TreeEntity<Area> {
 //	private String name; 	// 区域名称
 //	private Integer sort;		// 排序
 	private String type; 	// 区域类型（1：国家；2：省份、直辖市；3：地市；4：区县）
+	private List<Area> childList = Lists.newArrayList();
 	
 	public Area(){
 		super();
@@ -66,6 +70,15 @@ public class Area extends TreeEntity<Area> {
 //	public void setSort(Integer sort) {
 //		this.sort = sort;
 //	}
+
+
+	public List<Area> getChildList() {
+		return childList;
+	}
+
+	public void setChildList(List<Area> childList) {
+		this.childList = childList;
+	}
 
 	@Length(min=1, max=1)
 	public String getType() {

@@ -43,7 +43,7 @@ public class HomeLoginVerificationFilter implements Filter {
         User user = UserUtils.get(userId);
             if(!StringUtils.isBlank(token) && Objects.nonNull(user)){
                 //验证token
-                String plainPassword = MessageFormat.format("{}{}",user.getLoginName(),Global.ZSL);
+                String plainPassword = user.getLoginName() + Global.ZSL;
                 if(LoginUtils.validatePassword(plainPassword, token)){
                     filterChain.doFilter(request, response);
                     return;

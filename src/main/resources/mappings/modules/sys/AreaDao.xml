@@ -42,7 +42,33 @@
 		OR a.id = #{currentUser.office.area.id}
 		ORDER BY a.code
 	</select>
-	
+
+	<select id="findChildArea" resultType="Area">
+		SELECT
+		<include refid="areaColumns"/>
+		FROM sys_area a
+		<include refid="areaJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test=" id != null and id != ''">
+				AND a.parent_id = #{id}
+			</if>
+		</where>
+				ORDER BY a.sort ASC
+	</select>
+
+	<select id="findTopArea" resultType="Area">
+		SELECT
+		<include refid="areaColumns"/>
+		FROM sys_area a
+		<include refid="areaJoins"/>
+		<where>
+			 a.del_flag = #{DEL_FLAG_NORMAL}
+		AND  a.parent_id = '1'
+		</where>
+				ORDER BY a.sort ASC
+	</select>
+
 	<select id="findAllList" resultType="Area">
 		SELECT
 			<include refid="areaColumns"/>

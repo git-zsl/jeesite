@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.sys.service;
 
 import java.util.List;
 
+import com.thinkgem.jeesite.modules.cms.entity.Category;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +17,7 @@ import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 /**
  * 区域Service
  * @author ThinkGem
- * @version 2014-05-16
+ * @version
  */
 @Service
 @Transactional(readOnly = true)
@@ -37,5 +38,23 @@ public class AreaService extends TreeService<AreaDao, Area> {
 		super.delete(area);
 		UserUtils.removeCache(UserUtils.CACHE_AREA_LIST);
 	}
-	
+
+	public List<Area> findTopArea(){
+		return dao.findTopArea();
+	}
+
+	public List<Area> findChildArea(Area area) {
+		findChild(area.getChildList(),area);
+		return area.getChildList();
+	}
+
+	public void findChild(List<Area> allChildNavigationBars,Area area){
+		List<Area> navigationBar = dao.findChildArea(area);
+		allChildNavigationBars.addAll(navigationBar);
+		if(!navigationBar.isEmpty()){
+			for (Area c : navigationBar) {
+				findChild(c.getChildList(),c);
+			}
+		}
+	}
 }
