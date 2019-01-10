@@ -14,6 +14,8 @@ import com.thinkgem.jeesite.modules.sys.entity.Email;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.service.AreaService;
 import com.thinkgem.jeesite.modules.sys.service.HomeLoginService;
+import com.thinkgem.jeesite.modules.sys.service.OfficeService;
+import com.thinkgem.jeesite.modules.sys.service.SysOfficeInformationService;
 import com.thinkgem.jeesite.modules.sys.utils.EmailUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LoginUtils;
@@ -31,6 +33,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.*;
 
@@ -48,6 +52,7 @@ public class HomeLoginController extends BaseController {
     private AreaService areaService;
     @Autowired
     private CacheManager cacheManager;
+
     private static final String TRUE = "true";
     private Class clazz = HomeLoginController.class;
     /**
@@ -95,13 +100,41 @@ public class HomeLoginController extends BaseController {
          */
         @RequestMapping(value = "/email", method = RequestMethod.POST)
         @ResponseBody
-        public ReturnEntity<String> sentValidateEmail(@RequestParam Map<String, String> map,@RequestParam(value = "image",required = false) MultipartFile image,@RequestParam(value = "image",required = false) MultipartFile file){
+        public ReturnEntity<String> sentValidateEmail(HttpServletRequest request,@RequestParam MultipartFile image,@RequestParam MultipartFile file){
             try{
+                Map<String,String[]> parameterMap = request.getParameterMap();
+                Map<String,String> map = new HashMap<>();
+                for (Map.Entry<String,String[]> entry : parameterMap.entrySet()) {
+                    map.put(entry.getKey(), URLDecoder.decode(entry.getValue()[0],"UTF-8"));
+                }
+                String loginName = map.get("loginName");
+                String originalFilename = image.getOriginalFilename();
+                String originalFilename1 = file.getOriginalFilename();
+                String configPath = Global.getConfig("userfiles.basedir").substring(0,1) + Global.getConfig("userfiles.basedir").substring(1);
+                File file1 = new File(configPath + "/" + loginName +"/" + originalFilename);
+                File file2 = new File(configPath + "/" + loginName +"/" + originalFilename1);
+                if(!file1.getParentFile().exists()){
+                    file1.getParentFile().mkdirs();
+                }
+                image.transferTo(file1);
+                file.transferTo(file2);
+                map.put("image",file1.getPath());
+                map.put("file",file2.getPath());
                 //个人用户字段
                 String email = map.get("email");
-                String loginName = map.get("loginName");
+                email = URLDecoder.decode(email);
                 String isCompany = map.get("isCompany");
+                //用户名验证
+                if(StringUtils.isBlank(loginName)){
+                    LogUtils.getLogInfo(clazz).info("用户名不能为空");
+                    return ReturnEntity.fail("用户名不能为空");
+                }
+                User byLoginName = UserUtils.getByLoginName(loginName);
+                if(!Objects.isNull(byLoginName)){
+                    return ReturnEntity.fail("当前用户名已被占用");
+                }
                 //企业用户字段
+
                 //清除缓存map
                     CacheUtils.removeAll(loginName);
                 if(TRUE.equals(isCompany)){
@@ -121,19 +154,15 @@ public class HomeLoginController extends BaseController {
                 if (StringUtils.isBlank(map.get("loginName")) && StringUtils.isBlank(email)) {
                     return ReturnEntity.fail("用户名或者邮箱不能为空");
                 }
-                User byLoginName = UserUtils.getByLoginName(loginName);
-                if(Objects.isNull(byLoginName)){
                     String content = "<a href=http://"+ Global.getConfig("serverAddress")+"/homeLogin?loginName="+loginName+"&isCompany="+isCompany+">请点击完成此处激活帐号完成注册</a><br/>";
                     EmailUtils.sendHtmlMail(new Email(email,"注册验证",content));
                     CacheUtils.putMapAll(loginName,map);
-                    return ReturnEntity.success("邮件发送成功");
-                }
             }catch (Exception e){
                 LogUtils.getLogInfo(clazz).info("邮箱认证出错",e);
                 e.printStackTrace();
                 return ReturnEntity.fail("系统出错，请联系管理员");
             }
-            return ReturnEntity.fail("当前用户已存在");
+            return ReturnEntity.success("邮件发送成功");
         }
 
     /**
@@ -206,7 +235,10 @@ public class HomeLoginController extends BaseController {
         try{
             List<Area> list = areaService.findTopArea();
             for (Area area : list) {
-                areas.add( areaService.findChildArea(area).get(0));
+                if(Global.YES.equals(area.getParent().getId())){
+                    areas.add(area);
+                    areaService.findChildArea(area);
+                }
             }
         }catch (Exception e){
             LogUtils.getLogInfo(clazz).info("获取省市区失败",e);
@@ -214,5 +246,17 @@ public class HomeLoginController extends BaseController {
             return ReturnEntity.fail("获取省市区失败");
         }
         return ReturnEntity.success(areas,"获取省市区成功");
+    }
+
+    /**
+     * 上传测试
+     */
+    @RequestMapping(value = "upload")
+    @ResponseBody
+    public ReturnEntity upload(@RequestParam MultipartFile file)throws Exception{
+        String originalFilename = file.getOriginalFilename();
+        File file1 = new File("F://11/"+originalFilename);
+        file.transferTo(file1);
+        return ReturnEntity.success("上传成功");
     }
 }

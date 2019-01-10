@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.thinkgem.jeesite.modules.sys.dao.SysOfficeInformationDao">
-    
-	<sql id="sysOfficeInformationColumns">
+
+    <sql id="sysOfficeInformationColumns">
 		a.id AS "id",
 		a.office_id AS "office.id",
+		a.user_id AS "user.id",
+		a.provence AS "provence",
+		a.city AS "city",
+		a.district AS "district",
+		a.office_introduction AS "officeIntroduction",
+		a.office_link AS "officeLink",
 		a.name AS "name",
 		a.short_name AS "shortName",
 		a.office_type AS "officeType",
@@ -18,62 +24,62 @@
 		a.del_flag AS "delFlag",
 		o2.name AS "office.name"
 	</sql>
-	
-	<sql id="sysOfficeInformationJoins">
+
+    <sql id="sysOfficeInformationJoins">
 		LEFT JOIN sys_office o2 ON o2.id = a.office_id
 	</sql>
-    
-	<select id="get" resultType="SysOfficeInformation">
-		SELECT 
-			<include refid="sysOfficeInformationColumns"/>
-		FROM sys_office_information a
-		<include refid="sysOfficeInformationJoins"/>
-		WHERE a.id = #{id}
-	</select>
-	
-	<select id="findList" resultType="SysOfficeInformation">
-		SELECT 
-			<include refid="sysOfficeInformationColumns"/>
-		FROM sys_office_information a
-		<include refid="sysOfficeInformationJoins"/>
-		<where>
-			a.del_flag = #{DEL_FLAG_NORMAL}
-			<if test="name != null and name != ''">
-				AND a.name LIKE 
-					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
-					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
-					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
-			</if>
-		</where>
-		<choose>
-			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
-				ORDER BY ${page.orderBy}
-			</when>
-			<otherwise>
-				ORDER BY a.update_date DESC
-			</otherwise>
-		</choose>
-	</select>
-	
-	<select id="findAllList" resultType="SysOfficeInformation">
-		SELECT 
-			<include refid="sysOfficeInformationColumns"/>
-		FROM sys_office_information a
-		<include refid="sysOfficeInformationJoins"/>
-		<where>
-			a.del_flag = #{DEL_FLAG_NORMAL}
-		</where>		
-		<choose>
-			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
-				ORDER BY ${page.orderBy}
-			</when>
-			<otherwise>
-				ORDER BY a.update_date DESC
-			</otherwise>
-		</choose>
-	</select>
-	
-	<insert id="insert">
+
+    <select id="get" resultType="SysOfficeInformation">
+        SELECT
+        <include refid="sysOfficeInformationColumns"/>
+        FROM sys_office_information a
+        <include refid="sysOfficeInformationJoins"/>
+        WHERE a.id = #{id}
+    </select>
+
+    <select id="findList" resultType="SysOfficeInformation">
+        SELECT
+        <include refid="sysOfficeInformationColumns"/>
+        FROM sys_office_information a
+        <include refid="sysOfficeInformationJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="name != null and name != ''">
+                AND a.name LIKE
+                <if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+                <if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+            </if>
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findAllList" resultType="SysOfficeInformation">
+        SELECT
+        <include refid="sysOfficeInformationColumns"/>
+        FROM sys_office_information a
+        <include refid="sysOfficeInformationJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insert">
 		INSERT INTO sys_office_information(
 			id,
 			office_id,
@@ -87,7 +93,13 @@
 			update_by,
 			update_date,
 			remarks,
-			del_flag
+			del_flag,
+			user_id,
+			provence,
+			city,
+			district,
+			office_introduction,
+			office_link
 		) VALUES (
 			#{id},
 			#{office.id},
@@ -101,11 +113,17 @@
 			#{updateBy.id},
 			#{updateDate},
 			#{remarks},
-			#{delFlag}
+			#{delFlag},
+			#{user.id},
+			#{provence},
+			#{city},
+			#{district},
+			#{officeIntroduction},
+			#{officeLink}
 		)
 	</insert>
-	
-	<update id="update">
+
+    <update id="update">
 		UPDATE sys_office_information SET 	
 			office_id = #{office.id},
 			name = #{name},
@@ -115,14 +133,20 @@
 			file = #{file},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
-			remarks = #{remarks}
+			remarks = #{remarks},
+			user_id = #{user.id},
+			provence = #{provence},
+			city  = #{city},
+			district = #{district},
+			office_introduction = #{officeIntroduction},
+			office_link = #{officeLink}
 		WHERE id = #{id}
 	</update>
-	
-	<update id="delete">
+
+    <update id="delete">
 		UPDATE sys_office_information SET 
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
-	
+
 </mapper>

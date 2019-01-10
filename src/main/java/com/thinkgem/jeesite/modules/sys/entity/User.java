@@ -50,6 +50,7 @@ public class User extends DataEntity<User> {
 	private String oldLoginIp;	// 上次登陆IP
 	private Date oldLoginDate;	// 上次登陆日期
 	private String token; // token
+	private String position;  // 职位
 	
 	private Role role;	// 根据角色查询用户条件
 	
@@ -325,7 +326,15 @@ public class User extends DataEntity<User> {
 	public static boolean isAdmin(String id){
 		return id != null && "1".equals(id);
 	}
-	
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
 	@Override
 	public String toString() {
 		return id;

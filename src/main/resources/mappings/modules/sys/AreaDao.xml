@@ -63,8 +63,8 @@
 		FROM sys_area a
 		<include refid="areaJoins"/>
 		<where>
-			 a.del_flag = #{DEL_FLAG_NORMAL}
-		AND  a.parent_id = '1'
+			 a.del_flag = '0'
+		/*AND  a.parent_id = '1'*/
 		</where>
 				ORDER BY a.sort ASC
 	</select>

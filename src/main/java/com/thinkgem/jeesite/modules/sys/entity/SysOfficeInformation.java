@@ -17,6 +17,12 @@ public class SysOfficeInformation extends DataEntity<SysOfficeInformation> {
 	
 	private static final long serialVersionUID = 1L;
 	private Office office;		// 机构Id
+	private User user;  // 企业用户
+	private String provence;  // 省
+	private String city;    // 市
+	private String district;      // 区
+	private String officeIntroduction;  // 机构简介
+	private String officeLink;     // 公司主页
 	private String name;		// 机构名称
 	private String shortName;		// 简称
 	private String officeType;		// 机构类型
@@ -83,5 +89,52 @@ public class SysOfficeInformation extends DataEntity<SysOfficeInformation> {
 	public void setFile(String file) {
 		this.file = file;
 	}
-	
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getProvence() {
+		return provence;
+	}
+
+	public void setProvence(String provence) {
+		this.provence = provence;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+
+	public String getOfficeIntroduction() {
+		return officeIntroduction;
+	}
+
+	public void setOfficeIntroduction(String officeIntroduction) {
+		this.officeIntroduction = officeIntroduction;
+	}
+
+	public String getOfficeLink() {
+		return officeLink;
+	}
+
+	public void setOfficeLink(String officeLink) {
+		this.officeLink = officeLink;
+	}
 }

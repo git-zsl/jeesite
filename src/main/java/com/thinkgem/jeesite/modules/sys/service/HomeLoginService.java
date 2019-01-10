@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.sys.service;
 
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
+import com.thinkgem.jeesite.modules.sys.entity.SysOfficeInformation;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LoginUtils;
@@ -34,6 +35,9 @@ public class HomeLoginService extends BaseService {
     @Autowired
     private SystemService systemService;
 
+    @Autowired
+    private SysOfficeInformationService sysOfficeInformationService;
+
     @Transactional(readOnly = false,rollbackFor = Exception.class)
     public void signIn(boolean isCompany,Map<String,String> map) {
         List<Office> listByName = null;
@@ -51,7 +55,15 @@ public class HomeLoginService extends BaseService {
         User user1 = UserUtils.get("1");
         user.setCreateBy(user1);
         user.setUpdateBy(user1);
-        systemService.createUser(user);
+        if(isCompany){
+            User user2 = sysOfficeInformationService.setUserInformation(map, user);
+            SysOfficeInformation sysOfficeInformation = sysOfficeInformationService.setSysOfficeInformation(map, new SysOfficeInformation(),user2);
+            systemService.createUser(user2);
+            sysOfficeInformation.setUser(user2);
+            sysOfficeInformationService.save(sysOfficeInformation);
+        }else{
+            systemService.createUser(user);
+        }
     }
 
     /**

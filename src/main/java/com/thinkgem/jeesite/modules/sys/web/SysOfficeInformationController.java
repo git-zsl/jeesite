@@ -6,6 +6,9 @@ package com.thinkgem.jeesite.modules.sys.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.sys.entity.Office;
+import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.service.OfficeService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +25,8 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.sys.entity.SysOfficeInformation;
 import com.thinkgem.jeesite.modules.sys.service.SysOfficeInformationService;
 
+import java.util.Map;
+
 /**
  * 机构详细信息Controller
  * @author zsl
@@ -33,7 +38,7 @@ public class SysOfficeInformationController extends BaseController {
 
 	@Autowired
 	private SysOfficeInformationService sysOfficeInformationService;
-	
+
 	@ModelAttribute
 	public SysOfficeInformation get(@RequestParam(required=false) String id) {
 		SysOfficeInformation entity = null;
@@ -79,5 +84,4 @@ public class SysOfficeInformationController extends BaseController {
 		addMessage(redirectAttributes, "删除信息成功");
 		return "redirect:"+Global.getAdminPath()+"/sys/sysOfficeInformation/?repage";
 	}
-
 }
