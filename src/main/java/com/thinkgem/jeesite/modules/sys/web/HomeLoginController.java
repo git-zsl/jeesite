@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.sys.web;
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.persistence.ReturnStatus;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
@@ -60,9 +61,9 @@ public class HomeLoginController extends BaseController {
      */
     @RequestMapping(value = "/loginFail")
     @ResponseBody
-    public ReturnEntity<String> login(HttpServletRequest request, HttpServletResponse response, Model model) {
+    public ReturnEntity login(HttpServletRequest request, HttpServletResponse response, Model model) {
         LogUtils.getLogInfo(clazz).info("token无效，请重新登录");
-        return ReturnEntity.fail("token无效，请登录");
+        return new ReturnEntity(ReturnStatus.UNAUTHORIZED,"token无效，请登录");
     }
 
     /**
@@ -100,7 +101,7 @@ public class HomeLoginController extends BaseController {
          */
         @RequestMapping(value = "/email", method = RequestMethod.POST)
         @ResponseBody
-        public ReturnEntity<String> sentValidateEmail(HttpServletRequest request,@RequestParam MultipartFile image,@RequestParam MultipartFile file){
+        public ReturnEntity<String> sentValidateEmail(HttpServletRequest request,@RequestParam MultipartFile homeImage,@RequestParam MultipartFile file){
             try{
                 Map<String,String[]> parameterMap = request.getParameterMap();
                 Map<String,String> map = new HashMap<>();
@@ -108,7 +109,7 @@ public class HomeLoginController extends BaseController {
                     map.put(entry.getKey(), URLDecoder.decode(entry.getValue()[0],"UTF-8"));
                 }
                 String loginName = map.get("loginName");
-                String originalFilename = image.getOriginalFilename();
+                String originalFilename = homeImage.getOriginalFilename();
                 String originalFilename1 = file.getOriginalFilename();
                 String configPath = Global.getConfig("userfiles.basedir").substring(0,1) + Global.getConfig("userfiles.basedir").substring(1);
                 File file1 = new File(configPath + "/" + loginName +"/" + originalFilename);
@@ -116,7 +117,7 @@ public class HomeLoginController extends BaseController {
                 if(!file1.getParentFile().exists()){
                     file1.getParentFile().mkdirs();
                 }
-                image.transferTo(file1);
+                homeImage.transferTo(file1);
                 file.transferTo(file2);
                 map.put("image",file1.getPath());
                 map.put("file",file2.getPath());
@@ -194,7 +195,7 @@ public class HomeLoginController extends BaseController {
      */
     @RequestMapping(value = "/loginSuccess", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<String> loginSuccess(@RequestParam Map<String,String> map){
+    public ReturnEntity<String> loginSuccess(@RequestParam Map<String,String> map,@RequestParam(value = "isComapny",required = false) String isCompany){
         try{
             String token = "";
             String loginName = map.get("loginName");
@@ -209,6 +210,9 @@ public class HomeLoginController extends BaseController {
             if(Objects.isNull(byLoginName)){
                 return ReturnEntity.fail("用户名错误，请重新输入");
             }
+            if(!byLoginName.getIsCompany().equals(isCompany)){
+                return ReturnEntity.fail(Global.TRUE.equals(isCompany)?"请选择个人登录入口登录":"请选择企业登录入口登录");
+            }
             //验证密码
             if(LoginUtils.validatePassword(password,byLoginName.getPassword())){
                 //生成token
@@ -216,6 +220,7 @@ public class HomeLoginController extends BaseController {
                 String format = loginName + Global.ZSL;
                 token = LoginUtils.entryptPassword(format);
                 byLoginName.setToken(token);
+                byLoginName.setIsCompany(isCompany);
                 return ReturnEntity.success(byLoginName,"登录成功");
             }
         }catch (Exception e){

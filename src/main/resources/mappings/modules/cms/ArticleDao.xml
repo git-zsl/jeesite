@@ -165,7 +165,7 @@
                 <if test="dbName == 'oracle'">'%'||#{company}||'%'</if>
                 <if test="dbName == 'mssql'">'%'+#{company}+'%'</if>
                 <if test="dbName == 'mysql'">CONCAT('%', #{company}, '%')</if>
-                or p.posts like
+                or a.posts like
                 <if test="dbName == 'oracle'">'%'||#{company}||'%'</if>
                 <if test="dbName == 'mssql'">'%'+#{company}+'%'</if>
                 <if test="dbName == 'mysql'">CONCAT('%', #{company}, '%')</if>

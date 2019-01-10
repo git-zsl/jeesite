@@ -56,6 +56,11 @@ public class HomeLoginService extends BaseService {
         user.setCreateBy(user1);
         user.setUpdateBy(user1);
         if(isCompany){
+            user.setIsCompany("true");
+        }else{
+            user.setIsCompany("false");
+        }
+        if(isCompany){
             User user2 = sysOfficeInformationService.setUserInformation(map, user);
             SysOfficeInformation sysOfficeInformation = sysOfficeInformationService.setSysOfficeInformation(map, new SysOfficeInformation(),user2);
             systemService.createUser(user2);

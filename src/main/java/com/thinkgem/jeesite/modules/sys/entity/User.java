@@ -51,6 +51,7 @@ public class User extends DataEntity<User> {
 	private Date oldLoginDate;	// 上次登陆日期
 	private String token; // token
 	private String position;  // 职位
+	private String isCompany;   //是否企业
 	
 	private Role role;	// 根据角色查询用户条件
 	
@@ -81,6 +82,14 @@ public class User extends DataEntity<User> {
 
 	public void setPhoto(String photo) {
 		this.photo = photo;
+	}
+
+	public String getIsCompany() {
+		return isCompany;
+	}
+
+	public void setIsCompany(String isCompany) {
+		this.isCompany = isCompany;
 	}
 
 	public String getLoginFlag() {

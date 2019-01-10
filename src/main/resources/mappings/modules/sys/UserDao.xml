@@ -75,6 +75,7 @@
 		a.remarks,
 		a.login_flag,
 		a.photo,
+		a.isCompany AS "isCompany",
 		a.position AS "position",
 		a.create_by AS "createBy.id",
 		a.create_date,
@@ -262,7 +263,8 @@
 			login_flag, 
 			photo, 
 			del_flag,
-			position
+			position,
+			isCompany
 		) VALUES (
 			#{id}, 
 			#{company.id}, 
@@ -283,7 +285,8 @@
 			#{loginFlag}, 
 			#{photo}, 
 			#{delFlag},
-			#{position}
+			#{position},
+			#{isCompany}
 		)
 	</insert>
 	
@@ -305,7 +308,8 @@
 			remarks = #{remarks},
 			login_flag = #{loginFlag},
 			photo = #{photo},
-			position = #{position}
+			position = #{position},
+			isCompany = #{isCompany}
 		WHERE id = #{id}
 	</update>
 	
