@@ -366,4 +366,23 @@ public class ArticleController extends BaseController {
         }
     }
 
+    /**
+     * 获取招聘岗位接口
+     * param
+     */
+
+    @RequestMapping(value = "getHostPost", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity<List<Article>> getHostPost(@ModelAttribute Article article,@RequestParam(value="categoryId",required = false)String categoryId , HttpServletRequest request, HttpServletResponse response) {
+        try {
+            Category category = new Category(categoryId);
+            article.setCategory(category);
+            List<Article> hostPost = articleService.findHostPosts(article);
+            return ReturnEntity.success(hostPost, "获取热门作者列表成功");
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            return ReturnEntity.fail("程序内部出错");
+        }
+    }
+
 }

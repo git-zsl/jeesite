@@ -61,6 +61,36 @@
         a.is_recommend AS "isRecommend",
         <include refid="cmsArticleJobColumns"/>
     </sql>
+    <sql id="cmsArticleJobPostColumns">
+        DISTINCT  a.category_id AS "category.id",
+        a.id AS "id",
+        a.title AS "title",
+        a.link AS "link",
+        a.color AS "color",
+        a.image AS "image",
+        a.keywords AS "keywords",
+        a.description AS "description",
+        a.weight AS "weight",
+        a.weight_date AS "weightDate",
+        a.hits AS "hits",
+        a.posid AS "posid",
+        a.author AS "author",
+        a.custom_content_view AS "customContentView",
+        a.view_config AS "viewConfig",
+        a.create_by AS "createBy.id",
+        a.create_date AS "createDate",
+        a.update_by AS "updateBy.id",
+        a.update_date AS "updateDate",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag",
+        c.name AS "category.name",
+        u.name AS "user.name",
+        u.photo AS "user.photo",
+        a.is_top AS "isTop",
+        a.is_recommend AS "isRecommend",
+        c.parent_ids AS "parentIds",
+        <include refid="cmsArticleJobColumns"/>
+    </sql>
     <sql id="cmsArticleKeywordsColumns">
         DISTINCT  a.keywords AS "keywords",
         a.id AS "id",
@@ -265,6 +295,24 @@
             AND a.author is not null
         </where>
         GROUP BY a.author
+        ORDER BY a.hits desc
+    </select>
+
+    <select id="findHostPosts" resultType="Article">
+        SELECT
+        <include refid="cmsArticleJobPostColumns"/>
+        FROM cms_article a
+        <include refid="cmsArticleJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+           <if test="category != null and category.id != null and category.id != ''">
+               AND c.parent_ids LIKE
+               <if test="dbName == 'oracle'">'%,'||#{category.id}||',%'</if>
+               <if test="dbName == 'mssql'">'%,'+#{category.id}+',%'</if>
+               <if test="dbName == 'mysql'">CONCAT('%,', #{category.id}, ',%')</if>
+           </if>
+        </where>
+        GROUP BY a.category_id
         ORDER BY a.hits desc
     </select>
 

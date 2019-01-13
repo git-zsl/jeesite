@@ -223,4 +223,11 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 	public HashMap<String,Object> findByYearCount(){
 		return dao.findByYearCount();
 	}
+
+	/**
+	 *
+	 */
+	public List<Article> findHostPosts(Article article){
+		return dao.findHostPosts(article);
+	}
 }

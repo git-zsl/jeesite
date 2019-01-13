@@ -31,9 +31,12 @@ public interface ArticleDao extends CrudDao<Article> {
 
 	public List<Article> findHostAuthors(Article article);
 
+	public List<Article> findHostPosts(Article article);
+
 	public List<Article> findHostKeywords(Article article);
 
 	public HashMap<String,Object> findByYearCount();
+
 
 	public Integer findOwnNum(@Param("categoryId") String categoryId,@Param("createBy") String createBy);
 	//		return find("from Article where id in (:p1)", new Parameter(new Object[]{ids}));
