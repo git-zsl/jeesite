@@ -65,7 +65,7 @@
 		<div class="control-group">
 			<label class="control-label">作者信息：</label>
 			<div class="controls">
-				<form:input path="authorIntroduce" htmlEscape="false" maxlength="255" class="input-xlarge "/>
+				<form:textarea path="authorIntroduce" htmlEscape="false" rows="4" maxlength="2000" class="input-xxlarge "/>
 			</div>
 		</div>
 		<div class="control-group">
@@ -142,6 +142,15 @@
 			<label class="control-label">出版社：</label>
 			<div class="controls">
 				<form:input path="publishingHouse" htmlEscape="false" maxlength="255" class="input-xlarge "/>
+			</div>
+		</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">发行日期：</label>
+			<div class="controls">
+				<input name="publishingDate" type="text" readonly="readonly" maxlength="20" class="input-medium Wdate "
+					   value="<fmt:formatDate value="${bookManager.publishDate}" pattern="yyyy-MM-dd"/>"
+					   onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 			</div>
 		</div>
 		<div class="control-group">

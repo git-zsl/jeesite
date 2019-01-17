@@ -39,6 +39,8 @@
 			</li>
 			<li class="btns"><input id="btnSubmit" class="btn-primary" type="submit" value="查询"/></li>
 			<li class="clearfix"></li>
+			&nbsp&nbsp&nbsp&nbsp<label>状态：</label>
+			<form:radiobuttons onclick="$('#searchForm').submit();" path="isRecommend" items="${fns:getDictList('is_recommend')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 		</ul>
 	</form:form>
 	<sys:message content="${message}"/>

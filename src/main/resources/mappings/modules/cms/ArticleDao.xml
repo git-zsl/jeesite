@@ -29,6 +29,7 @@
 		a.is_top AS "isTop",
 		a.is_recommend AS "isRecommend",
 		a.author AS "author",
+        a.brand AS "brand",
         <include refid="cmsArticleJobColumns"/>
 	</sql>
 
@@ -128,20 +129,29 @@
 		a.pay AS "pay",
 		a.education AS "education",
 		a.experience AS "experience",
-		a.posts AS "posts"
+		a.posts AS "posts",
+		p.posts AS "cPosts",
+		jc.city AS "jcity",
+		a.classifying_id AS "classifying.id"
 	</sql>
 
     <sql id="cmsJobArticleJoins">
 		JOIN cms_category c ON c.id = a.category_id
 		JOIN sys_office o ON o.id = c.office_id
 		JOIN sys_user u ON u.id = a.create_by
-		JOIN cms_posts p ON p.id = a.posts
+		Left JOIN cms_posts p ON p.id = a.posts
+		Left JOIN job_city jc ON jc.id = a.area
+		Left JOIN cms_classifying cc ON cc.id = a.classifying_id
+
 	</sql>
 
     <sql id="cmsArticleJoins">
 		JOIN cms_category c ON c.id = a.category_id
 		JOIN sys_office o ON o.id = c.office_id
 		JOIN sys_user u ON u.id = a.create_by
+		Left JOIN cms_posts p ON p.id = a.posts
+		Left JOIN job_city jc ON jc.id = a.area
+		Left JOIN cms_classifying cc ON cc.id = a.classifying_id
 	</sql>
 
     <select id="get" resultType="Article">
@@ -189,6 +199,9 @@
             </if>
             <if test="image != null and image != ''">
                 AND a.image = #{image}
+            </if>
+            <if test="id != null and id != ''">
+                AND a.id = #{id}
             </if>
             <if test="company != null and company != ''">
                 AND (a.company like
@@ -249,16 +262,25 @@
         <include refid="cmsJobArticleJoins"/>
         <where>
                 a.del_flag = #{DEL_FLAG_NORMAL}
-            <if test="category != null and category.id != null and category.id != ''">
-                AND (a.category_id = #{category.id}
+            <if test="pay != null and pay != ''">
+                AND a.pay = #{pay}
             </if>
-            <if test="category.parentIds != null and category.parentIds != ''">
-                or c.parent_ids like
+            <if test="area != null and area != ''">
+                AND a.area = #{area}
+            </if>
+            <if test="education != null and education != ''">
+                AND a.education = #{education}
+            </if>
+            <if test="experience != null and experience != ''">
+                AND a.experience = #{experience}
+            </if>
+            <if test="category != null and category.parentIds != null and category.parentIds != ''">
+                AND c.parent_ids like
                 <if test="dbName == 'oracle'">'%'||#{category.id}||'%'</if>
                 <if test="dbName == 'mssql'">'%,'+#{category.id}+',%'</if>
                 <if test="dbName == 'mysql'">CONCAT('%,', #{category.id}, ',%')</if>
             </if>
-            )
+
         </where>
         <choose>
             <when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -377,7 +399,9 @@
             pay,
             education,
             experience,
-            posts
+            posts,
+            classifying_id,
+            brand
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -408,7 +432,9 @@
 		    #{pay},
 		    #{education},
 		    #{experience},
-		    #{posts}
+		    #{posts},
+		    #{classifying.id},
+		    #{brand}
 		)
 	</insert>
 
@@ -441,7 +467,9 @@
 		    pay = #{pay},
 		    education = #{education},
 		    experience = #{experience},
-		    posts = #{posts}
+		    posts = #{posts},
+		    classifying_id = #{classifying.id},
+		    brand = #{brand}
 		WHERE id = #{id}
 	</update>
 

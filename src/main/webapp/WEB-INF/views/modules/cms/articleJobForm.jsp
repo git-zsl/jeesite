@@ -82,7 +82,11 @@
 		<div class="control-group">
 			<label class="control-label">地区:</label>
 			<div class="controls">
-				<form:input path="area" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+				<%--<form:input path="area" htmlEscape="false" maxlength="200" class="input-xxlarge"/>--%>
+					<form:select id="area" path="area" class="input-medium">
+						<form:option value="" label="请选择"/>
+						<form:options items="${cityList}" htmlEscape="false" itemLabel="city" itemValue="id"/>
+					</form:select>
 			</div>
 		</div>
 		<div class="control-group">
@@ -95,19 +99,19 @@
 		<div class="control-group">
 			<label class="control-label">薪资:</label>
 			<div class="controls">
-				<form:input path="pay" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+				<form:radiobuttons path="pay" items="${fns:getDictList('pay')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">学历:</label>
 			<div class="controls">
-				<form:input path="education" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+				<form:radiobuttons path="education" items="${fns:getDictList('education')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">经验:</label>
 			<div class="controls">
-				<form:input path="experience" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+				<form:radiobuttons path="experience" items="${fns:getDictList('experience')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 			</div>
 		</div>
         <div id="linkBody" class="control-group" style="display:none">

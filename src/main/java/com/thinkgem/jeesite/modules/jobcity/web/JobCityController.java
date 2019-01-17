@@ -111,4 +111,21 @@ public class JobCityController extends BaseController {
 		}
 		return  ReturnEntity.success(codes,"获取城市列表成功");
 	}
+
+	/**
+	 * 招聘城市列表接口
+	 */
+	@RequestMapping(value = "findAllJobCity",method = RequestMethod.POST)
+	@ResponseBody
+	public ReturnEntity findAllJobCity(JobCity jobCity){
+		List<JobCity> list = null;
+		try {
+			list = jobCityService.findList(jobCity);
+		}catch (Exception e){
+			e.printStackTrace();
+			LogUtils.getLogInfo(JobCityController.class).info("获取城市列表出错",e);
+			return ReturnEntity.fail("获取城市列表出错");
+		}
+		return  ReturnEntity.success(list,"获取城市列表成功");
+	}
 }

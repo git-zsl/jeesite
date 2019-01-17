@@ -22,6 +22,7 @@
 		a.del_flag AS "delFlag",
 		a.editor_recommend AS "editorRecommend",
 		a.publishing_house AS "publishingHouse",
+		a.publishing_date AS "publishingDate",
 		a.language AS "language",
 		a.specification AS "specification",
 		a.place_of_publication AS "placeOfPublication",
@@ -80,7 +81,7 @@
 			<if test="secondClassId != null and secondClassId.id != null and secondClassId.id != ''">
 				AND a.second_class_id = #{secondClassId.id}
 			</if>
-			<if test="isRecommend != null and isRecommend = '1'">
+			<if test="isRecommend != null and isRecommend != ''">
 				AND a.is_recommend = #{isRecommend}
 			</if>
 		</where>
@@ -136,6 +137,7 @@
 			del_flag,
 			editor_recommend,
 			publishing_house,
+			publishing_date,
 			language,
 			specification,
 			place_of_publication,
@@ -166,6 +168,7 @@
 			#{delFlag},
 			#{editorRecommend},
 			#{publishingHouse},
+			#{publishingDate},
 			#{language},
 			#{specification},
 			#{placeOfPublication},
@@ -196,6 +199,7 @@
 			remarks = #{remarks},
 			editor_recommend = #{editorRecommend},
 			publishing_house = #{publishingHouse},
+			publishing_date = #{publishingDate},
 			language = #{language},
 			specification = #{specification},
 			place_of_publication = #{placeOfPublication},

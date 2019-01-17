@@ -30,6 +30,7 @@ public class BookManager extends DataEntity<BookManager> {
 	private String buyLink;		// 购买链接
 	private String isRecommend;		// 是否推荐
 	private Date publishDate;		// 发布日期
+	private Date publishingDate;		// 发行日期
 	private String editorRecommend;		// 主编荐语
 	private String publishingHouse;		// 出版社
 	private String language;		// 语言
@@ -259,5 +260,13 @@ public class BookManager extends DataEntity<BookManager> {
 
 	public void setImagUrl(List<String> imagUrl) {
 		ImagUrl = imagUrl;
+	}
+
+	public Date getPublishingDate() {
+		return publishingDate;
+	}
+
+	public void setPublishingDate(Date publishingDate) {
+		this.publishingDate = publishingDate;
 	}
 }

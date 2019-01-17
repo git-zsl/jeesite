@@ -3,6 +3,8 @@
  */
 package com.thinkgem.jeesite.modules.cms.web;
 
+import java.io.File;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -12,21 +14,28 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.modules.classifying.entity.CmsClassifying;
+import com.thinkgem.jeesite.modules.classifying.service.CmsClassifyingService;
 import com.thinkgem.jeesite.modules.cms.entity.*;
 import com.thinkgem.jeesite.modules.cms.service.*;
 import com.thinkgem.jeesite.modules.cms.utils.TxtReadUtil;
 import com.thinkgem.jeesite.modules.crn.entity.UserCategoryNum;
 import com.thinkgem.jeesite.modules.custom.entity.CustomCategory;
 import com.thinkgem.jeesite.modules.custom.service.CustomCategoryService;
+import com.thinkgem.jeesite.modules.jobcity.entity.JobCity;
+import com.thinkgem.jeesite.modules.jobcity.service.JobCityService;
 import com.thinkgem.jeesite.modules.posts.entity.CmsPosts;
 import com.thinkgem.jeesite.modules.posts.service.CmsPostsService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.mapper.JsonMapper;
@@ -36,12 +45,12 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.cms.utils.CmsUtils;
 import com.thinkgem.jeesite.modules.cms.utils.TplUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import org.springframework.web.util.WebUtils;
 
 /**
  * 文章Controller
  *
  * @author ThinkGem
- * @version 2013-3-23
  */
 @Controller
 @RequestMapping(value = "${adminPath}/cms/article")
@@ -63,6 +72,10 @@ public class ArticleController extends BaseController {
     private CmsPostsService cmsPostsService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private JobCityService jobCityService;
+    @Autowired
+    private CmsClassifyingService cmsClassifyingService;
 
     @ModelAttribute
     public Article get(@RequestParam(required = false) String id) {
@@ -92,6 +105,8 @@ public class ArticleController extends BaseController {
     public String form(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all) {
         try {
             model.addAttribute("postsList", cmsPostsService.findPosts(new CmsPosts()));
+            model.addAttribute("cityList", jobCityService.findList(new JobCity()));
+            model.addAttribute("cmsClassifying", cmsClassifyingService.findList(new CmsClassifying()));
             // 如果当前传参有子节点，则选择取消传参选择
             if (article.getCategory() != null && StringUtils.isNotBlank(article.getCategory().getId())) {
                 List<Category> list = categoryService.findByParentId(article.getCategory().getId(), Site.getCurrentSiteId());
@@ -273,12 +288,18 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "getAllArticle", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value="categoryId",required = false)String categoryId,  HttpServletRequest request, HttpServletResponse response) {
+    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, HttpServletRequest request, HttpServletResponse response) {
         try {
-            if(!StringUtils.isBlank(categoryId)){
+            if (!StringUtils.isBlank(categoryId)) {
                 Category category = new Category(categoryId);
                 category.setParentIds(categoryId);
                 article.setCategory(category);
+            }
+            if (!StringUtils.isBlank(article.getId())) {
+                ArticleData articleData = articleDataService.get(article.getId());
+                Article article1 = articleService.findList(article).get(0);
+                article1.setArticleData(articleData);
+                return ReturnEntity.success(article1, "获取列表成功");
             }
             if (Global.YES.equals(article.getHits() + "")) {
                 List<Article> list = articleService.findList(article);
@@ -317,9 +338,9 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping(value = "getHostKeywords", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getHostKeywords(@ModelAttribute Article article,  @RequestParam(value="categoryId",required = false)String categoryId,HttpServletRequest request, HttpServletResponse response) {
+    public ReturnEntity<List<Article>> getHostKeywords(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, HttpServletRequest request, HttpServletResponse response) {
         try {
-            if(!StringUtils.isBlank(categoryId)){
+            if (!StringUtils.isBlank(categoryId)) {
                 Category category = new Category(categoryId);
                 category.setParentIds(categoryId);
                 article.setCategory(category);
@@ -338,7 +359,7 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping(value = "getArticleContent", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getArticleContent(@ModelAttribute Article article){
+    public ReturnEntity<List<Article>> getArticleContent(@ModelAttribute Article article) {
         try {
             ArticleData articleData = articleDataService.get(article.getId());
             return ReturnEntity.success(articleData, "获取文章详情成功");
@@ -354,7 +375,7 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping(value = "getArticleComment", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getArticleComment(@ModelAttribute Article article, HttpServletRequest request, HttpServletResponse response){
+    public ReturnEntity<List<Article>> getArticleComment(@ModelAttribute Article article, HttpServletRequest request, HttpServletResponse response) {
         try {
             Comment comment = new Comment();
             comment.setContentId(article.getId());
@@ -373,7 +394,7 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "getHostPost", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getHostPost(@ModelAttribute Article article,@RequestParam(value="categoryId",required = false)String categoryId , HttpServletRequest request, HttpServletResponse response) {
+    public ReturnEntity<List<Article>> getHostPost(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, HttpServletRequest request, HttpServletResponse response) {
         try {
             Category category = new Category(categoryId);
             article.setCategory(category);
@@ -383,6 +404,103 @@ public class ArticleController extends BaseController {
             LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
             return ReturnEntity.fail("程序内部出错");
         }
+    }
+
+
+    /**
+     * 获取招聘岗位搜索接口
+     * param category.id （不必须）
+     */
+
+    @RequestMapping(value = "getAllJobArticle", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity<List<Article>> getAllJobArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (!StringUtils.isBlank(categoryId)) {
+                Category category = new Category(categoryId);
+                category.setParentIds(categoryId);
+                article.setCategory(category);
+            }
+            if (Global.YES.equals(article.getPay())) {
+                article.setPay("");
+            }
+            if (Global.YES.equals(article.getArea())) {
+                article.setArea("");
+            }
+            if (Global.YES.equals(article.getEducation())) {
+                article.setEducation("");
+            }
+            if (Global.YES.equals(article.getExperience())) {
+                article.setExperience("");
+            }
+            Page<Article> page = articleService.findJobList(new Page<Article>(request, response), article);
+            return ReturnEntity.success(page, "获取数据成功");
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            return ReturnEntity.fail("程序内部出错");
+        }
+    }
+
+
+    /**
+     * 请教保存接口
+     */
+    @RequestMapping(value = "consultationSave",method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity consultationSave(@ModelAttribute Article article,@ModelAttribute ArticleData articleData,HttpServletRequest request,@RequestParam("userId") String userId,@RequestParam(value = "categoryId") String categoryId) {
+        if(!StringUtils.isBlank(categoryId)){
+            Category category = new Category(categoryId);
+            article.setCategory(category);
+        }
+        MultipartFile image = null;
+        User user = null;
+        File filePath = null;
+        try{
+            //转码
+            String titleDecode = URLDecoder.decode(article.getTitle(),"UTF-8");
+            String contentdecode = URLDecoder.decode(articleData.getContent(),"UTF-8");
+            article.setTitle(titleDecode);
+            articleData.setContent(contentdecode);
+            Category category = categoryService.get(article.getCategory().getId());
+            if(Objects.isNull(category)){
+                LogUtils.getLogInfo(ArticleController.class).info("获取栏目id为空或者栏目不存在，传入categoryId值为：" + article.getCategory().getId());
+                return ReturnEntity.fail("获取栏目id为空或者栏目不存在，传入categoryId值为：" + article.getCategory().getId());
+            }
+            if(!StringUtils.isBlank(userId)){
+            user = UserUtils.get(userId);
+        }
+        if(Objects.isNull(user)){
+            LogUtils.getLogInfo(ArticleController.class).info("获取用户值为空，传入userId值为：" + userId);
+            return ReturnEntity.fail("当前用户过期，或者不存在。传入userId值为：" + userId);
+        }
+        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+        if (isMultipart) {
+            MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
+            image = multipartRequest.getFile("homeImage");
+            String originalFilename = image.getOriginalFilename();
+            String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
+            filePath = new File(configPath + "/" + category.getName() + "/" + user.getLoginName() + "/" + originalFilename);
+            if (!filePath.getParentFile().exists()) {
+                filePath.getParentFile().mkdirs();
+            }
+            image.transferTo(filePath);
+            //路径问题，应与原来保持一致，不然主页上传的图片，后台看不到
+            String path = filePath.getPath();    // 目前为完整路径，改成相对路径
+            //获取图片并保存。。。。。。
+            article.setImage(path);
+        }
+            article.setIsTop(Global.NO);
+            article.setIsRecommend(Global.NO);
+            articleData.setAllowComment(Global.YES);
+            article.setArticleData(articleData);
+            articleService.save(article);
+            //保存内容(如果需要设置相关请教，则在ArticleData处添加)
+        }catch (Exception e){
+            LogUtils.getLogInfo(ArticleController.class).info("保存请教出错",e);
+            e.printStackTrace();
+            return ReturnEntity.fail("保存请教出错");
+        }
+        return ReturnEntity.success("保存请教成功");
     }
 
 }

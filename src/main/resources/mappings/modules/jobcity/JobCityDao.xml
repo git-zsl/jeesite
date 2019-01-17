@@ -41,6 +41,7 @@
 				ORDER BY ${page.orderBy}
 			</when>
 			<otherwise>
+				ORDER BY a.code ASC
 			</otherwise>
 		</choose>
 	</select>

@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.thinkgem.jeesite.modules.classifying.entity.CmsClassifying;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
 
@@ -53,6 +54,10 @@ public class Article extends DataEntity<Article> {
 	private String education;    //学历
 	private String experience;    // 经验
 	private String posts;    // 岗位id
+	private String cPosts;    // 岗位名称
+	private String jcity;     // 城市名称
+	private CmsClassifying classifying; //分类
+	private String brand;    // 品牌
 
 	private User user;
     
@@ -336,6 +341,39 @@ public class Article extends DataEntity<Article> {
 	public void setPosts(String posts) {
 		this.posts = posts;
 	}
+
+	public String getcPosts() {
+		return cPosts;
+	}
+
+	public void setcPosts(String cPosts) {
+		this.cPosts = cPosts;
+	}
+
+	public String getJcity() {
+		return jcity;
+	}
+
+	public void setJcity(String jcity) {
+		this.jcity = jcity;
+	}
+
+	public CmsClassifying getClassifying() {
+		return classifying;
+	}
+
+	public void setClassifying(CmsClassifying classifying) {
+		this.classifying = classifying;
+	}
+
+	public String getBrand() {
+		return brand;
+	}
+
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
+
 }
 
 
