@@ -37,7 +37,11 @@ public class ArticleCollectService extends CrudService<ArticleCollectDao, Articl
 	public List<ArticleCollect> findList(ArticleCollect articleCollect) {
 		return super.findList(articleCollect);
 	}
-	
+
+	public List<ArticleCollect> findCollectUsers(ArticleCollect articleCollect) {
+		return dao.findAllList(articleCollect);
+	}
+
 	public Page<ArticleCollect> findPage(Page<ArticleCollect> page, ArticleCollect articleCollect) {
 		return super.findPage(page, articleCollect);
 	}

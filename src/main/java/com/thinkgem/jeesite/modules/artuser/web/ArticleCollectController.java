@@ -45,6 +45,7 @@ public class ArticleCollectController extends BaseController {
 	private ArticleCollectService articleCollectService;
 	@Autowired
 	private ArticleService articleService;
+	private Class<ArticleCollectController> clazz = ArticleCollectController.class;
 
 	@ModelAttribute
 	public ArticleCollect get(@RequestParam(required=false) String id) {
@@ -100,15 +101,15 @@ public class ArticleCollectController extends BaseController {
 	public ReturnEntity collectArticle(@RequestParam(value = "userId") String userId,@RequestParam(value = "articleId") String articleId){
 		try{
 			if(StringUtils.isBlank(userId) || StringUtils.isBlank(articleId)){
-				LogUtils.getLogInfo(ArticleCollectController.class).info("参数缺失：userId = "+ userId + " articleId = " + articleId);
+				LogUtils.getLogInfo(clazz).info("参数缺失：userId = "+ userId + " articleId = " + articleId);
 				return ReturnEntity.fail("参数缺失");
 			}
 			articleCollectService.updateCollectNum(userId,articleId);
 		}catch (RuntimeException ru){
-			LogUtils.getLogInfo(ArticleCollectController.class).info(ru.getMessage());
+			LogUtils.getLogInfo(clazz).info(ru.getMessage());
 			return ReturnEntity.fail(ru.getMessage());
 		}catch(Exception e){
-			LogUtils.getLogInfo(ArticleCollectController.class).info("收藏出错",e);
+			LogUtils.getLogInfo(clazz).info("收藏出错",e);
 			e.printStackTrace();
 			return ReturnEntity.fail("收藏出错");
 		}
@@ -124,7 +125,7 @@ public class ArticleCollectController extends BaseController {
 		List<Article> articlecollects = null;
 		try{
 			if(StringUtils.isBlank(userId) && Objects.isNull(UserUtils.get(userId))){
-				LogUtils.getLogInfo(ArticleCollectController.class).info("用户不存在，请登录后再操作：user = null");
+				LogUtils.getLogInfo(clazz).info("用户不存在，请登录后再操作：user = null");
 				return ReturnEntity.fail("用户不存在，请登录后再操作");
 			}
 			User user = UserUtils.get(userId);
@@ -139,10 +140,27 @@ public class ArticleCollectController extends BaseController {
 				}
 			}
 		}catch (Exception e){
-			LogUtils.getLogInfo(ArticleCollectController.class).info("查询收藏列表出错",e);
+			LogUtils.getLogInfo(clazz).info("查询收藏列表出错",e);
 			e.printStackTrace();
 			return ReturnEntity.fail("查询收藏列表出错");
 		}
 		return ReturnEntity.success(articleCollect,"查询收藏列表成功");
+	}
+
+	/**
+	 * 查看当前文章收藏人列表（包含人数）
+	 */
+	@RequestMapping("collectUsers")
+	@ResponseBody
+	public ReturnEntity findCollectUsers(@ModelAttribute ArticleCollect articleCollect){
+		List<ArticleCollect> collectUsers = null;
+		try{
+			collectUsers = articleCollectService.findCollectUsers(articleCollect);
+		}catch (Exception e){
+			LogUtils.getLogInfo(clazz).info("查询收藏人员列表出错",e);
+			e.printStackTrace();
+			return ReturnEntity.fail("查询收藏人员列表出错");
+		}
+		return ReturnEntity.success(collectUsers,"查询收藏用户列表成功");
 	}
 }

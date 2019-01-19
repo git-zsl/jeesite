@@ -450,7 +450,7 @@ public class ArticleController extends BaseController {
 
 
     /**
-     * 请教保存接口
+     * 请教/文章保存接口
      */
     @RequestMapping(value = "consultationSave",method = RequestMethod.POST)
     @ResponseBody
@@ -465,6 +465,18 @@ public class ArticleController extends BaseController {
         try{
             //转码
             String titleDecode = URLDecoder.decode(article.getTitle(),"UTF-8");
+            if(!StringUtils.isBlank(article.getDescription())){
+                String descriptiondecode = URLDecoder.decode(article.getDescription(),"UTF-8");
+                article.setDescription(descriptiondecode);
+            }
+            if(!StringUtils.isBlank(article.getKeywords())){
+                String keywordsdecode = URLDecoder.decode(article.getKeywords(),"UTF-8");
+                article.setKeywords(keywordsdecode);
+            }
+            if(!StringUtils.isBlank(article.getBrand())){
+                String branddecode = URLDecoder.decode(article.getBrand(),"UTF-8");
+                article.setBrand(branddecode);
+            }
             String contentdecode = URLDecoder.decode(articleData.getContent(),"UTF-8");
             article.setTitle(titleDecode);
             articleData.setContent(contentdecode);
@@ -503,11 +515,11 @@ public class ArticleController extends BaseController {
             articleService.save(article);
             //保存内容(如果需要设置相关请教，则在ArticleData处添加)
         }catch (Exception e){
-            LogUtils.getLogInfo(ArticleController.class).info("保存请教出错",e);
+            LogUtils.getLogInfo(ArticleController.class).info("保存出错",e);
             e.printStackTrace();
-            return ReturnEntity.fail("保存请教出错");
+            return ReturnEntity.fail("保存出错");
         }
-        return ReturnEntity.success("保存请教成功");
+        return ReturnEntity.success("保存成功");
     }
 
 
@@ -526,5 +538,19 @@ public class ArticleController extends BaseController {
         }
         return ReturnEntity.success("点赞成功");
     }
-
+   /* *//**
+     * 搜索所有文章的关键词
+     *//*
+    @RequestMapping("findKeywords")
+    @ResponseBody
+    public ReturnEntity findKeywords(){
+        try{
+            articleService.findHostKeywords()
+        }catch (Exception e){
+            LogUtils.getLogInfo(ArticleController.class).info("查询关键词出错",e);
+            e.printStackTrace();
+            return ReturnEntity.fail("查询关键词出错");
+        }
+        return ReturnEntity.success(null,"查询成功");
+    }*/
 }
