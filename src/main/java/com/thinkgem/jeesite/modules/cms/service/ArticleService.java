@@ -230,4 +230,22 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 	public List<Article> findHostPosts(Article article){
 		return dao.findHostPosts(article);
 	}
+	/**
+	 * 修改点赞数
+	 */
+	@Transactional(readOnly = false)
+	public void updateLikeNum(Article article){
+		String likeNum = Integer.parseInt(article.getLikeNum()) + 1 + "";
+		article.setLikeNum(likeNum);
+		dao.updateLikeNum(article);
+	}
+	/**
+	 * 修改点赞数
+	 */
+	@Transactional(readOnly = false)
+	public void updateCollectNum(Article article){
+		String collectNum = Integer.parseInt(article.getCollectNum()) + 1 + "";
+		article.setCollectNum(collectNum);
+		dao.updateCollectNum(article);
+	}
 }

@@ -30,6 +30,8 @@
 		a.is_recommend AS "isRecommend",
 		a.author AS "author",
         a.brand AS "brand",
+        a.collect_num AS "collectNum",
+        a.like_num AS "likeNum",
         <include refid="cmsArticleJobColumns"/>
 	</sql>
 
@@ -60,6 +62,9 @@
         u.photo AS "user.photo",
         a.is_top AS "isTop",
         a.is_recommend AS "isRecommend",
+        a.brand AS "brand",
+        a.collect_num AS "collectNum",
+        a.like_num AS "likeNum",
         <include refid="cmsArticleJobColumns"/>
     </sql>
     <sql id="cmsArticleJobPostColumns">
@@ -90,6 +95,9 @@
         a.is_top AS "isTop",
         a.is_recommend AS "isRecommend",
         c.parent_ids AS "parentIds",
+        a.brand AS "brand",
+        a.collect_num AS "collectNum",
+        a.like_num AS "likeNum",
         <include refid="cmsArticleJobColumns"/>
     </sql>
     <sql id="cmsArticleKeywordsColumns">
@@ -119,6 +127,9 @@
         u.photo AS "user.photo",
         a.is_top AS "isTop",
         a.is_recommend AS "isRecommend",
+        a.brand AS "brand",
+        a.collect_num AS "collectNum",
+        a.like_num AS "likeNum",
         <include refid="cmsArticleJobColumns"/>
     </sql>
 
@@ -230,6 +241,9 @@
             </when>
             <when test="page !=null and page.orderBy != null and page.orderBy != ''">
                 ORDER BY ${page.orderBy}
+            </when>
+            <when test="createBy != null and createBy.id != null and createBy.id != ''">
+                ORDER BY a.weight DESC, a.create_date DESC
             </when>
             <otherwise>
                 ORDER BY a.weight DESC, a.update_date DESC
@@ -401,7 +415,9 @@
             experience,
             posts,
             classifying_id,
-            brand
+            brand,
+            collect_num,
+            like_num
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -434,7 +450,9 @@
 		    #{experience},
 		    #{posts},
 		    #{classifying.id},
-		    #{brand}
+		    #{brand},
+		    #{collectNum},
+		    #{likeNum}
 		)
 	</insert>
 
@@ -469,7 +487,9 @@
 		    experience = #{experience},
 		    posts = #{posts},
 		    classifying_id = #{classifying.id},
-		    brand = #{brand}
+		    brand = #{brand},
+		    collect_num = #{collectNum},
+		    like_num = #{likeNum}
 		WHERE id = #{id}
 	</update>
 
@@ -482,6 +502,18 @@
     <update id="newDelete">
 		UPDATE cms_article SET
 			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+
+    <update id="updateLikeNum">
+		UPDATE cms_article SET
+			like_num = #{likeNum}
+		WHERE id = #{id}
+	</update>
+
+    <update id="updateCollectNum">
+		UPDATE cms_article SET
+			collect_num = #{collectNum}
 		WHERE id = #{id}
 	</update>
 

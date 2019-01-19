@@ -288,8 +288,15 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "getAllArticle", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, HttpServletRequest request, HttpServletResponse response) {
+    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId,@RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
         try {
+            if (!StringUtils.isBlank(userId)) {
+                User user = UserUtils.get(userId);
+                if(Objects.isNull(user)){
+                    return ReturnEntity.fail("当前用户不存在，无法获取用户的信息列表");
+                }
+                article.setCreateBy(user);
+            }
             if (!StringUtils.isBlank(categoryId)) {
                 Category category = new Category(categoryId);
                 category.setParentIds(categoryId);
@@ -501,6 +508,23 @@ public class ArticleController extends BaseController {
             return ReturnEntity.fail("保存请教出错");
         }
         return ReturnEntity.success("保存请教成功");
+    }
+
+
+    /**
+     * 点赞接口
+     */
+    @RequestMapping(value="like")
+    @ResponseBody
+    public ReturnEntity updateLikeNum(@ModelAttribute Article article){
+        try{
+            articleService.updateLikeNum(article);
+        }catch (Exception e){
+            LogUtils.getLogInfo(ArticleController.class).info("点赞出错",e);
+            e.printStackTrace();
+            return ReturnEntity.fail("点赞出错");
+        }
+        return ReturnEntity.success("点赞成功");
     }
 
 }

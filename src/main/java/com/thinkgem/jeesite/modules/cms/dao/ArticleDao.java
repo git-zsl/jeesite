@@ -33,6 +33,10 @@ public interface ArticleDao extends CrudDao<Article> {
 
 	public List<Article> findHostPosts(Article article);
 
+	public void updateLikeNum(Article article);
+
+	public void updateCollectNum(Article article);
+
 	public List<Article> findHostKeywords(Article article);
 
 	public HashMap<String,Object> findByYearCount();

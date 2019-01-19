@@ -58,6 +58,8 @@ public class Article extends DataEntity<Article> {
 	private String jcity;     // 城市名称
 	private CmsClassifying classifying; //分类
 	private String brand;    // 品牌
+	private String collectNum;  // 被收藏数量
+	private String likeNum;    //点赞数
 
 	private User user;
     
@@ -66,6 +68,8 @@ public class Article extends DataEntity<Article> {
 		this.weight = 0;
 		this.hits = 0;
 		this.posid = "";
+		this.likeNum = "0";
+		this.collectNum = "0";
 	}
 
 	public Article(String id){
@@ -374,6 +378,21 @@ public class Article extends DataEntity<Article> {
 		this.brand = brand;
 	}
 
+	public String getCollectNum() {
+		return collectNum;
+	}
+
+	public void setCollectNum(String collectNum) {
+		this.collectNum = collectNum;
+	}
+
+	public String getLikeNum() {
+		return likeNum;
+	}
+
+	public void setLikeNum(String likeNum) {
+		this.likeNum = likeNum;
+	}
 }
 
 
