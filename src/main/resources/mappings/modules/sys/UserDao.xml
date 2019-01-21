@@ -103,7 +103,9 @@
     	ou.id AS "office.primaryPerson.id",
     	ou.name AS "office.primaryPerson.name",
     	ou2.id AS "office.deputyPerson.id",
-    	ou2.name AS "office.deputyPerson.name"
+    	ou2.name AS "office.deputyPerson.name",
+    	a.attentionNum,
+    	a.attention2Num
     </sql>
     
     <sql id="userJoins">
@@ -264,7 +266,9 @@
 			photo, 
 			del_flag,
 			position,
-			isCompany
+			isCompany,
+			attentionNum,
+			attention2Num
 		) VALUES (
 			#{id}, 
 			#{company.id}, 
@@ -286,7 +290,9 @@
 			#{photo}, 
 			#{delFlag},
 			#{position},
-			#{isCompany}
+			#{isCompany},
+			#{attentionNum},
+			#{attention2Num}
 		)
 	</insert>
 	
@@ -309,7 +315,9 @@
 			login_flag = #{loginFlag},
 			photo = #{photo},
 			position = #{position},
-			isCompany = #{isCompany}
+			isCompany = #{isCompany},
+			attentionNum = #{attentionNum},
+			attention2Num = #{attention2Num}
 		WHERE id = #{id}
 	</update>
 	

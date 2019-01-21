@@ -52,6 +52,8 @@ public class User extends DataEntity<User> {
 	private String token; // token
 	private String position;  // 职位
 	private String isCompany;   //是否企业
+	private String attentionNum;  //关注数
+	private String attention2Num;  //被关注数
 	
 	private Role role;	// 根据角色查询用户条件
 	
@@ -60,6 +62,8 @@ public class User extends DataEntity<User> {
 	public User() {
 		super();
 		this.loginFlag = Global.YES;
+		this.attentionNum = Global.NO;
+		this.attention2Num = Global.NO;
 	}
 	
 	public User(String id){
@@ -342,6 +346,22 @@ public class User extends DataEntity<User> {
 
 	public void setPosition(String position) {
 		this.position = position;
+	}
+
+	public String getAttentionNum() {
+		return attentionNum;
+	}
+
+	public void setAttentionNum(String attentionNum) {
+		this.attentionNum = attentionNum;
+	}
+
+	public String getAttention2Num() {
+		return attention2Num;
+	}
+
+	public void setAttention2Num(String attention2Num) {
+		this.attention2Num = attention2Num;
 	}
 
 	@Override

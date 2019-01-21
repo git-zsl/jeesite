@@ -317,6 +317,7 @@ public class ArticleController extends BaseController {
             }
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            e.printStackTrace();
             return ReturnEntity.fail("程序内部出错");
         }
     }
@@ -335,6 +336,7 @@ public class ArticleController extends BaseController {
             return ReturnEntity.success(hostAuthors, "获取热门作者列表成功");
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            e.printStackTrace();
             return ReturnEntity.fail("程序内部出错");
         }
     }
@@ -356,6 +358,7 @@ public class ArticleController extends BaseController {
             return ReturnEntity.success(hostKeywords, "获取热门keywords列表成功");
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            e.printStackTrace();
             return ReturnEntity.fail("程序内部出错");
         }
     }
@@ -372,6 +375,7 @@ public class ArticleController extends BaseController {
             return ReturnEntity.success(articleData, "获取文章详情成功");
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            e.printStackTrace();
             return ReturnEntity.fail("程序内部出错");
         }
     }
@@ -390,6 +394,7 @@ public class ArticleController extends BaseController {
             return ReturnEntity.success(page, "获取评论列表成功");
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            e.printStackTrace();
             return ReturnEntity.fail("程序内部出错");
         }
     }
@@ -409,6 +414,7 @@ public class ArticleController extends BaseController {
             return ReturnEntity.success(hostPost, "获取热门作者列表成功");
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            e.printStackTrace();
             return ReturnEntity.fail("程序内部出错");
         }
     }
@@ -444,6 +450,7 @@ public class ArticleController extends BaseController {
             return ReturnEntity.success(page, "获取数据成功");
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            e.printStackTrace();
             return ReturnEntity.fail("程序内部出错");
         }
     }

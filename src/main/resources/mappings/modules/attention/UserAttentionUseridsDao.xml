@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.attention.dao.UserAttentionUseridsDao">
+    
+	<sql id="userAttentionUseridsColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.attention_user_ids AS "attentionUserIds",
+		u2.name AS "user.name"
+	</sql>
+	
+	<sql id="userAttentionUseridsJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="UserAttentionUserids">
+		SELECT 
+			<include refid="userAttentionUseridsColumns"/>
+		FROM user_attention_userids a
+		<include refid="userAttentionUseridsJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UserAttentionUserids">
+		SELECT 
+			<include refid="userAttentionUseridsColumns"/>
+		FROM user_attention_userids a
+		<include refid="userAttentionUseridsJoins"/>
+		<where>
+			
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user_id = #{user.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findByIds" resultType="UserAttentionUserids">
+		SELECT
+			<include refid="userAttentionUseridsColumns"/>
+		FROM user_attention_userids a
+		<include refid="userAttentionUseridsJoins"/>
+		<where>
+				1=1
+			<if test="attentionUserIds != null and attentionUserIds != ''">
+				AND a.attention_user_ids like CONCAT('%,',#{attentionUserIds},',%')
+			</if>
+		</where>
+	</select>
+
+	<select id="findAllList" resultType="UserAttentionUserids">
+		SELECT 
+			<include refid="userAttentionUseridsColumns"/>
+		FROM user_attention_userids a
+		<include refid="userAttentionUseridsJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO user_attention_userids(
+			id,
+			user_id,
+			attention_user_ids
+		) VALUES (
+			#{id},
+			#{user.id},
+			#{attentionUserIds}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE user_attention_userids SET 	
+			user_id = #{user.id},
+			attention_user_ids = #{attentionUserIds}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM user_attention_userids
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
