@@ -115,15 +115,15 @@ public class CommentController extends BaseController {
 				}
 			}*/
 			//模拟分页
-		/*	for (int i = 0; i < comments.size(); i++) {
+			for (int i = 0; i < comments.size(); i++) {
 				if( i >= ((page.getPageNo()-1)*page.getPageSize()) && i <= (page.getPageNo()*page.getPageSize()-1)){
 					lists.add(comments.get(i));
 				}
 			}
-			page.setList(lists);*/
+			page.setList(lists);
 		//不分页
-			page.setList(comments);
-			if(Global.YES.equals(comment.getIsRecommend())){
+		/*	page.setList(comments);*/
+		/*	if(Global.YES.equals(comment.getIsRecommend())){
 				for (Comment c : comments) {
 					if(Global.YES.equals(c.getIsRecommend())){
 						lists.add(c);
@@ -131,12 +131,26 @@ public class CommentController extends BaseController {
 				}
 				page.setList(lists);
 				return ReturnEntity.success(lists,"获取推荐评论列表成功");
-			}
+			}*/
 		}catch (Exception e){
 			LogUtils.getLogInfo(CommentController.class).info("程序出错",e);
 			e.printStackTrace();
 			ReturnEntity.fail("程序出错");
 		}
-		return ReturnEntity.success(comments,"获取评论列表成功");
+		return ReturnEntity.success(page,"获取评论列表成功");
+	}
+
+	/**
+	 * 主页请教保存接口
+	 */
+	@RequestMapping(value = "homeSsave")
+	public ReturnEntity homeSsave(@ModelAttribute Comment comment) {
+			if (comment.getAuditUser() == null){
+				comment.setAuditUser(UserUtils.getUser());
+				comment.setAuditDate(new Date());
+			}
+			comment.setDelFlag(Comment.DEL_FLAG_NORMAL);
+			commentService.save(comment);
+		return ReturnEntity.success("保存成功");
 	}
 }

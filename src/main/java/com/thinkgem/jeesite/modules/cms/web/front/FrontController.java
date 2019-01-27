@@ -9,6 +9,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.persistence.ReturnStatus;
 import com.thinkgem.jeesite.modules.cms.utils.SensitivewordFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -288,11 +290,14 @@ public class FrontController extends BaseController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "comment", method=RequestMethod.POST)
-	public String commentSave(Comment comment, String validateCode,@RequestParam(required=false) String replyId, HttpServletRequest request) {
+	public ReturnEntity commentSave(Comment comment, String validateCode, @RequestParam(required=false) String categoryId, @RequestParam(required=false) String replyId, HttpServletRequest request) {
+		if(!StringUtils.isBlank(categoryId)){
+			comment.setCategory(new Category(categoryId));
+		}
 		//过滤敏感词
 		String content = filter.replaceSensitiveWord(comment.getContent(), 1, "*");
-		if (StringUtils.isNotBlank(validateCode)){
-			if (ValidateCodeServlet.validate(request, validateCode)){
+		if (StringUtils.isNotBlank(validateCode) || Global.NO.equals(comment.getIsValidate())){
+			if (ValidateCodeServlet.validate(request, validateCode) || Global.NO.equals(comment.getIsValidate())){
 				if (StringUtils.isNotBlank(replyId)){
 					Comment replyComment = commentService.get(replyId);
 					if (replyComment != null){
@@ -309,12 +314,12 @@ public class FrontController extends BaseController{
 				comment.setCreateDate(new Date());
 				comment.setDelFlag(Comment.DEL_FLAG_NORMAL);
 				commentService.save(comment);
-				return "{result:1, message:'提交成功。'}";
+				return ReturnEntity.success("提交成功");
 			}else{
-				return "{result:2, message:'验证码不正确。'}";
+				return new ReturnEntity(ReturnStatus.OPTFAIL, "验证码不正确");
 			}
 		}else{
-			return "{result:2, message:'验证码不能为空。'}";
+			return new ReturnEntity(ReturnStatus.OPTFAIL, "验证码不能为空");
 		}
 	}
 	

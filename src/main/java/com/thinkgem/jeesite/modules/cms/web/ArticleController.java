@@ -601,4 +601,20 @@ public class ArticleController extends BaseController {
         }
         return ReturnEntity.success(articleList,"查询成功");
     }
+    /**
+     * 请教分类接口：
+     */
+    @RequestMapping("findClassifying")
+    @ResponseBody
+    public ReturnEntity findClassifying(){
+        List<CmsClassifying> list = null;
+        try{
+            list = cmsClassifyingService.findList(new CmsClassifying());
+        }catch (Exception e){
+            LogUtils.getLogInfo(ArticleController.class).info("查询请教分类出错",e);
+            e.printStackTrace();
+            return ReturnEntity.fail("查询关键词出错");
+        }
+        return ReturnEntity.success(list,"查询请教分类成功");
+    }
 }

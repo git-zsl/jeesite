@@ -108,6 +108,9 @@
 			<if test="contentId != null and contentId != ''">
 				AND a.content_id = #{contentId}
 			</if>
+			<if test="isRecommend != null and isRecommend != ''">
+				AND a.is_recommend = #{isRecommend}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

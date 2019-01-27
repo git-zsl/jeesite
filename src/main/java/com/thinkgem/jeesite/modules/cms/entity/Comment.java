@@ -38,6 +38,7 @@ public class Comment extends DataEntity<Comment> {
 	private String isTop;  // 是否置顶
 	private String isRecommend; //是否推荐
 	private String commentNum;   //评论数
+	private String isValidate;   //是否需要验证码
 	private User user;
 
 	public Comment() {
@@ -193,5 +194,13 @@ public class Comment extends DataEntity<Comment> {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public String getIsValidate() {
+		return isValidate;
+	}
+
+	public void setIsValidate(String isValidate) {
+		this.isValidate = isValidate;
 	}
 }

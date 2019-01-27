@@ -42,6 +42,9 @@ public class ValidateCodeServlet extends HttpServlet {
 	}
 	
 	public static boolean validate(HttpServletRequest request, String validateCode){
+		if(StringUtils.isBlank(validateCode)){
+			return false;
+		}
 		String code = (String)request.getSession().getAttribute(VALIDATE_CODE);
 		return validateCode.toUpperCase().equals(code); 
 	}
