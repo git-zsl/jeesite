@@ -85,6 +85,9 @@
 		<include refid="articleCollectJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="articleId != null and articleId != ''">
+			AND a.article_id = #{articleId}
+			</if>
 		</where>		
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">

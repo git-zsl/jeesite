@@ -466,10 +466,14 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping(value = "consultationSave",method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity consultationSave(@ModelAttribute Article article,@ModelAttribute ArticleData articleData,HttpServletRequest request,@RequestParam("userId") String userId,@RequestParam(value = "categoryId") String categoryId) {
+    public ReturnEntity consultationSave(@ModelAttribute Article article,@RequestParam("classifying") String classifying,@ModelAttribute ArticleData articleData,HttpServletRequest request,@RequestParam("userId") String userId,@RequestParam(value = "categoryId") String categoryId) {
         if(!StringUtils.isBlank(categoryId)){
             Category category = new Category(categoryId);
             article.setCategory(category);
+        }
+        if(!StringUtils.isBlank(classifying)){
+            CmsClassifying cmsClassifying = new CmsClassifying(classifying);
+            article.setClassifying(cmsClassifying);
         }
         MultipartFile image = null;
         User user = null;

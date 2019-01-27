@@ -161,6 +161,7 @@ public class ArticleCollectController extends BaseController {
 			e.printStackTrace();
 			return ReturnEntity.fail("查询收藏人员列表出错");
 		}
+
 		return ReturnEntity.success(collectUsers,"查询收藏用户列表成功");
 	}
 }

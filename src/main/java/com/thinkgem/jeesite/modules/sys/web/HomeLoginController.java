@@ -208,6 +208,7 @@ public class HomeLoginController extends BaseController {
     @RequestMapping(value = "/loginSuccess", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<String> loginSuccess(@RequestParam Map<String, String> map) {
+        User byLoginName = null;
         try {
             String token = "";
             String loginName = map.get("loginName");
@@ -219,7 +220,7 @@ public class HomeLoginController extends BaseController {
             if (StringUtils.isBlank(password)) {
                 return ReturnEntity.fail("密码不能为空");
             }
-            User byLoginName = UserUtils.getByLoginName(loginName);
+            byLoginName = UserUtils.getByLoginName(loginName);
             if (Objects.isNull(byLoginName)) {
                 return ReturnEntity.fail("用户名错误，请重新输入");
             }
@@ -240,7 +241,7 @@ public class HomeLoginController extends BaseController {
             LogUtils.getLogInfo(clazz).info("程序出错", e);
             return ReturnEntity.fail("程序出错");
         }
-        return ReturnEntity.success("登录成功");
+        return ReturnEntity.success(byLoginName,"登录成功");
     }
 
     /**
