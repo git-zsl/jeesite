@@ -12,8 +12,11 @@ import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.modules.artuser.entity.ArticleCollect;
+import com.thinkgem.jeesite.modules.artuser.service.ArticleCollectService;
 import com.thinkgem.jeesite.modules.classifying.entity.CmsClassifying;
 import com.thinkgem.jeesite.modules.classifying.service.CmsClassifyingService;
 import com.thinkgem.jeesite.modules.cms.entity.*;
@@ -76,6 +79,8 @@ public class ArticleController extends BaseController {
     private JobCityService jobCityService;
     @Autowired
     private CmsClassifyingService cmsClassifyingService;
+    @Autowired
+    private ArticleCollectService articleCollectService;
 
     @ModelAttribute
     public Article get(@RequestParam(required = false) String id) {
@@ -545,19 +550,55 @@ public class ArticleController extends BaseController {
         }
         return ReturnEntity.success("点赞成功");
     }
-   /* *//**
-     * 搜索所有文章的关键词
-     *//*
-    @RequestMapping("findKeywords")
+   /**
+     * 查询对应用户最新动态接口
+     */
+    @RequestMapping("latestAction")
     @ResponseBody
-    public ReturnEntity findKeywords(){
+    public ReturnEntity latestAction(@RequestParam("userId") String userId){
+        List<Article> articleLists = Lists.newArrayList();
+        List<Article> list = null;
+        List<Article> articlecollects = null;
+        List<Article> comments = null;
+        List<Article> articleList = null;
         try{
-            articleService.findHostKeywords()
+            User user = UserUtils.get(userId);
+            if(!StringUtils.isBlank(userId) && !Objects.isNull(user)){
+                //文章类创建人
+                Article article = new Article();
+                article.setCreateBy(user);
+                list = articleService.findList(article);
+                //收藏类创建人
+                ArticleCollect articleCollect = new ArticleCollect();
+                articleCollect.setUser(user);
+                articlecollects = articleCollect.getArticles();
+                List<ArticleCollect> homeCollects = articleCollectService.findHomeCollects(articleCollect);
+                if(!homeCollects.isEmpty()){
+                    for (ArticleCollect ac : homeCollects) {
+                        Article article1 = articleService.get(ac.getArticleId());
+                        articlecollects.add(article1);
+                    }
+                }
+                //评论类创建人   select * from cms_comment cc left join cms_article_data ca  on cc.content_id = ca.id
+                Comment comment = new Comment();
+                comment.setCreateBy(user);
+                List<String> articleIds = commentService.findArticleIds(comment);
+                comments = Lists.newArrayList();
+                for (String s : articleIds) {
+                    Article article1 = articleService.get(s);
+                    comments.add(article1);
+                }
+            }
+            articleLists.addAll(list);
+            articleLists.addAll(articlecollects);
+            articleLists.addAll(comments);
+            //时间排序
+            articleList = articleService.listSort(articleLists);
         }catch (Exception e){
             LogUtils.getLogInfo(ArticleController.class).info("查询关键词出错",e);
             e.printStackTrace();
             return ReturnEntity.fail("查询关键词出错");
         }
-        return ReturnEntity.success(null,"查询成功");
-    }*/
+        return ReturnEntity.success(articleList,"查询成功");
+    }
 }

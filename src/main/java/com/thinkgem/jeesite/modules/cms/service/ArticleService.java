@@ -3,12 +3,15 @@
  */
 package com.thinkgem.jeesite.modules.cms.service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.modules.cms.entity.ArticleVo;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,132 +34,133 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 文章Service
+ *
  * @author zsl
- * @version
  */
 @Service
 @Transactional(readOnly = true)
 public class ArticleService extends CrudService<ArticleDao, Article> {
 
-	@Autowired
-	private ArticleDataDao articleDataDao;
-	@Autowired
-	private CategoryDao categoryDao;
-	
-	@Transactional(readOnly = false)
-	public Page<Article> findPage(Page<Article> page, Article article, boolean isDataScopeFilter) {
-		// 更新过期的权重，间隔为“6”个小时
-		Date updateExpiredWeightDate =  (Date)CacheUtils.get("updateExpiredWeightDateByArticle");
-		if (updateExpiredWeightDate == null || (updateExpiredWeightDate != null 
-				&& updateExpiredWeightDate.getTime() < new Date().getTime())){
-			dao.updateExpiredWeight(article);
-			CacheUtils.put("updateExpiredWeightDateByArticle", DateUtils.addHours(new Date(), 6));
-		}
-		if (article.getCategory()!=null && StringUtils.isNotBlank(article.getCategory().getId()) && !Category.isRoot(article.getCategory().getId())){
-			Category category = categoryDao.get(article.getCategory().getId());
-			if (category==null){
-				category = new Category();
-			}
-			category.setParentIds(category.getId());
-			category.setSite(category.getSite());
-			article.setCategory(category);
-		}
-		else{
-			article.setCategory(new Category());
-		}
-		return super.findPage(page, article);
-		
-	}
+    @Autowired
+    private ArticleDataDao articleDataDao;
+    @Autowired
+    private CategoryDao categoryDao;
 
-	@Transactional(readOnly = false)
-	public void save(Article article) {
-		if (article.getArticleData().getContent()!=null){
-			article.getArticleData().setContent(StringEscapeUtils.unescapeHtml4(
-					article.getArticleData().getContent()));
-		}
-		// 如果没有审核权限，则将当前内容改为待审核状态
-		if (!UserUtils.getSubject().isPermitted("cms:article:audit")){
-			article.setDelFlag(Article.DEL_FLAG_AUDIT);
-		}
-		// 如果栏目不需要审核，则将该内容设为发布状态
-		if (article.getCategory()!=null&&StringUtils.isNotBlank(article.getCategory().getId())){
-			Category category = categoryDao.get(article.getCategory().getId());
-			if (!Global.YES.equals(category.getIsAudit())){
-				article.setDelFlag(Article.DEL_FLAG_NORMAL);
-			}
-		}
-		article.setUpdateBy(UserUtils.getUser());
-		article.setUpdateDate(new Date());
-        if (StringUtils.isNotBlank(article.getViewConfig())){
+    @Transactional(readOnly = false)
+    public Page<Article> findPage(Page<Article> page, Article article, boolean isDataScopeFilter) {
+        // 更新过期的权重，间隔为“6”个小时
+        Date updateExpiredWeightDate = (Date) CacheUtils.get("updateExpiredWeightDateByArticle");
+        if (updateExpiredWeightDate == null || (updateExpiredWeightDate != null
+                && updateExpiredWeightDate.getTime() < new Date().getTime())) {
+            dao.updateExpiredWeight(article);
+            CacheUtils.put("updateExpiredWeightDateByArticle", DateUtils.addHours(new Date(), 6));
+        }
+        if (article.getCategory() != null && StringUtils.isNotBlank(article.getCategory().getId()) && !Category.isRoot(article.getCategory().getId())) {
+            Category category = categoryDao.get(article.getCategory().getId());
+            if (category == null) {
+                category = new Category();
+            }
+            category.setParentIds(category.getId());
+            category.setSite(category.getSite());
+            article.setCategory(category);
+        } else {
+            article.setCategory(new Category());
+        }
+        return super.findPage(page, article);
+
+    }
+
+    @Transactional(readOnly = false)
+    public void save(Article article) {
+        if (article.getArticleData().getContent() != null) {
+            article.getArticleData().setContent(StringEscapeUtils.unescapeHtml4(
+                    article.getArticleData().getContent()));
+        }
+        // 如果没有审核权限，则将当前内容改为待审核状态
+        if (!UserUtils.getSubject().isPermitted("cms:article:audit")) {
+            article.setDelFlag(Article.DEL_FLAG_AUDIT);
+        }
+        // 如果栏目不需要审核，则将该内容设为发布状态
+        if (article.getCategory() != null && StringUtils.isNotBlank(article.getCategory().getId())) {
+            Category category = categoryDao.get(article.getCategory().getId());
+            if (!Global.YES.equals(category.getIsAudit())) {
+                article.setDelFlag(Article.DEL_FLAG_NORMAL);
+            }
+        }
+        article.setUpdateBy(UserUtils.getUser());
+        article.setUpdateDate(new Date());
+        if (StringUtils.isNotBlank(article.getViewConfig())) {
             article.setViewConfig(StringEscapeUtils.unescapeHtml4(article.getViewConfig()));
         }
-        
-        ArticleData articleData = new ArticleData();;
-		if (StringUtils.isBlank(article.getId())){
-			article.preInsert();
-			articleData = article.getArticleData();
-			articleData.setId(article.getId());
-			dao.insert(article);
-			articleDataDao.insert(articleData);
-		}else{
-			article.preUpdate();
-			articleData = article.getArticleData();
-			articleData.setId(article.getId());
-			dao.update(article);
-			articleDataDao.update(article.getArticleData());
-		}
-	}
-	
-	@Transactional(readOnly = false)
-	public void delete(Article article, Boolean isRe) {
+
+        ArticleData articleData = new ArticleData();
+        ;
+        if (StringUtils.isBlank(article.getId())) {
+            article.preInsert();
+            articleData = article.getArticleData();
+            articleData.setId(article.getId());
+            dao.insert(article);
+            articleDataDao.insert(articleData);
+        } else {
+            article.preUpdate();
+            articleData = article.getArticleData();
+            articleData.setId(article.getId());
+            dao.update(article);
+            articleDataDao.update(article.getArticleData());
+        }
+    }
+
+    @Transactional(readOnly = false)
+    public void delete(Article article, Boolean isRe) {
 //		dao.updateDelFlag(id, isRe!=null&&isRe?Article.DEL_FLAG_NORMAL:Article.DEL_FLAG_DELETE);
-		// 使用下面方法，以便更新索引。
-		//Article article = dao.get(article.getId());
-		article.setDelFlag(isRe?Article.DEL_FLAG_DELETE:Article.DEL_FLAG_NORMAL);
-		//dao.insert(article);
-		dao.newDelete(article.getDelFlag(),article.getId());
-	}
-	
-	/**
-	 * 通过编号获取内容标题
-	 * @return new Object[]{栏目Id,文章Id,文章标题}
-	 */
-	public List<Object[]> findByIds(String ids) {
-		if(ids == null){
-			return new ArrayList<Object[]>();
-		}
-		List<Object[]> list = Lists.newArrayList();
-		String[] idss = StringUtils.split(ids,",");
-		Article e = null;
-		for(int i=0;(idss.length-i)>0;i++){
-			e = dao.get(idss[i]);
-			list.add(new Object[]{e.getCategory().getId(),e.getId(),StringUtils.abbr(e.getTitle(),50)});
-		}
-		return list;
-	}
-	
-	/**
-	 * 点击数加一
-	 */
-	@Transactional(readOnly = false)
-	public void updateHitsAddOne(String id) {
-		dao.updateHitsAddOne(id);
-	}
-	
-	/**
-	 * 更新索引
-	 */
-	public void createIndex(){
-		//dao.createIndex();
-	}
-	
-	/**
-	 * 全文检索
-	 */
-	//FIXME 暂不提供检索功能
-	public Page<Article> search(Page<Article> page, String q, String categoryId, String beginDate, String endDate){
-		
-		// 设置查询条件
+        // 使用下面方法，以便更新索引。
+        //Article article = dao.get(article.getId());
+        article.setDelFlag(isRe ? Article.DEL_FLAG_DELETE : Article.DEL_FLAG_NORMAL);
+        //dao.insert(article);
+        dao.newDelete(article.getDelFlag(), article.getId());
+    }
+
+    /**
+     * 通过编号获取内容标题
+     *
+     * @return new Object[]{栏目Id,文章Id,文章标题}
+     */
+    public List<Object[]> findByIds(String ids) {
+        if (ids == null) {
+            return new ArrayList<Object[]>();
+        }
+        List<Object[]> list = Lists.newArrayList();
+        String[] idss = StringUtils.split(ids, ",");
+        Article e = null;
+        for (int i = 0; (idss.length - i) > 0; i++) {
+            e = dao.get(idss[i]);
+            list.add(new Object[]{e.getCategory().getId(), e.getId(), StringUtils.abbr(e.getTitle(), 50)});
+        }
+        return list;
+    }
+
+    /**
+     * 点击数加一
+     */
+    @Transactional(readOnly = false)
+    public void updateHitsAddOne(String id) {
+        dao.updateHitsAddOne(id);
+    }
+
+    /**
+     * 更新索引
+     */
+    public void createIndex() {
+        //dao.createIndex();
+    }
+
+    /**
+     * 全文检索
+     */
+    //FIXME 暂不提供检索功能
+    public Page<Article> search(Page<Article> page, String q, String categoryId, String beginDate, String endDate) {
+
+        // 设置查询条件
 //		BooleanQuery query = dao.getFullTextQuery(q, "title","keywords","description","articleData.content");
 //		
 //		// 设置过滤条件
@@ -171,85 +175,121 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
 //			bcList.add(new BooleanClause(new TermRangeQuery("updateDate", beginDate.replaceAll("-", ""),
 //					endDate.replaceAll("-", ""), true, true), Occur.MUST));
 //		}   
-		
-		//BooleanQuery queryFilter = dao.getFullTextQuery((BooleanClause[])bcList.toArray(new BooleanClause[bcList.size()]));
+
+        //BooleanQuery queryFilter = dao.getFullTextQuery((BooleanClause[])bcList.toArray(new BooleanClause[bcList.size()]));
 
 //		System.out.println(queryFilter);
-		
-		// 设置排序（默认相识度排序）
-		//FIXME 暂时不提供lucene检索
-		//Sort sort = null;//new Sort(new SortField("updateDate", SortField.DOC, true));
-		// 全文检索
-		//dao.search(page, query, queryFilter, sort);
-		// 关键字高亮
-		//dao.keywordsHighlight(query, page.getList(), 30, "title");
-		//dao.keywordsHighlight(query, page.getList(), 130, "description","articleData.content");
-		
-		return page;
-	}
 
-	/**
-	 * 查找标题列表
-	 */
-	public List<String> findTitle(Article article){
-		return dao.findTitle(article);
-	}
+        // 设置排序（默认相识度排序）
+        //FIXME 暂时不提供lucene检索
+        //Sort sort = null;//new Sort(new SortField("updateDate", SortField.DOC, true));
+        // 全文检索
+        //dao.search(page, query, queryFilter, sort);
+        // 关键字高亮
+        //dao.keywordsHighlight(query, page.getList(), 30, "title");
+        //dao.keywordsHighlight(query, page.getList(), 130, "description","articleData.content");
 
-	public List<Article> findHostAuthors(Article article){
-		return dao.findHostAuthors(article);
-	}
-	public List<Article> findHostKeywords(Article article){
-		return dao.findHostKeywords(article);
-	}
+        return page;
+    }
 
-	public List<Article> findByCategoryIdIn(List<String> ids){
-		return dao.findByCategoryIdIn(ids);
-	}
+    /**
+     * 查找标题列表
+     */
+    public List<String> findTitle(Article article) {
+        return dao.findTitle(article);
+    }
 
-	public List<Article> findArticles(){
-		return dao.findArticles();
-	}
+    public List<Article> findHostAuthors(Article article) {
+        return dao.findHostAuthors(article);
+    }
 
-	/**
-	 * 查找拥有当前栏目数据
-	 * @param categoryId
-	 * @return
-	 */
-	public Integer findOwnNum(String categoryId,String createBy){
-		return dao.findOwnNum(categoryId,createBy);
-	}
+    public List<Article> findHostKeywords(Article article) {
+        return dao.findHostKeywords(article);
+    }
 
-	/**
-	 * 统计一年12月份数据
-	 * @param
-	 * @eturn
-	 */
-	public HashMap<String,Object> findByYearCount(){
-		return dao.findByYearCount();
-	}
+    public List<Article> findByCategoryIdIn(List<String> ids) {
+        return dao.findByCategoryIdIn(ids);
+    }
 
-	/**
-	 *
-	 */
-	public List<Article> findHostPosts(Article article){
-		return dao.findHostPosts(article);
-	}
-	/**
-	 * 修改点赞数
-	 */
-	@Transactional(readOnly = false)
-	public void updateLikeNum(Article article){
-		String likeNum = Integer.parseInt(article.getLikeNum()) + 1 + "";
-		article.setLikeNum(likeNum);
-		dao.updateLikeNum(article);
-	}
-	/**
-	 * 修改点赞数
-	 */
-	@Transactional(readOnly = false)
-	public void updateCollectNum(Article article){
-		String collectNum = Integer.parseInt(article.getCollectNum()) + 1 + "";
-		article.setCollectNum(collectNum);
-		dao.updateCollectNum(article);
-	}
+    public List<Article> findArticles() {
+        return dao.findArticles();
+    }
+
+    /**
+     * 查找拥有当前栏目数据
+     *
+     * @param categoryId
+     * @return
+     */
+    public Integer findOwnNum(String categoryId, String createBy) {
+        return dao.findOwnNum(categoryId, createBy);
+    }
+
+    /**
+     * 统计一年12月份数据
+     *
+     * @param
+     * @eturn
+     */
+    public HashMap<String, Object> findByYearCount() {
+        return dao.findByYearCount();
+    }
+
+    /**
+     *
+     */
+    public List<Article> findHostPosts(Article article) {
+        return dao.findHostPosts(article);
+    }
+
+    /**
+     * 修改点赞数
+     */
+    @Transactional(readOnly = false)
+    public void updateLikeNum(Article article) {
+        String likeNum = Integer.parseInt(article.getLikeNum()) + 1 + "";
+        article.setLikeNum(likeNum);
+        dao.updateLikeNum(article);
+    }
+
+    /**
+     * 修改点赞数
+     */
+    @Transactional(readOnly = false)
+    public void updateCollectNum(Article article) {
+        String collectNum = Integer.parseInt(article.getCollectNum()) + 1 + "";
+        article.setCollectNum(collectNum);
+        dao.updateCollectNum(article);
+    }
+
+    /**
+     * 封装对象
+     */
+    public List<ArticleVo> setArticleVoData(Object obj) {
+        if (obj instanceof Article) {
+
+        }
+        return null;
+    }
+
+    public List<Article> listSort(List<Article> list) {
+        Collections.sort(list, new Comparator<Article>() {
+            @Override
+            public int compare(Article o1, Article o2) {
+                try {
+                    if (o1.getCreateDate().getTime() > o2.getCreateDate().getTime()) {
+                        return -1;
+                    } else if (o1.getCreateDate().getTime() < o2.getCreateDate().getTime()) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return 0;
+            }
+        });
+        return list;
+    }
 }

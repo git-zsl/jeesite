@@ -50,6 +50,10 @@ public class CommentService extends CrudService<CommentDao, Comment> {
         return dao.findconsultationList(comment);
     }
 
+    public List<String> findArticleIds(Comment comment) {
+        return dao.findArticleIds(comment);
+    }
+
     @Transactional(readOnly = false)
     public void delete(Comment entity, Boolean isRe) {
         super.delete(entity);

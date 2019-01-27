@@ -17,4 +17,6 @@ import java.util.List;
 @MyBatisDao
 public interface CommentDao extends CrudDao<Comment> {
     public List<Comment> findParent(Comment comment);
+
+    public List<String> findArticleIds(Comment comment);
 }

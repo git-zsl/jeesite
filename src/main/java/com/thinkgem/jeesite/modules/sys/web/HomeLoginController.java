@@ -207,11 +207,12 @@ public class HomeLoginController extends BaseController {
      */
     @RequestMapping(value = "/loginSuccess", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<String> loginSuccess(@RequestParam Map<String, String> map, @RequestParam(value = "isComapny", required = false) String isCompany) {
+    public ReturnEntity<String> loginSuccess(@RequestParam Map<String, String> map) {
         try {
             String token = "";
             String loginName = map.get("loginName");
             String password = map.get("password");
+            String isCompany = map.get("isCompany");
             if (StringUtils.isBlank(loginName)) {
                 return ReturnEntity.fail("用户名不能为空");
             }

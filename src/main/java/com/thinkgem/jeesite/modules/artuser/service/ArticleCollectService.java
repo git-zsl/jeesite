@@ -48,6 +48,9 @@ public class ArticleCollectService extends CrudService<ArticleCollectDao, Articl
 	public Page<ArticleCollect> findHomeCollectPage(Page<ArticleCollect> page, ArticleCollect articleCollect) {
 		return super.findHomeCollectPage(page, articleCollect);
 	}
+	public List<ArticleCollect> findHomeCollects(ArticleCollect articleCollect) {
+		return dao.findHomeCollects(articleCollect);
+	}
 
 	@Transactional(readOnly = false)
 	public void save(ArticleCollect articleCollect) {

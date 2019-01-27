@@ -28,7 +28,14 @@
 		JOIN sys_office o ON o.id = c.office_id
 		JOIN sys_user u ON u.id = a.create_by
 	</sql>
-    
+
+	<sql id="CommentJoins">
+		JOIN cms_category c ON c.id = a.category_id
+		JOIN sys_office o ON o.id = c.office_id
+		JOIN sys_user u ON u.id = a.create_by
+		LEFT JOIN cms_article_data cad ON cad.id = a.content_id
+	</sql>
+
 	<select id="get" resultType="Comment">
 		SELECT 
 			<include refid="cmsCommentDaoColumns"/>
@@ -43,6 +50,19 @@
 		FROM cms_comment a
 		<include refid="cmsCommentDaoJoins"/>
 		WHERE a.id = #{parentContentId}
+	</select>
+
+	<select id="findArticleIds" resultType="string">
+		SELECT
+			DISTINCT a.content_id
+		FROM cms_comment a
+		<include refid="CommentJoins"/>
+		<where>
+			1=1
+			<if test="createBy != null and createBy.id != null and createBy.id != ''">
+				AND a.create_by = #{createBy.id}
+			</if>
+		</where>
 	</select>
 
 	<select id="findList" resultType="Comment">

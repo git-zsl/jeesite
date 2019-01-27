@@ -393,6 +393,7 @@ public class Article extends DataEntity<Article> {
 	public void setLikeNum(String likeNum) {
 		this.likeNum = likeNum;
 	}
+
 }
 
 
