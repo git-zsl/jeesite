@@ -466,7 +466,7 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping(value = "consultationSave",method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity consultationSave(@ModelAttribute Article article,@RequestParam("classifying") String classifying,@ModelAttribute ArticleData articleData,HttpServletRequest request,@RequestParam("userId") String userId,@RequestParam(value = "categoryId") String categoryId) {
+    public ReturnEntity consultationSave(@ModelAttribute Article article,@RequestParam(value = "classifying",required = false) String classifying,@ModelAttribute ArticleData articleData,HttpServletRequest request,@RequestParam("userId") String userId,@RequestParam(value = "categoryId") String categoryId) {
         if(!StringUtils.isBlank(categoryId)){
             Category category = new Category(categoryId);
             article.setCategory(category);
@@ -513,8 +513,9 @@ public class ArticleController extends BaseController {
             MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
             image = multipartRequest.getFile("homeImage");
             String originalFilename = image.getOriginalFilename();
-            String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
-            filePath = new File(configPath + "/" + category.getName() + "/" + user.getLoginName() + "/" + originalFilename);
+            String contextPath = request.getSession().getServletContext().getContextPath();
+            String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1) ;
+            filePath = new File(configPath + "\\userfiles\\homeImage\\" + category.getName() + "\\" + user.getLoginName() + "\\" + originalFilename);
             if (!filePath.getParentFile().exists()) {
                 filePath.getParentFile().mkdirs();
             }
@@ -522,6 +523,8 @@ public class ArticleController extends BaseController {
             //路径问题，应与原来保持一致，不然主页上传的图片，后台看不到
             String path = filePath.getPath();    // 目前为完整路径，改成相对路径
             //获取图片并保存。。。。。。
+
+            path =contextPath  + path.substring(configPath.length());
             article.setImage(path);
         }
             article.setIsTop(Global.NO);
