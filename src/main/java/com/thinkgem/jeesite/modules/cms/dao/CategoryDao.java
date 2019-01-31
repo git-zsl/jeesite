@@ -31,6 +31,8 @@ public interface CategoryDao extends TreeDao<Category> {
 
 	public List<Category> findCategorysByParentId(Category entity);
 
+	public List<Category> findUpdateArticleClassify();
+
 	public List<Map<String, Object>> findStats(String sql);
 
 	public List<Category> findNavigationBar(Category category);

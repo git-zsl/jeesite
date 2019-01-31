@@ -60,6 +60,7 @@ public class Article extends DataEntity<Article> {
 	private String brand;    // 品牌
 	private String collectNum;  // 被收藏数量
 	private String likeNum;    //点赞数
+	private String pageNum;    // 第几页的广告
 
 	private User user;
     
@@ -394,6 +395,13 @@ public class Article extends DataEntity<Article> {
 		this.likeNum = likeNum;
 	}
 
+	public String getPageNum() {
+		return pageNum;
+	}
+
+	public void setPageNum(String pageNum) {
+		this.pageNum = pageNum;
+	}
 }
 
 

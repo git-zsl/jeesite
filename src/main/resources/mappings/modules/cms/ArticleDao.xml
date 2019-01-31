@@ -33,6 +33,7 @@
         a.brand AS "brand",
         a.collect_num AS "collectNum",
         a.like_num AS "likeNum",
+        a.page_num AS "pageNum",
         <include refid="cmsArticleJobColumns"/>
 	</sql>
 
@@ -229,9 +230,9 @@
                 <if test="dbName == 'mysql'">CONCAT('%', #{company}, '%')</if>
                 )
             </if>
-            <if test="createBy != null and createBy.id != null and createBy.id != ''">
+           <!-- <if test="createBy != null and createBy.id != null and createBy.id != ''">
                 AND a.create_by = #{createBy.id}
-            </if>
+            </if>-->
             <if test="isRecommend != null and isRecommend != ''">
                 AND a.is_recommend = #{isRecommend}
             </if>
@@ -421,7 +422,8 @@
             classifying_id,
             brand,
             collect_num,
-            like_num
+            like_num,
+            page_num
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -456,7 +458,8 @@
 		    #{classifying.id},
 		    #{brand},
 		    #{collectNum},
-		    #{likeNum}
+		    #{likeNum},
+		    #{pageNum}
 		)
 	</insert>
 
@@ -493,7 +496,8 @@
 		    classifying_id = #{classifying.id},
 		    brand = #{brand},
 		    collect_num = #{collectNum},
-		    like_num = #{likeNum}
+		    like_num = #{likeNum},
+		    page_num = #{pageNum}
 		WHERE id = #{id}
 	</update>
 
@@ -554,6 +558,9 @@
                 <foreach item="item" index="index" collection="list"
                          open="(" separator="," close=")">#{item}
                 </foreach>
+            </if>
+            <if test="pageNum != null and pageNum != ''">
+                AND a.page_num = #{pageNum}
             </if>
         </where>
     </select>

@@ -117,6 +117,10 @@ public class CategoryService extends TreeService<CategoryDao, Category> {
 		return dao.findCategorysByParentId(this.get(parentId));
 	}
 
+	public List<Category> findUpdateArticleClassify(){
+		return dao.findUpdateArticleClassify();
+	}
+
 	public Page<Category> find(Page<Category> page, Category category) {
 //		DetachedCriteria dc = dao.createDetachedCriteria();
 //		if (category.getSite()!=null && StringUtils.isNotBlank(category.getSite().getId())){

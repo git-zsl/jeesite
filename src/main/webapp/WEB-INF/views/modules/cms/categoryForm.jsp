@@ -146,6 +146,12 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">是否主页分类展示:</label>
+			<div class="controls">
+				<form:radiobuttons path="isShowHomeClassify" items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">自定义列表视图:</label>
 			<div class="controls">
                 <form:select path="customListView">

@@ -215,8 +215,26 @@ public class CategoryController extends BaseController {
 			});
         }catch(Exception e){
             LogUtils.getLogInfo(CategoryController.class).info("系统出错",e);
+            e.printStackTrace();
             return ReturnEntity.fail("系统出错，请联系管理员");
         }
 		return ReturnEntity.success(parentList,"查询栏目成功");
+	}
+
+	/**
+	 * 上传文章分类接口
+	 */
+	@RequestMapping("updateArticleClassify")
+	@ResponseBody
+	public ReturnEntity findUpdateArticleClassify(){
+		List<Category> updateArticleClassify = null;
+		try{
+			updateArticleClassify = categoryService.findUpdateArticleClassify();
+		}catch (Exception e){
+			LogUtils.getLogInfo(CategoryController.class).info("查询上传文章分类出错",e);
+			e.printStackTrace();
+			return ReturnEntity.fail("查询上传文章分类出错");
+		}
+		return ReturnEntity.success(updateArticleClassify,"查询上传文章分类成功");
 	}
 }
