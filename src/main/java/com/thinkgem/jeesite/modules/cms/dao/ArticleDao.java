@@ -27,6 +27,8 @@ public interface ArticleDao extends CrudDao<Article> {
 
 	public List<Article> findByCategoryIdIn(List<String> list);
 
+	public List<Article> findByCategoryIdInAndPageNum(@Param("list") List<String> list,@Param("pageNum") String pageNum);
+
 	public List<String> findTitle(Article article);
 
 	public List<Article> findHostAuthors(Article article);

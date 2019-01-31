@@ -254,9 +254,10 @@ public class ArticleController extends BaseController {
                 return ReturnEntity.success(null, "请先设置自定义栏目标志‘GG’");
             }
             List<String> byParentIdNoSite = categoryService.findByParentIdNoSite(gg.getCategoryId());
-            articles = articleService.findByCategoryIdIn(byParentIdNoSite);
+            articles = articleService.findByCategoryIdInAndPageNum(byParentIdNoSite,article.getPageNum());
         } catch (Exception e) {
             LogUtils.saveLog(request, articles, e, "没有找到对应的自定义栏目，请配置");
+            e.printStackTrace();
             return ReturnEntity.fail("系统内部错误成功，请联系管理员");
         }
         return ReturnEntity.success(articles, "查询广告成功");

@@ -203,6 +203,10 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         return dao.findByCategoryIdIn(ids);
     }
 
+    public List<Article> findByCategoryIdInAndPageNum(List<String> ids,String pageNum) {
+        return dao.findByCategoryIdInAndPageNum(ids,pageNum);
+    }
+
     public List<Article> findArticles() {
         return dao.findArticles();
     }
