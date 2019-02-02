@@ -7,6 +7,7 @@ import java.io.File;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.modules.artuser.entity.ArticleCollect;
 import com.thinkgem.jeesite.modules.artuser.service.ArticleCollectService;
 import com.thinkgem.jeesite.modules.classifying.entity.CmsClassifying;
@@ -36,6 +38,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -254,10 +257,9 @@ public class ArticleController extends BaseController {
                 return ReturnEntity.success(null, "请先设置自定义栏目标志‘GG’");
             }
             List<String> byParentIdNoSite = categoryService.findByParentIdNoSite(gg.getCategoryId());
-            articles = articleService.findByCategoryIdInAndPageNum(byParentIdNoSite,article.getPageNum());
+            articles = articleService.findByCategoryIdIn(byParentIdNoSite);
         } catch (Exception e) {
             LogUtils.saveLog(request, articles, e, "没有找到对应的自定义栏目，请配置");
-            e.printStackTrace();
             return ReturnEntity.fail("系统内部错误成功，请联系管理员");
         }
         return ReturnEntity.success(articles, "查询广告成功");
@@ -294,11 +296,11 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "getAllArticle", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId,@RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
+    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, @RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (!StringUtils.isBlank(userId)) {
                 User user = UserUtils.get(userId);
-                if(Objects.isNull(user)){
+                if (Objects.isNull(user)) {
                     return ReturnEntity.fail("当前用户不存在，无法获取用户的信息列表");
                 }
                 article.setCreateBy(user);
@@ -465,77 +467,79 @@ public class ArticleController extends BaseController {
     /**
      * 请教/文章保存接口
      */
-    @RequestMapping(value = "consultationSave",method = RequestMethod.POST)
+    @RequestMapping(value = "consultationSave", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity consultationSave(@ModelAttribute Article article,@RequestParam(value = "classifying",required = false) String classifying,@ModelAttribute ArticleData articleData,HttpServletRequest request,@RequestParam("userId") String userId,@RequestParam(value = "categoryId") String categoryId) {
-        if(!StringUtils.isBlank(categoryId)){
+    public ReturnEntity consultationSave(@ModelAttribute Article article, @RequestParam(value = "classifying", required = false) String classifying, @ModelAttribute ArticleData articleData, HttpServletRequest request, @RequestParam("userId") String userId, @RequestParam(value = "categoryId") String categoryId) {
+        if (!StringUtils.isBlank(categoryId)) {
             Category category = new Category(categoryId);
             article.setCategory(category);
         }
-        if(!StringUtils.isBlank(classifying)){
+        if (!StringUtils.isBlank(classifying)) {
             CmsClassifying cmsClassifying = new CmsClassifying(classifying);
             article.setClassifying(cmsClassifying);
         }
         MultipartFile image = null;
         User user = null;
         File filePath = null;
-        try{
+        try {
             //转码
-            String titleDecode = URLDecoder.decode(article.getTitle(),"UTF-8");
-            if(!StringUtils.isBlank(article.getDescription())){
-                String descriptiondecode = URLDecoder.decode(article.getDescription(),"UTF-8");
+            String titleDecode = URLDecoder.decode(article.getTitle(), "UTF-8");
+            if (!StringUtils.isBlank(article.getDescription())) {
+                String descriptiondecode = URLDecoder.decode(article.getDescription(), "UTF-8");
                 article.setDescription(descriptiondecode);
             }
-            if(!StringUtils.isBlank(article.getKeywords())){
-                String keywordsdecode = URLDecoder.decode(article.getKeywords(),"UTF-8");
+            if (!StringUtils.isBlank(article.getKeywords())) {
+                String keywordsdecode = URLDecoder.decode(article.getKeywords(), "UTF-8");
                 article.setKeywords(keywordsdecode);
             }
-            if(!StringUtils.isBlank(article.getBrand())){
-                String branddecode = URLDecoder.decode(article.getBrand(),"UTF-8");
+            if (!StringUtils.isBlank(article.getBrand())) {
+                String branddecode = URLDecoder.decode(article.getBrand(), "UTF-8");
                 article.setBrand(branddecode);
             }
-            String contentdecode = URLDecoder.decode(articleData.getContent(),"UTF-8");
+            String contentdecode = URLDecoder.decode(articleData.getContent(), "UTF-8");
             article.setTitle(titleDecode);
             articleData.setContent(contentdecode);
             Category category = categoryService.get(article.getCategory().getId());
-            if(Objects.isNull(category)){
+            if (Objects.isNull(category)) {
                 LogUtils.getLogInfo(ArticleController.class).info("获取栏目id为空或者栏目不存在，传入categoryId值为：" + article.getCategory().getId());
                 return ReturnEntity.fail("获取栏目id为空或者栏目不存在，传入categoryId值为：" + article.getCategory().getId());
             }
-            if(!StringUtils.isBlank(userId)){
-            user = UserUtils.get(userId);
-        }
-        if(Objects.isNull(user)){
-            LogUtils.getLogInfo(ArticleController.class).info("获取用户值为空，传入userId值为：" + userId);
-            return ReturnEntity.fail("当前用户过期，或者不存在。传入userId值为：" + userId);
-        }
-        boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-        if (isMultipart) {
-            MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
-            image = multipartRequest.getFile("homeImage");
-            String originalFilename = image.getOriginalFilename();
-            String contextPath = request.getSession().getServletContext().getContextPath();
-            String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1) ;
-            filePath = new File(configPath + "\\userfiles\\homeImage\\" + category.getName() + "\\" + user.getLoginName() + "\\" + originalFilename);
-            if (!filePath.getParentFile().exists()) {
-                filePath.getParentFile().mkdirs();
+            if (!StringUtils.isBlank(userId)) {
+                user = UserUtils.get(userId);
             }
-            image.transferTo(filePath);
-            //路径问题，应与原来保持一致，不然主页上传的图片，后台看不到
-            String path = filePath.getPath();    // 目前为完整路径，改成相对路径
-            //获取图片并保存。。。。。。
-
-            path =contextPath  + path.substring(configPath.length());
-            article.setImage(path);
-        }
+            if (Objects.isNull(user)) {
+                LogUtils.getLogInfo(ArticleController.class).info("获取用户值为空，传入userId值为：" + userId);
+                return ReturnEntity.fail("当前用户过期，或者不存在。传入userId值为：" + userId);
+            }
+            boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+            if (isMultipart) {
+                String path = null;
+                MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
+                image = multipartRequest.getFile("homeImage");
+                String contextPath = request.getSession().getServletContext().getContextPath();
+                String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
+                if (!Objects.isNull(image)) {
+                    String originalFilename = image.getOriginalFilename();
+                    filePath = new File(configPath + "\\userfiles\\homeImage\\" + category.getName() + "\\" + user.getLoginName() + "\\" + originalFilename);
+                    if (!filePath.getParentFile().exists()) {
+                        filePath.getParentFile().mkdirs();
+                    }
+                    image.transferTo(filePath);
+                    //路径问题，应与原来保持一致，不然主页上传的图片，后台看不到
+                    path = filePath.getPath();    // 目前为完整路径，改成相对路径
+                    //获取图片并保存。。。。。。
+                    article.setImage(path);
+                }
+            }
             article.setIsTop(Global.NO);
             article.setIsRecommend(Global.NO);
             articleData.setAllowComment(Global.YES);
             article.setArticleData(articleData);
             articleService.save(article);
+           /* CacheUtils.remove(categoryId + "_" + userId + "path");*/
             //保存内容(如果需要设置相关请教，则在ArticleData处添加)
-        }catch (Exception e){
-            LogUtils.getLogInfo(ArticleController.class).info("保存出错",e);
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("保存出错", e);
             e.printStackTrace();
             return ReturnEntity.fail("保存出错");
         }
@@ -544,34 +548,71 @@ public class ArticleController extends BaseController {
 
 
     /**
+     * 富文本编辑器上传文章图片接口
+     */
+    @RequestMapping(value = "uploadArticleSave", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity uploadArticleSave(@RequestParam("img") MultipartFile img, @RequestParam("userId") String userId, HttpServletRequest request, @RequestParam(value = "categoryId") String categoryId) {
+        Category category = null;
+        User user = null;
+        String path = null;
+        try {
+            if (!StringUtils.isBlank(categoryId)) {
+                category = categoryService.get(categoryId);
+            }
+            if (!StringUtils.isBlank(userId)) {
+                user = UserUtils.get(userId);
+            }
+            String contextPath = request.getSession().getServletContext().getContextPath();
+            String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
+            String originalFilename = img.getOriginalFilename();
+            File filePath = new File(configPath + "\\userfiles\\homeImage\\" + category.getName() + "\\" + user.getLoginName() + "\\" + originalFilename);
+            if (!filePath.getParentFile().exists()) {
+                filePath.getParentFile().mkdirs();
+            }
+            img.transferTo(filePath);
+            //路径问题，应与原来保持一致，不然主页上传的图片，后台看不到
+            path = filePath.getPath();    // 目前为完整路径，改成相对路径
+            path = contextPath + path.substring(configPath.length());
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("保存出错", e);
+            e.printStackTrace();
+            return ReturnEntity.fail("保存出错");
+        }
+        return ReturnEntity.success(path, "保存成功");
+    }
+
+
+    /**
      * 点赞接口
      */
-    @RequestMapping(value="like")
+    @RequestMapping(value = "like")
     @ResponseBody
-    public ReturnEntity updateLikeNum(@ModelAttribute Article article){
-        try{
+    public ReturnEntity updateLikeNum(@ModelAttribute Article article) {
+        try {
             articleService.updateLikeNum(article);
-        }catch (Exception e){
-            LogUtils.getLogInfo(ArticleController.class).info("点赞出错",e);
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("点赞出错", e);
             e.printStackTrace();
             return ReturnEntity.fail("点赞出错");
         }
         return ReturnEntity.success("点赞成功");
     }
-   /**
+
+    /**
      * 查询对应用户最新动态接口
      */
     @RequestMapping("latestAction")
     @ResponseBody
-    public ReturnEntity latestAction(@RequestParam("userId") String userId){
+    public ReturnEntity latestAction(@RequestParam("userId") String userId) {
         List<Article> articleLists = Lists.newArrayList();
         List<Article> list = null;
         List<Article> articlecollects = null;
         List<Article> comments = null;
         List<Article> articleList = null;
-        try{
+        try {
             User user = UserUtils.get(userId);
-            if(!StringUtils.isBlank(userId) && !Objects.isNull(user)){
+            if (!StringUtils.isBlank(userId) && !Objects.isNull(user)) {
                 //文章类创建人
                 Article article = new Article();
                 article.setCreateBy(user);
@@ -581,7 +622,7 @@ public class ArticleController extends BaseController {
                 articleCollect.setUser(user);
                 articlecollects = articleCollect.getArticles();
                 List<ArticleCollect> homeCollects = articleCollectService.findHomeCollects(articleCollect);
-                if(!homeCollects.isEmpty()){
+                if (!homeCollects.isEmpty()) {
                     for (ArticleCollect ac : homeCollects) {
                         Article article1 = articleService.get(ac.getArticleId());
                         articlecollects.add(article1);
@@ -602,27 +643,28 @@ public class ArticleController extends BaseController {
             articleLists.addAll(comments);
             //时间排序
             articleList = articleService.listSort(articleLists);
-        }catch (Exception e){
-            LogUtils.getLogInfo(ArticleController.class).info("查询关键词出错",e);
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("查询关键词出错", e);
             e.printStackTrace();
             return ReturnEntity.fail("查询关键词出错");
         }
-        return ReturnEntity.success(articleList,"查询成功");
+        return ReturnEntity.success(articleList, "查询成功");
     }
+
     /**
      * 请教分类接口：
      */
     @RequestMapping("findClassifying")
     @ResponseBody
-    public ReturnEntity findClassifying(){
+    public ReturnEntity findClassifying() {
         List<CmsClassifying> list = null;
-        try{
+        try {
             list = cmsClassifyingService.findList(new CmsClassifying());
-        }catch (Exception e){
-            LogUtils.getLogInfo(ArticleController.class).info("查询请教分类出错",e);
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("查询请教分类出错", e);
             e.printStackTrace();
             return ReturnEntity.fail("查询关键词出错");
         }
-        return ReturnEntity.success(list,"查询请教分类成功");
+        return ReturnEntity.success(list, "查询请教分类成功");
     }
 }
