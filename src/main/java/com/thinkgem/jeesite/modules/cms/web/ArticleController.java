@@ -569,9 +569,10 @@ public class ArticleController extends BaseController {
                 for (Map.Entry<String,MultipartFile> entry: fileMap.entrySet()) {
                     MultipartFile file = entry.getValue();
                     String originalFilename = file.getOriginalFilename();
-                    File filePath = new File(configPath + "\\userfiles\\homeImage\\" + "文章上传"+ "\\" + user.getLoginName() + "\\" + originalFilename);
+                    File filePath = new File(configPath + "/userfiles/homeImage/" + "文章上传"+ "/" + user.getLoginName() + "/" + originalFilename);
                     if (!filePath.getParentFile().exists()) {
                         filePath.getParentFile().mkdirs();
+                        LogUtils.getLogInfo(ArticleController.class).info("自动创建文件夹成功" + filePath.getParentFile().getPath());
                     }
                     file.transferTo(filePath);
                     //路径问题，应与原来保持一致，不然主页上传的图片，后台看不到
