@@ -552,28 +552,37 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping(value = "uploadArticleSave", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity uploadArticleSave(@RequestParam("img") MultipartFile img, @RequestParam("userId") String userId, HttpServletRequest request, @RequestParam(value = "categoryId") String categoryId) {
-        Category category = null;
+    public ReturnEntity uploadArticleSave(@RequestParam("userId") String userId, HttpServletRequest request) {
         User user = null;
         String path = null;
         try {
-            if (!StringUtils.isBlank(categoryId)) {
-                category = categoryService.get(categoryId);
-            }
             if (!StringUtils.isBlank(userId)) {
                 user = UserUtils.get(userId);
             }
-            String contextPath = request.getSession().getServletContext().getContextPath();
-            String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
-            String originalFilename = img.getOriginalFilename();
-            File filePath = new File(configPath + "\\userfiles\\homeImage\\" + category.getName() + "\\" + user.getLoginName() + "\\" + originalFilename);
-            if (!filePath.getParentFile().exists()) {
-                filePath.getParentFile().mkdirs();
+            boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+            if (isMultipart) {
+                MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
+                Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+                String contextPath = request.getSession().getServletContext().getContextPath();
+                String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
+                StringBuffer sb = new StringBuffer();
+                for (Map.Entry<String,MultipartFile> entry: fileMap.entrySet()) {
+                    MultipartFile file = entry.getValue();
+                    String originalFilename = file.getOriginalFilename();
+                    File filePath = new File(configPath + "\\userfiles\\homeImage\\" + "文章上传"+ "\\" + user.getLoginName() + "\\" + originalFilename);
+                    if (!filePath.getParentFile().exists()) {
+                        filePath.getParentFile().mkdirs();
+                    }
+                    file.transferTo(filePath);
+                    //路径问题，应与原来保持一致，不然主页上传的图片，后台看不到
+                    path = filePath.getPath();    // 目前为完整路径，改成相对路径
+                    path = contextPath + path.substring(configPath.length());
+                    sb.append(path + ",");
+                }
+                path = sb.toString().substring(0,sb.toString().length()-2);
+            }else{
+                return ReturnEntity.fail("请选择图片");
             }
-            img.transferTo(filePath);
-            //路径问题，应与原来保持一致，不然主页上传的图片，后台看不到
-            path = filePath.getPath();    // 目前为完整路径，改成相对路径
-            path = contextPath + path.substring(configPath.length());
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("保存出错", e);
             e.printStackTrace();
