@@ -248,6 +248,7 @@ public class ArticleController extends BaseController {
         if (!StringUtils.isBlank(init)) {
             article.setDelFlag("2");
         }
+        article.setRemarks(Global.YES);
         Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
         List<String> titles = articleService.findTitle(article);
         model.addAttribute("titles", titles);

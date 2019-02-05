@@ -57,6 +57,9 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
             article.setCategory(category);
         } else {
             article.setCategory(new Category());
+            if(Global.YES.equals(article.getRemarks())){
+                return super.findPage(page, article);
+            }
             return super.findArticlePage(page, article);
         }
         return super.findPage(page, article);
