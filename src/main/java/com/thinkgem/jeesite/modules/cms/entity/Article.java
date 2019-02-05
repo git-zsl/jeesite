@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.thinkgem.jeesite.modules.articleclassify.entity.CmsArticleClassify;
 import com.thinkgem.jeesite.modules.classifying.entity.CmsClassifying;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
@@ -56,7 +57,8 @@ public class Article extends DataEntity<Article> {
 	private String posts;    // 岗位id
 	private String cPosts;    // 岗位名称
 	private String jcity;     // 城市名称
-	private CmsClassifying classifying; //分类
+	private CmsArticleClassify cmsArticleClassify;  //文章的分类
+	private CmsClassifying classifying; //除文章外的分类
 	private String brand;    // 品牌
 	private String collectNum;  // 被收藏数量
 	private String likeNum;    //点赞数
@@ -369,6 +371,14 @@ public class Article extends DataEntity<Article> {
 
 	public void setClassifying(CmsClassifying classifying) {
 		this.classifying = classifying;
+	}
+
+	public CmsArticleClassify getCmsArticleClassify() {
+		return cmsArticleClassify;
+	}
+
+	public void setCmsArticleClassify(CmsArticleClassify cmsArticleClassify) {
+		this.cmsArticleClassify = cmsArticleClassify;
 	}
 
 	public String getBrand() {

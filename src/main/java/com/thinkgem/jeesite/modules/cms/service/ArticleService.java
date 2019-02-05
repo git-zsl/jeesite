@@ -57,8 +57,32 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
             article.setCategory(category);
         } else {
             article.setCategory(new Category());
+            return super.findArticlePage(page, article);
         }
         return super.findPage(page, article);
+    }
+
+    @Transactional(readOnly = false)
+    public Page<Article> findArticlePage(Page<Article> page, Article article, boolean isDataScopeFilter) {
+        // 更新过期的权重，间隔为“6”个小时
+        Date updateExpiredWeightDate = (Date) CacheUtils.get("updateExpiredWeightDateByArticle");
+        if (updateExpiredWeightDate == null || (updateExpiredWeightDate != null
+                && updateExpiredWeightDate.getTime() < new Date().getTime())) {
+            dao.updateExpiredWeight(article);
+            CacheUtils.put("updateExpiredWeightDateByArticle", DateUtils.addHours(new Date(), 6));
+        }
+        if (article.getCategory() != null && StringUtils.isNotBlank(article.getCategory().getId()) && !Category.isRoot(article.getCategory().getId())) {
+            Category category = categoryDao.get(article.getCategory().getId());
+            if (category == null) {
+                category = new Category();
+            }
+            category.setParentIds(category.getId());
+            category.setSite(category.getSite());
+            article.setCategory(category);
+        } else {
+            article.setCategory(new Category());
+        }
+        return super.findArticlePage(page, article);
 
     }
 

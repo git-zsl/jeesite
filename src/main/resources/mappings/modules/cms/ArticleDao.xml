@@ -148,7 +148,8 @@
 		a.posts AS "posts",
 		p.posts AS "cPosts",
 		jc.city AS "jcity",
-		a.classifying_id AS "classifying.id"
+		a.classifying_id AS "classifying.id",
+		a.article_classify_id AS "cmsArticleClassify.id"
 	</sql>
 
     <sql id="cmsJobArticleJoins">
@@ -263,6 +264,31 @@
         <include refid="cmsArticleJoins"/>
         <where>
             a.del_flag = #{DEL_FLAG_NORMAL}
+        </where>
+        <choose>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.weight DESC, a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findArticleList" resultType="Article">
+        SELECT
+        <include refid="cmsArticleColumns"/>
+        FROM cms_article a
+        <include refid="cmsArticleJoins"/>
+        <where>
+            a.del_flag = #{delFlag}
+            AND a.category_id in (select categoryId from cms_is_article)
+            <if test="title != null and title !=''">
+            AND a.title like
+                <if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{title}, '%')</if>
+            </if>
         </where>
         <choose>
             <when test="page !=null and page.orderBy != null and page.orderBy != ''">
@@ -420,6 +446,7 @@
             experience,
             posts,
             classifying_id,
+            article_classify_id,
             brand,
             collect_num,
             like_num,
@@ -456,6 +483,7 @@
 		    #{experience},
 		    #{posts},
 		    #{classifying.id},
+		    #{cmsArticleClassify.id},
 		    #{brand},
 		    #{collectNum},
 		    #{likeNum},
@@ -494,6 +522,7 @@
 		    experience = #{experience},
 		    posts = #{posts},
 		    classifying_id = #{classifying.id},
+		    article_classify_id = #{cmsArticleClassify.id},
 		    brand = #{brand},
 		    collect_num = #{collectNum},
 		    like_num = #{likeNum},

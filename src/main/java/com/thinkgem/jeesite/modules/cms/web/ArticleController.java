@@ -17,6 +17,8 @@ import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
+import com.thinkgem.jeesite.modules.articleclassify.entity.CmsArticleClassify;
+import com.thinkgem.jeesite.modules.articleclassify.service.CmsArticleClassifyService;
 import com.thinkgem.jeesite.modules.artuser.entity.ArticleCollect;
 import com.thinkgem.jeesite.modules.artuser.service.ArticleCollectService;
 import com.thinkgem.jeesite.modules.classifying.entity.CmsClassifying;
@@ -27,6 +29,8 @@ import com.thinkgem.jeesite.modules.cms.utils.TxtReadUtil;
 import com.thinkgem.jeesite.modules.crn.entity.UserCategoryNum;
 import com.thinkgem.jeesite.modules.custom.entity.CustomCategory;
 import com.thinkgem.jeesite.modules.custom.service.CustomCategoryService;
+import com.thinkgem.jeesite.modules.is_article.entity.CmsIsArticle;
+import com.thinkgem.jeesite.modules.is_article.service.CmsIsArticleService;
 import com.thinkgem.jeesite.modules.jobcity.entity.JobCity;
 import com.thinkgem.jeesite.modules.jobcity.service.JobCityService;
 import com.thinkgem.jeesite.modules.posts.entity.CmsPosts;
@@ -84,6 +88,10 @@ public class ArticleController extends BaseController {
     private CmsClassifyingService cmsClassifyingService;
     @Autowired
     private ArticleCollectService articleCollectService;
+    @Autowired
+    private CmsIsArticleService cmsIsArticleService;
+    @Autowired
+    private CmsArticleClassifyService cmsArticleClassifyService;
 
     @ModelAttribute
     public Article get(@RequestParam(required = false) String id) {
@@ -98,12 +106,16 @@ public class ArticleController extends BaseController {
     @RequestMapping(value = {"list", ""})
     public String list(Article article, HttpServletRequest request, HttpServletResponse response, Model model) {
         User user = UserUtils.getUser();
+        Page<Article> page = null;
         if (!user.isAdmin()) {
             article.setCreateBy(user);
         }
         List<String> titles = articleService.findTitle(article);
         model.addAttribute("titles", titles);
-        Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
+        if(Objects.isNull(article.getCategory())){
+           page = articleService.findArticlePage(new Page<Article>(request, response), article, true);
+        }
+        page = articleService.findPage(new Page<Article>(request, response), article, true);
         model.addAttribute("page", page);
         return "modules/cms/articleList";
     }
@@ -115,6 +127,7 @@ public class ArticleController extends BaseController {
             model.addAttribute("postsList", cmsPostsService.findPosts(new CmsPosts()));
             model.addAttribute("cityList", jobCityService.findList(new JobCity()));
             model.addAttribute("cmsClassifying", cmsClassifyingService.findList(new CmsClassifying()));
+            model.addAttribute("articleClassifys", cmsArticleClassifyService.findList(new CmsArticleClassify()));
             // 如果当前传参有子节点，则选择取消传参选择
             if (article.getCategory() != null && StringUtils.isNotBlank(article.getCategory().getId())) {
                 List<Category> list = categoryService.findByParentId(article.getCategory().getId(), Site.getCurrentSiteId());
@@ -535,6 +548,7 @@ public class ArticleController extends BaseController {
             article.setIsRecommend(Global.NO);
             articleData.setAllowComment(Global.YES);
             article.setArticleData(articleData);
+            article.setDelFlag(Article.DEL_FLAG_AUDIT);
             articleService.save(article);
            /* CacheUtils.remove(categoryId + "_" + userId + "path");*/
             //保存内容(如果需要设置相关请教，则在ArticleData处添加)
@@ -552,9 +566,10 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping(value = "uploadArticleSave", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity uploadArticleSave(@RequestParam("userId") String userId, HttpServletRequest request) {
+    public UploadVo uploadArticleSave(@RequestParam("userId") String userId, HttpServletRequest request) {
         User user = null;
         String path = null;
+        UploadVo uploadVo = new UploadVo();
         try {
             if (!StringUtils.isBlank(userId)) {
                 user = UserUtils.get(userId);
@@ -566,10 +581,10 @@ public class ArticleController extends BaseController {
                 String contextPath = request.getSession().getServletContext().getContextPath();
                 String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
                 StringBuffer sb = new StringBuffer();
-                for (Map.Entry<String,MultipartFile> entry: fileMap.entrySet()) {
+                for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
                     MultipartFile file = entry.getValue();
                     String originalFilename = file.getOriginalFilename();
-                    File filePath = new File(configPath + "/userfiles/homeImage/" + "文章上传"+ "/" + user.getLoginName() + "/" + originalFilename);
+                    File filePath = new File(configPath + "/userfiles/homeImage/" + "文章上传" + "/" + user.getLoginName() + "/" + originalFilename);
                     if (!filePath.getParentFile().exists()) {
                         filePath.getParentFile().mkdirs();
                         LogUtils.getLogInfo(ArticleController.class).info("自动创建文件夹成功" + filePath.getParentFile().getPath());
@@ -580,16 +595,21 @@ public class ArticleController extends BaseController {
                     path = contextPath + path.substring(configPath.length());
                     sb.append(path + ",");
                 }
-                path = sb.toString().substring(0,sb.toString().length()-2);
-            }else{
-                return ReturnEntity.fail("请选择图片");
+                path = sb.toString().substring(0, sb.toString().length() - 1);
+            } else {
+                uploadVo.setErrno(Global.YES);
+                return uploadVo;
             }
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("保存出错", e);
             e.printStackTrace();
-            return ReturnEntity.fail("保存出错");
+            uploadVo.setErrno(Global.YES);
+            return uploadVo;
         }
-        return ReturnEntity.success(path, "保存成功");
+        String[] data = path.split(",");
+        uploadVo.setErrno(Global.NO);
+        uploadVo.setData(data);
+        return uploadVo;
     }
 
 

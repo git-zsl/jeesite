@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.is_article.dao.CmsIsArticleDao">
+    
+	<sql id="cmsIsArticleColumns">
+		a.id AS "id",
+		a.categoryid AS "categoryid"
+	</sql>
+	
+	<sql id="cmsIsArticleJoins">
+	</sql>
+    
+	<select id="get" resultType="CmsIsArticle">
+		SELECT 
+			<include refid="cmsIsArticleColumns"/>
+		FROM cms_is_article a
+		<include refid="cmsIsArticleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CmsIsArticle">
+		SELECT 
+			<include refid="cmsIsArticleColumns"/>
+		FROM cms_is_article a
+		<include refid="cmsIsArticleJoins"/>
+		<where>
+			
+			<if test="categoryid != null and categoryid != ''">
+				AND a.categoryid = #{categoryid}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	<select id="findCategoryIds" resultType="string">
+		SELECT
+		a.categoryid AS "categoryid"
+		FROM cms_is_article a
+	</select>
+
+	<select id="findAllList" resultType="CmsIsArticle">
+		SELECT 
+			<include refid="cmsIsArticleColumns"/>
+		FROM cms_is_article a
+		<include refid="cmsIsArticleJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO cms_is_article(
+			id,
+			categoryid
+		) VALUES (
+			#{id},
+			#{categoryid}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cms_is_article SET 	
+			categoryid = #{categoryid}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM cms_is_article
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

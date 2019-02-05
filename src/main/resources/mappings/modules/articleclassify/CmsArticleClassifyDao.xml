@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.articleclassify.dao.CmsArticleClassifyDao">
+    
+	<sql id="cmsArticleClassifyColumns">
+		a.id AS "id",
+		a.article_classify AS "articleClassify"
+	</sql>
+	
+	<sql id="cmsArticleClassifyJoins">
+	</sql>
+    
+	<select id="get" resultType="CmsArticleClassify">
+		SELECT 
+			<include refid="cmsArticleClassifyColumns"/>
+		FROM cms_article_classify a
+		<include refid="cmsArticleClassifyJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CmsArticleClassify">
+		SELECT 
+			<include refid="cmsArticleClassifyColumns"/>
+		FROM cms_article_classify a
+		<include refid="cmsArticleClassifyJoins"/>
+		<where>
+			
+			<if test="articleClassify != null and articleClassify != ''">
+				AND a.article_classify = #{articleClassify}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CmsArticleClassify">
+		SELECT 
+			<include refid="cmsArticleClassifyColumns"/>
+		FROM cms_article_classify a
+		<include refid="cmsArticleClassifyJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO cms_article_classify(
+			id,
+			article_classify
+		) VALUES (
+			#{id},
+			#{articleClassify}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cms_article_classify SET 	
+			article_classify = #{articleClassify}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM cms_article_classify
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
