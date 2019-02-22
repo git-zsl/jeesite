@@ -33,7 +33,7 @@ public class CmsController extends BaseController {
 	@RequiresPermissions("cms:view")
 	@RequestMapping(value = "tree")
 	public String tree(Model model) {
-		model.addAttribute("categoryList", categoryService.findByUser(true, null));
+		model.addAttribute("categoryList", categoryService.findByUser(true, null,""));
 		return "modules/cms/cmsTree";
 	}
 	
