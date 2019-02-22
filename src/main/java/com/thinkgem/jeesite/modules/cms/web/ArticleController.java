@@ -534,9 +534,18 @@ public class ArticleController extends BaseController {
                 String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
                 if (!Objects.isNull(image)) {
                     String originalFilename = image.getOriginalFilename();
-                    filePath = new File(configPath + "\\userfiles\\homeImage\\" + category.getName() + "\\" + user.getLoginName() + "\\" + originalFilename);
-                    if (!filePath.getParentFile().exists()) {
+                    filePath = new File(configPath + "/userfiles/homeImage/" + category.getName() + "/" + user.getLoginName() + "/" + originalFilename);
+                    LogUtils.getLogInfo(ArticleController.class).info(configPath);
+                    LogUtils.getLogInfo(ArticleController.class).info(filePath.getPath());
+                    boolean b = filePath.getParentFile().exists();
+                    LogUtils.getLogInfo(ArticleController.class).info("判断文件夹是否存在");
+                    LogUtils.getLogInfo(ArticleController.class).info(filePath.getParent());
+                    if (!b) {
+                        LogUtils.getLogInfo(ArticleController.class).info("文件夹不存在，创建文件夹");
                         filePath.getParentFile().mkdirs();
+                        LogUtils.getLogInfo(ArticleController.class).info("创建成功");
+                    }else{
+                        LogUtils.getLogInfo(ArticleController.class).info("没有创建");
                     }
                     image.transferTo(filePath);
                     //路径问题，应与原来保持一致，不然主页上传的图片，后台看不到

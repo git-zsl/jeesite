@@ -62,9 +62,9 @@ public class CategoryController extends BaseController {
 
 	@RequiresPermissions("cms:category:view")
 	@RequestMapping(value = {"list", ""})
-	public String list(Model model) {
+	public String list(Model model,@RequestParam(value ="isShowHome",required = false) String isShowHome) {
 		List<Category> list = Lists.newArrayList();
-		List<Category> sourcelist = categoryService.findByUser(true, null);
+		List<Category> sourcelist = categoryService.findByUser(true, null,isShowHome);
 		Category.sortList(list, sourcelist, Global.NO);
         model.addAttribute("list", list);
 		return "modules/cms/categoryList";
@@ -148,7 +148,7 @@ public class CategoryController extends BaseController {
 	public List<Map<String, Object>> treeData(String module, @RequestParam(required=false) String extId, HttpServletResponse response) {
 		response.setContentType("application/json; charset=UTF-8");
 		List<Map<String, Object>> mapList = Lists.newArrayList();
-		List<Category> list = categoryService.findByUser(true, module);
+		List<Category> list = categoryService.findByUser(true, module,"");
 		for (int i=0; i<list.size(); i++){
 			Category e = list.get(i);
 			if (extId == null || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){

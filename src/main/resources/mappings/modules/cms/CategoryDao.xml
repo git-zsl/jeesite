@@ -33,7 +33,8 @@
 		c.name AS "parent.name",
 		c.view_config AS "parent.viewConfig",
 		o.name AS "office.name",
-		s.theme AS "site.theme"
+		s.theme AS "site.theme",
+		a.is_show_home AS "isShowHome"
 	</sql>
 
 	<sql id="cmsCategoryClassifyColumns">
@@ -137,6 +138,9 @@
 			</if>
 			<if test="parent.id != null and parent.id != ''">
 				AND a.parent_id  = #{parent.id}
+			</if>
+			<if test="isShowHome!= null and isShowHome != ''">
+				AND a.is_show_home  = #{isShowHome}
 			</if>
 			${sqlMap.dsf}
 		</where>		

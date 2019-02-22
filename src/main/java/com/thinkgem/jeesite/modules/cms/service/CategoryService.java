@@ -39,12 +39,13 @@ public class CategoryService extends TreeService<CategoryDao, Category> {
 	private Category entity = new Category();
 	
 	@SuppressWarnings("unchecked")
-	public List<Category> findByUser(boolean isCurrentSite, String module){
+	public List<Category> findByUser(boolean isCurrentSite, String module,String isShowHome){
 		
 		List<Category> list = (List<Category>)UserUtils.getCache(CACHE_CATEGORY_LIST);
 		if (list == null){
 			User user = UserUtils.getUser();
 			Category category = new Category();
+			category.setIsShowHome(isShowHome);
 			category.setOffice(new Office());
 			category.getSqlMap().put("dsf", dataScopeFilter(user, "o", "u"));
 			category.setSite(new Site());
