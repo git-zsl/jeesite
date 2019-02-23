@@ -72,7 +72,7 @@ public class CategoryController extends BaseController {
 
 	@RequiresPermissions("cms:category:view")
 	@RequestMapping(value = "form")
-	public String form(Category category, Model model) {
+	public String form(Category category, Model model,@RequestParam(value = "ad",required = false) String ad) {
 		if (category.getParent()==null||category.getParent().getId()==null){
 			category.setParent(new Category(Global.YES));
 		}
@@ -91,18 +91,21 @@ public class CategoryController extends BaseController {
         model.addAttribute("article_DEFAULT_TEMPLATE",Article.DEFAULT_TEMPLATE);
 		model.addAttribute("office", category.getOffice());
 		model.addAttribute("category", category);
+		if(!StringUtils.isBlank(ad)){
+			return "modules/cms/categoryADForm";
+		}
 		return "modules/cms/categoryForm";
 	}
 	
 	@RequiresPermissions("cms:category:edit")
 	@RequestMapping(value = "save")
-	public String save(Category category, Model model, RedirectAttributes redirectAttributes) {
+	public String save(Category category, Model model, RedirectAttributes redirectAttributes,@RequestParam(value = "ad",required = false) String ad) {
 		if(Global.isDemoMode()){
 			addMessage(redirectAttributes, "演示模式，不允许操作！");
 			return "redirect:" + adminPath + "/cms/category/";
 		}
 		if (!beanValidator(model, category)){
-			return form(category, model);
+			return form(category, model,ad);
 		}
 		categoryService.save(category);
 		addMessage(redirectAttributes, "保存栏目'" + category.getName() + "'成功");
@@ -145,10 +148,10 @@ public class CategoryController extends BaseController {
 	@RequiresUser
 	@ResponseBody
 	@RequestMapping(value = "treeData")
-	public List<Map<String, Object>> treeData(String module, @RequestParam(required=false) String extId, HttpServletResponse response) {
+	public List<Map<String, Object>> treeData(String module, @RequestParam(required=false) String extId,@RequestParam(required=false) String isShowHome, HttpServletResponse response) {
 		response.setContentType("application/json; charset=UTF-8");
 		List<Map<String, Object>> mapList = Lists.newArrayList();
-		List<Category> list = categoryService.findByUser(true, module,"");
+		List<Category> list = categoryService.findByUser(true, module,isShowHome);
 		for (int i=0; i<list.size(); i++){
 			Category e = list.get(i);
 			if (extId == null || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){
@@ -177,7 +180,7 @@ public class CategoryController extends BaseController {
 	public ReturnEntity<List<Category>> navigationBar(Category category,@RequestParam(value = "allchildcategory",required = false) String allchildcategory) {
         List<Category> parentList = new ArrayList<>();
 	    try{
-            category.setIsShowHome(Global.NO);
+            category.setIsShowHome(Global.YES);
             List<Category> categorys = categoryService.findNavigationBar(category);
 			if(!StringUtils.isBlank(category.getId()) && StringUtils.isBlank(allchildcategory)){
 				return ReturnEntity.success(categorys,"查询对应栏目成功");

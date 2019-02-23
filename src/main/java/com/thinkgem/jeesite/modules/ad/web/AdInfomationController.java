@@ -1,0 +1,156 @@
+/**
+ * Copyright &copy; 2012-2016 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
+ */
+package com.thinkgem.jeesite.modules.ad.web;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.ad.entity.AdInfomation;
+import com.thinkgem.jeesite.modules.ad.service.AdInfomationService;
+import com.thinkgem.jeesite.modules.cms.entity.Article;
+import com.thinkgem.jeesite.modules.cms.entity.ArticleData;
+import com.thinkgem.jeesite.modules.cms.entity.Category;
+import com.thinkgem.jeesite.modules.cms.service.ArticleDataService;
+import com.thinkgem.jeesite.modules.cms.service.ArticleService;
+import com.thinkgem.jeesite.modules.cms.service.CategoryService;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * 广告信息Controller
+ * @author zsl
+ * @version 2019-02-23
+ */
+@Controller
+@RequestMapping(value = "${adminPath}/ad/adInfomation")
+public class AdInfomationController extends BaseController {
+
+	@Autowired
+	private AdInfomationService adInfomationService;
+	@Autowired
+	private CategoryService categoryService;
+	@Autowired
+	private ArticleService articleService;
+	@Autowired
+	private ArticleDataService articleDataService;
+
+	@ModelAttribute
+	public AdInfomation get(@RequestParam(required=false) String id) {
+		AdInfomation entity = null;
+		if (StringUtils.isNotBlank(id)){
+			entity = adInfomationService.get(id);
+		}
+		if (entity == null){
+			entity = new AdInfomation();
+		}
+		return entity;
+	}
+	
+	@RequiresPermissions("ad:adInfomation:view")
+	@RequestMapping(value = {"list", ""})
+	public String list(AdInfomation adInfomation, HttpServletRequest request, HttpServletResponse response, Model model) {
+		List<AdInfomation> list = adInfomationService.findList(adInfomation); 
+		model.addAttribute("list", list);
+		return "modules/ad/adInfomationList";
+	}
+
+	@RequiresPermissions("ad:adInfomation:view")
+	@RequestMapping(value = "form")
+	public String form(AdInfomation adInfomation, Model model) {
+		if (adInfomation.getCategory()!=null && StringUtils.isNotBlank(adInfomation.getCategory().getId())){
+			Category category = categoryService.get(adInfomation.getCategory().getId());
+			adInfomation.setCategory(category);
+		}
+		if (adInfomation.getParent()!=null && StringUtils.isNotBlank(adInfomation.getParent().getId())){
+			adInfomation.setParent(adInfomationService.get(adInfomation.getParent().getId()));
+			// 获取排序号，最末节点排序号+30
+			if (StringUtils.isBlank(adInfomation.getId())){
+				AdInfomation adInfomationChild = new AdInfomation();
+				adInfomationChild.setParent(new AdInfomation(adInfomation.getParent().getId()));
+				List<AdInfomation> list = adInfomationService.findList(adInfomation); 
+				if (list.size() > 0){
+					adInfomation.setSort(list.get(list.size()-1).getSort());
+					if (adInfomation.getSort() != null){
+						adInfomation.setSort(adInfomation.getSort() + 30);
+					}
+				}
+			}
+		}
+		if (adInfomation.getSort() == null){
+			adInfomation.setSort(30);
+		}
+		model.addAttribute("adInfomation", adInfomation);
+		return "modules/ad/adInfomationForm";
+	}
+
+	@RequiresPermissions("ad:adInfomation:edit")
+	@RequestMapping(value = "save")
+	public String save(AdInfomation adInfomation, Category category, Model model, RedirectAttributes redirectAttributes) {
+		adInfomation.setPromulgator(UserUtils.getUser().getLoginName());
+		Article article = articleService.get(adInfomation.getArticleId());
+		ArticleData articleData = articleDataService.get(adInfomation.getArticleId());
+		article.setArticleData(articleData);
+		if(Objects.nonNull(article) && StringUtils.isNotBlank(article.getIsPutaway()) && !Global.YES.equals(article.getIsPutaway())){
+			article.setIsPutaway(Global.YES);
+			articleService.save(article);
+		}
+		if (!beanValidator(model, adInfomation)){
+			return form(adInfomation, model);
+		}
+		adInfomationService.save(adInfomation);
+		addMessage(redirectAttributes, "保存广告信息成功");
+		return "redirect:"+Global.getAdminPath()+"/ad/adInfomation/?repage";
+	}
+	
+	@RequiresPermissions("ad:adInfomation:edit")
+	@RequestMapping(value = "delete")
+	public String delete(AdInfomation adInfomation, RedirectAttributes redirectAttributes) {
+		if(StringUtils.isNotBlank(adInfomation.getArticleId())){
+			Article article = articleService.get(adInfomation.getArticleId());
+			ArticleData articleData = articleDataService.get(adInfomation.getArticleId());
+			article.setArticleData(articleData);
+			article.setIsPutaway(Global.NO);
+			articleService.save(article);
+		}
+		adInfomationService.delete(adInfomation);
+		addMessage(redirectAttributes, "删除广告信息成功");
+		return "redirect:"+Global.getAdminPath()+"/ad/adInfomation/?repage";
+	}
+
+	@RequiresPermissions("user")
+	@ResponseBody
+	@RequestMapping(value = "treeData")
+	public List<Map<String, Object>> treeData(@RequestParam(required=false) String extId, HttpServletResponse response) {
+		List<Map<String, Object>> mapList = Lists.newArrayList();
+		List<AdInfomation> list = adInfomationService.findList(new AdInfomation());
+		for (int i=0; i<list.size(); i++){
+			AdInfomation e = list.get(i);
+			if (StringUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){
+				Map<String, Object> map = Maps.newHashMap();
+				map.put("id", e.getId());
+				map.put("pId", e.getParentId());
+				map.put("name", e.getName());
+				mapList.add(map);
+			}
+		}
+		return mapList;
+	}
+	
+}

@@ -17,6 +17,8 @@ import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
+import com.thinkgem.jeesite.modules.ad.entity.AdInfomation;
+import com.thinkgem.jeesite.modules.ad.service.AdInfomationService;
 import com.thinkgem.jeesite.modules.articleclassify.entity.CmsArticleClassify;
 import com.thinkgem.jeesite.modules.articleclassify.service.CmsArticleClassifyService;
 import com.thinkgem.jeesite.modules.artuser.entity.ArticleCollect;
@@ -92,6 +94,8 @@ public class ArticleController extends BaseController {
     private CmsIsArticleService cmsIsArticleService;
     @Autowired
     private CmsArticleClassifyService cmsArticleClassifyService;
+    @Autowired
+    private AdInfomationService adInfomationService;
 
     @ModelAttribute
     public Article get(@RequestParam(required = false) String id) {
@@ -104,7 +108,7 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = {"list", ""})
-    public String list(Article article, HttpServletRequest request, HttpServletResponse response, Model model) {
+    public String list(Article article, HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "ad",required = false) String ad) {
         User user = UserUtils.getUser();
         Page<Article> page = null;
         if (!user.isAdmin()) {
@@ -117,7 +121,13 @@ public class ArticleController extends BaseController {
         }
         page = articleService.findPage(new Page<Article>(request, response), article, true);
         model.addAttribute("page", page);
-        return "modules/cms/articleList";
+        String returnPage = "";
+        if(!StringUtils.isBlank(ad)){
+            returnPage = "modules/cms/articleADList";
+        }else{
+            returnPage = "modules/cms/articleList";
+        }
+        return returnPage;
     }
 
     @RequiresPermissions("cms:article:view")
@@ -221,7 +231,7 @@ public class ArticleController extends BaseController {
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = "selectList")
     public String selectList(Article article, HttpServletRequest request, HttpServletResponse response, Model model) {
-        list(article, request, response, model);
+        list(article, request, response, model,"");
         return "modules/cms/articleSelectList";
     }
 
@@ -707,5 +717,25 @@ public class ArticleController extends BaseController {
             return ReturnEntity.fail("查询关键词出错");
         }
         return ReturnEntity.success(list, "查询请教分类成功");
+    }
+
+
+    @RequestMapping(value = "newlist")
+    public String list(Model model,@RequestParam(value ="isShowHome",required = false) String isShowHome) {
+        List<Category> list = Lists.newArrayList();
+        List<Category> sourcelist = categoryService.findByUser(true, null,isShowHome);
+        Category.sortList(list, sourcelist, Global.NO);
+        model.addAttribute("list", list);
+        return "modules/cms/categoryADList";
+    }
+
+    @RequestMapping(value = "adForm")
+    public String adForm(Model model,Article article) {
+        Article article1 = articleService.get(article);
+        if(Objects.nonNull(article1)){
+            AdInfomation adInfomation = adInfomationService.setAdInfomationData(article1);
+            model.addAttribute("adInfomation", adInfomation);
+        }
+        return "modules/ad/adInfomationForm";
     }
 }

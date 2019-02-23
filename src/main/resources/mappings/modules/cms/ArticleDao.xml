@@ -149,7 +149,8 @@
 		p.posts AS "cPosts",
 		jc.city AS "jcity",
 		a.classifying_id AS "classifying.id",
-		a.article_classify_id AS "cmsArticleClassify.id"
+		a.article_classify_id AS "cmsArticleClassify.id",
+		a.is_putaway AS "isPutaway"
 	</sql>
 
     <sql id="cmsJobArticleJoins">
@@ -450,7 +451,8 @@
             brand,
             collect_num,
             like_num,
-            page_num
+            page_num,
+            is_putaway
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -487,7 +489,8 @@
 		    #{brand},
 		    #{collectNum},
 		    #{likeNum},
-		    #{pageNum}
+		    #{pageNum},
+		    #{isPutaway}
 		)
 	</insert>
 
@@ -526,7 +529,8 @@
 		    brand = #{brand},
 		    collect_num = #{collectNum},
 		    like_num = #{likeNum},
-		    page_num = #{pageNum}
+		    page_num = #{pageNum},
+		    is_putaway = #{isPutaway}
 		WHERE id = #{id}
 	</update>
 

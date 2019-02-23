@@ -63,6 +63,7 @@ public class Article extends DataEntity<Article> {
 	private String collectNum;  // 被收藏数量
 	private String likeNum;    //点赞数
 	private String pageNum;    // 第几页的广告
+	private String isPutaway;   // 是否已上架
 
 	private User user;
     
@@ -73,6 +74,7 @@ public class Article extends DataEntity<Article> {
 		this.posid = "";
 		this.likeNum = "0";
 		this.collectNum = "0";
+		this.isPutaway = "0";
 	}
 
 	public Article(String id){
@@ -411,6 +413,14 @@ public class Article extends DataEntity<Article> {
 
 	public void setPageNum(String pageNum) {
 		this.pageNum = pageNum;
+	}
+
+	public String getIsPutaway() {
+		return isPutaway;
+	}
+
+	public void setIsPutaway(String isPutaway) {
+		this.isPutaway = isPutaway;
 	}
 }
 
