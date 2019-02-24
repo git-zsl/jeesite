@@ -9,6 +9,8 @@ import javax.validation.constraints.NotNull;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
 import org.hibernate.validator.constraints.Length;
 import java.util.Date;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import com.thinkgem.jeesite.common.persistence.TreeEntity;
@@ -30,6 +32,7 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 	private Date releaseTime;		// 发布时间
 	private Date soldOutTime;		// 下架时间
 	private String promulgator;		// 发布者
+	private String isConfig;         // 配置标志
 	
 	public AdInfomation() {
 		super();
@@ -122,5 +125,32 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 	
 	public String getParentId() {
 		return parent != null && parent.getId() != null ? parent.getId() : "0";
+	}
+
+	public String getIsConfig() {
+		return isConfig;
+	}
+
+	public void setIsConfig(String isConfig) {
+		this.isConfig = isConfig;
+	}
+
+	public static void sortList(List<AdInfomation> list, List<AdInfomation> sourcelist, String parentId){
+		for (int i=0; i<sourcelist.size(); i++){
+			AdInfomation e = sourcelist.get(i);
+			if (e.getParent()!=null && e.getParent().getId()!=null
+					&& e.getParent().getId().equals(parentId)){
+				list.add(e);
+				// 判断是否还有子节点, 有则继续获取子节点
+				for (int j=0; j<sourcelist.size(); j++){
+					AdInfomation child = sourcelist.get(j);
+					if (child.getParent()!=null && child.getParent().getId()!=null
+							&& child.getParent().getId().equals(e.getId())){
+						sortList(list, sourcelist, e.getId());
+						break;
+					}
+				}
+			}
+		}
 	}
 }

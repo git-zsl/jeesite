@@ -34,7 +34,13 @@ public class AdInfomationService extends TreeService<AdInfomationDao, AdInfomati
 		}
 		return super.findList(adInfomation);
 	}
-	
+	public List<AdInfomation> findConfigList(AdInfomation adInfomation) {
+		if (StringUtils.isNotBlank(adInfomation.getParentIds())){
+			adInfomation.setParentIds(","+adInfomation.getParentIds()+",");
+		}
+		return super.findConfigList(adInfomation);
+	}
+
 	@Transactional(readOnly = false)
 	public void save(AdInfomation adInfomation) {
 		super.save(adInfomation);

@@ -66,11 +66,18 @@ public class AdInfomationController extends BaseController {
 	@RequiresPermissions("ad:adInfomation:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(AdInfomation adInfomation, HttpServletRequest request, HttpServletResponse response, Model model,@RequestParam(required = false) String show) {
-		List<AdInfomation> list = adInfomationService.findList(adInfomation); 
-		model.addAttribute("list", list);
+		List<AdInfomation> sourcelist = null;
+		List<AdInfomation> list = Lists.newArrayList();
 		if(StringUtils.isNotBlank(show)){
-			return "modules/ad/adInfomationList2";
+			sourcelist = adInfomationService.findList(adInfomation);
+			AdInfomation.sortList(list, sourcelist, Global.NO);
+			model.addAttribute("list", list);
+			model.addAttribute("categoryId", adInfomation.getCategory().getId());
+			return "modules/ad/adInfomationNewList";
 		}
+		sourcelist = adInfomationService.findConfigList(adInfomation);
+		/*AdInfomation.sortList(list, sourcelist, Global.NO);*/
+		model.addAttribute("list", sourcelist);
 		return "modules/ad/adInfomationList";
 	}
 
@@ -121,7 +128,25 @@ public class AdInfomationController extends BaseController {
 		addMessage(redirectAttributes, "保存广告信息成功");
 		return "redirect:"+Global.getAdminPath()+"/ad/adInfomation/?repage";
 	}
-	
+
+	/**
+	 * 批量修改排序
+	 */
+	@RequiresPermissions("ad:adInfomation:edit")
+	@RequestMapping(value = "updateSort")
+	public String updateSort(String categoryId,String[] ids, Integer[] sorts, RedirectAttributes redirectAttributes) {
+		int len = ids.length;
+		AdInfomation[] entitys = new AdInfomation[len];
+		for (int i = 0; i < len; i++) {
+			entitys[i] = adInfomationService.get(ids[i]);
+			entitys[i].setSort(sorts[i]);
+			adInfomationService.save(entitys[i]);
+		}
+		addMessage(redirectAttributes, "保存栏目排序成功!");
+		return "redirect:" + adminPath + "/ad/adInfomation?show=1&category.id="+categoryId;
+	}
+
+
 	@RequiresPermissions("ad:adInfomation:edit")
 	@RequestMapping(value = "delete")
 	public String delete(AdInfomation adInfomation, RedirectAttributes redirectAttributes) {

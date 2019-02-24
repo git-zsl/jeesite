@@ -72,10 +72,60 @@
 			<if test="promulgator != null and promulgator != ''">
 				AND a.promulgator = #{promulgator}
 			</if>
+			<if test="promulgator != null and promulgator != ''">
+				AND a.promulgator = #{promulgator}
+			</if>
 		</where>
 		ORDER BY a.sort ASC
 	</select>
-	
+
+	<select id="findConfigList" resultType="AdInfomation">
+		SELECT
+			<include refid="adInfomationColumns"/>
+		FROM ad_infomation a
+		<include refid="adInfomationJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} AND a.article_id is null
+			<if test="parent != null and parent.id != null and parent.id != ''">
+				AND a.parent_id = #{parent.id}
+			</if>
+			<if test="parentIds != null and parentIds != ''">
+				AND a.parent_ids LIKE
+					<if test="dbName == 'oracle'">'%'||#{parentIds}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{parentIds}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{parentIds},'%')</if>
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="releaseTime != null and releaseTime != ''">
+				AND a.release_time LIKE
+					<if test="dbName == 'oracle'">#{releaseTime}||'%'</if>
+					<if test="dbName == 'mssql'">#{releaseTime}+'%'</if>
+					<if test="dbName == 'mysql'">concat(#{releaseTime},'%')</if>
+			</if>
+			<if test="soldOutTime != null and soldOutTime != ''">
+				AND a.sold_out_time LIKE
+					<if test="dbName == 'oracle'">#{soldOutTime}||'%'</if>
+					<if test="dbName == 'mssql'">#{soldOutTime}+'%'</if>
+					<if test="dbName == 'mysql'">concat(#{soldOutTime},'%')</if>
+			</if>
+			<if test="category != null and category.id != null and category.id != ''">
+				AND a.category_id = #{category.id} OR (a.article_id is null and a.del_flag = #{DEL_FLAG_NORMAL})
+			</if>
+			<if test="promulgator != null and promulgator != ''">
+				AND a.promulgator = #{promulgator}
+			</if>
+			<if test="promulgator != null and promulgator != ''">
+				AND a.promulgator = #{promulgator}
+			</if>
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+
 	<select id="findAllList" resultType="AdInfomation">
 		SELECT 
 			<include refid="adInfomationColumns"/>

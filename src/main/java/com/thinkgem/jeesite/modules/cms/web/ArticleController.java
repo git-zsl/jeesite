@@ -214,7 +214,7 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:edit")
     @RequestMapping(value = "delete")
-    public String delete(Article article, String categoryId, @RequestParam(required = false) Boolean isRe, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all) {
+    public String delete(Article article, String categoryId, @RequestParam(required = false) Boolean isRe, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "ad", required = false) String ad) {
         String path = "";
         if (!StringUtils.isBlank(all)) {
             path = "allList";
@@ -225,6 +225,9 @@ public class ArticleController extends BaseController {
         }
         articleService.delete(article, isRe);
         addMessage(redirectAttributes, (isRe ? "删除" : "发布") + "文章成功");
+        if(StringUtils.isNotBlank(ad)){
+            return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&delFlag=2&category.id=" + (categoryId != null ? categoryId : "");
+        }
         return "redirect:" + adminPath + "/cms/article/" + path + "?repage&category.id=" + (categoryId != null ? categoryId : "");
     }
 

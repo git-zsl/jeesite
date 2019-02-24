@@ -24,11 +24,17 @@
 				addRow("#treeTableList", tpl, data, rootIds[i], true);
 			}
 			$("#treeTable").treeTable({expandLevel : 5});
+
+            $(".btnSubmit1").click(function(){
+                loading('正在提交，请稍等...');
+                debugger
+                $("#listForm").attr("action", "${ctx}/cms/category/updateSort");
+                $("#listForm").submit();
+            });
 		});
 		function addRow(list, tpl, data, pid, root){
 			for (var i=0; i<data.length; i++){
 				var row = data[i];
-				debugger
 				if ((${fns:jsGetVal('row.parentId')}) == pid){
 					$(list).append(Mustache.render(tpl, {
 						dict: {
@@ -38,12 +44,13 @@
 				}
 			}
 		}
+
 	</script>
 </head>
 <body>
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/ad/adInfomation/">广告信息列表</a></li>
-		<shiro:hasPermission name="ad:adInfomation:edit"><li><a href="${ctx}/ad/adInfomation/form">广告信息添加</a></li></shiro:hasPermission>
+		<%--<shiro:hasPermission name="ad:adInfomation:edit"><li><a href="${ctx}/ad/adInfomation/form">广告信息添加</a></li></shiro:hasPermission>--%>
 	</ul>
 	<form:form id="searchForm" modelAttribute="adInfomation" action="${ctx}/ad/adInfomation/" method="post" class="breadcrumb form-search">
 		<ul class="ul-form">
@@ -74,6 +81,7 @@
 				<th>广告位名称</th>
 				<th>发布时间</th>
 				<th>下架时间</th>
+				<th style="text-align:center;">排序</th>
 				<th>发布者</th>
 				<th>备注信息</th>
 				<shiro:hasPermission name="ad:adInfomation:edit"><th>操作</th></shiro:hasPermission>
@@ -92,6 +100,10 @@
 			<td>
 				{{row.soldOutTime}}
 			</td>
+			<td id = "{{row.id}}_1" style="text-align:center;">
+					<input type="hidden" name="ids" value="{{row.id}}"/>
+					<input name="sorts" type="text" value="{{row.sort}}" style="width:50px;margin:0;padding:0;text-align:center;">
+			</td>
 			<td>
 				{{row.promulgator}}
 			</td>
@@ -104,5 +116,8 @@
 			</td></shiro:hasPermission>
 		</tr>
 	</script>
+	<div class="form-actions pagination-left">
+		<input id="btnSubmit1" class="btn btn-primary" type="button" value="保存排序"/>
+	</div>
 </body>
 </html>

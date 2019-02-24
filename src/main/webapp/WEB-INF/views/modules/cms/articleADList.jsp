@@ -28,9 +28,9 @@
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/cms/article/?ad=1&delFlag=2&category.id=${article.category.id}">广告列表</a></li>
 		<li><a href="${ctx}/cms/article/newlist?isShowHome=1&category.id=${article.category.id}">主页广告管理</a></li>
-		<shiro:hasPermission name="cms:article:edit"><li><a href="<c:url value='${fns:getAdminPath()}/cms/article/form?id=${article.id}&category.id=${article.category.id}'><c:param name='category.name' value='${article.category.name}'/></c:url>">添加</a></li></shiro:hasPermission>
+		<shiro:hasPermission name="cms:article:edit"><li><a href="<c:url value='${fns:getAdminPath()}/cms/article/form?id=${article.id}&category.id=${article.category.id}'><c:param name='category.name' value='${article.category.name}'/></c:url>">广告添加</a></li></shiro:hasPermission>
 	</ul>
-	<form:form id="searchForm" modelAttribute="article" action="${ctx}/cms/article" method="post" class="breadcrumb form-search">
+	<form:form id="searchForm" modelAttribute="article" action="${ctx}/cms/article?ad=1" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<input id="ad" name="ad" type="hidden" value="1"/>
