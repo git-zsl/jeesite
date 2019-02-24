@@ -30,9 +30,7 @@
 				<tr id="${tpl.id}" pId="${tpl.parent.id ne '1'?tpl.parent.id:'0'}">
 					<td><a href="${ctx}/cms/category/form?id=${tpl.id}&ad=1">${tpl.name}</a></td>
 					<td>
-						<shiro:hasPermission name="cms:category:edit">
 							<a href="${ctx}/ad/adInfomation?show=1&category.id=${tpl.id}">进入管理</a>
-						</shiro:hasPermission>
 					</td>
 				</tr>
 			</c:forEach>

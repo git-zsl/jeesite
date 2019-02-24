@@ -32,10 +32,10 @@
 					<td><fmt:formatDate value="${tpl.releaseTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 					<td><fmt:formatDate value="${tpl.soldOutTime}" pattern="yyyy-MM-dd HH:mm:ss"/></td>
 					<td style="text-align:center;">
-						<shiro:hasPermission name="cms:category:edit">
+						<shiro:hasPermission name="ad:adInfomation:edit">
 							<input type="hidden" name="ids" value="${tpl.id}"/>
 							<input name="sorts" type="text" value="${tpl.sort}" style="width:50px;margin:0;padding:0;text-align:center;">
-						</shiro:hasPermission><shiro:lacksPermission name="cms:category:edit">
+						</shiro:hasPermission><shiro:lacksPermission name="ad:adInfomation:edit">
 							${tpl.sort}
 						</shiro:lacksPermission>
 					</td>
@@ -50,7 +50,7 @@
 				</tr>
 			</c:forEach>
 		</table>
-		<shiro:hasPermission name="cms:category:edit"><div class="form-actions pagination-left">
+		<shiro:hasPermission name="ad:adInfomation:edit"><div class="form-actions pagination-left">
 			<input id="btnSubmit" class="btn btn-primary" type="button" value="保存排序" onclick="updateSort();"/>
 		</div></shiro:hasPermission>
 	</form>
