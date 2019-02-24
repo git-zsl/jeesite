@@ -181,7 +181,7 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:edit")
     @RequestMapping(value = "save")
-    public String save(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all) {
+    public String save(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "ad", required = false) String ad) {
         String path = "";
         if (!StringUtils.isBlank(all)) {
             path = "allList";
@@ -198,6 +198,9 @@ public class ArticleController extends BaseController {
         articleService.save(article);
         addMessage(redirectAttributes, "保存文章'" + StringUtils.abbr(article.getTitle(), 50) + "'成功");
         String categoryId = article.getCategory() != null ? article.getCategory().getId() : null;
+        if(StringUtils.isNotBlank(ad)){
+            return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&delFlag=2&category.id=" + (categoryId != null ? categoryId : "");
+        }
         return "redirect:" + adminPath + "/cms/article/" + path + "?repage&delFlag=2&category.id=" + (categoryId != null ? categoryId : "");
     }
 
@@ -723,7 +726,7 @@ public class ArticleController extends BaseController {
     @RequestMapping(value = "newlist")
     public String list(Model model,@RequestParam(value ="isShowHome",required = false) String isShowHome) {
         List<Category> list = Lists.newArrayList();
-        List<Category> sourcelist = categoryService.findByUser(true, null,isShowHome);
+        List<Category> sourcelist = categoryService.findByUser(true, null,isShowHome,"");
         Category.sortList(list, sourcelist, Global.NO);
         model.addAttribute("list", list);
         return "modules/cms/categoryADList";

@@ -26,7 +26,8 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="${ctx}/cms/article/?category.id=${article.category.id}">列表</a></li>
+		<li class="active"><a href="${ctx}/cms/article/?ad=1&delFlag=2&category.id=${article.category.id}">广告列表</a></li>
+		<li><a href="${ctx}/cms/article/newlist?isShowHome=1&category.id=${article.category.id}">主页广告管理</a></li>
 		<shiro:hasPermission name="cms:article:edit"><li><a href="<c:url value='${fns:getAdminPath()}/cms/article/form?id=${article.id}&category.id=${article.category.id}'><c:param name='category.name' value='${article.category.name}'/></c:url>">添加</a></li></shiro:hasPermission>
 	</ul>
 	<form:form id="searchForm" modelAttribute="article" action="${ctx}/cms/article" method="post" class="breadcrumb form-search">
@@ -36,11 +37,6 @@
 		<label>栏目：</label>
 		<sys:treeselect id="category" name="category.id" value="${article.category.id}" labelName="category.name" labelValue="${article.category.name}"
 					title="栏目" url="/cms/category/treeData" module="article" notAllowSelectRoot="false" cssClass="input-small"/>
-		<%--<label>标题：</label>
-		<form:select id="title" path="title" class="input-medium">
-			<form:option value="" label="请选择"/>
-			<form:options items="${titles}" htmlEscape="false"/>
-		</form:select>&nbsp;--%>
 		<label>标题：</label>
 		<form:input path="title" htmlEscape="false" maxlength="255" />
 		<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>&nbsp;&nbsp;

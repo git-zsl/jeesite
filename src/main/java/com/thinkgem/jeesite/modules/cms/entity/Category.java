@@ -52,6 +52,7 @@ public class Category extends TreeEntity<Category>  implements Comparable<Catego
     private String cnt;//信息量
     private String hits;//点击量
 	private Integer subscriber ;   //订阅量
+	private String isAD;  // 是否广告定制
 	
 	private List<Category> childList = Lists.newArrayList(); 	// 拥有子分类列表
 
@@ -266,6 +267,14 @@ public class Category extends TreeEntity<Category>  implements Comparable<Catego
 
 	public String getCustomListView() {
 		return customListView;
+	}
+
+	public String getIsAD() {
+		return isAD;
+	}
+
+	public void setIsAD(String isAD) {
+		this.isAD = isAD;
 	}
 
 	public void setCustomListView(String customListView) {

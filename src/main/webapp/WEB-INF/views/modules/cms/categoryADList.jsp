@@ -19,7 +19,8 @@
 <body>
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/cms/category/">栏目列表</a></li>
-		<shiro:hasPermission name="cms:category:edit"><li><a href="${ctx}/cms/category/form?ad=1">栏目添加</a></li></shiro:hasPermission>
+		<%--<li><a href="${ctx}/cms/article/?ad=1&delFlag=2&category.id=${article.category.id}">广告列表</a></li>--%>
+		<%--<shiro:hasPermission name="cms:category:edit"><li><a href="${ctx}/cms/category/form?ad=1">栏目添加</a></li></shiro:hasPermission>--%>
 	</ul>
 	<sys:message content="${message}"/>
 	<form id="listForm" method="post">
@@ -30,7 +31,7 @@
 					<td><a href="${ctx}/cms/category/form?id=${tpl.id}&ad=1">${tpl.name}</a></td>
 					<td>
 						<shiro:hasPermission name="cms:category:edit">
-							<a href="${ctx}/cms/category/form?id=${tpl.id}&ad=1">进入管理</a>
+							<a href="${ctx}/ad/adInfomation?show=1&category.id=${tpl.id}">进入管理</a>
 						</shiro:hasPermission>
 					</td>
 				</tr>

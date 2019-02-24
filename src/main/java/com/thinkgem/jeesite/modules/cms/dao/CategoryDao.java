@@ -20,7 +20,9 @@ import org.apache.ibatis.annotations.Param;
 public interface CategoryDao extends TreeDao<Category> {
 	
 	public List<Category> findModule(Category category);
-	
+
+	public List<Category> findADList(Category category);
+
 	public List<Category> findByModule(String module);
 
 	public List<Category> findByParentId(String parentId, String isMenu);

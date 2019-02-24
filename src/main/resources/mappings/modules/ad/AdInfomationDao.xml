@@ -66,6 +66,9 @@
 					<if test="dbName == 'mssql'">#{soldOutTime}+'%'</if>
 					<if test="dbName == 'mysql'">concat(#{soldOutTime},'%')</if>
 			</if>
+			<if test="category != null and category.id != null and category.id != ''">
+				AND a.category_id = #{category.id} OR (a.article_id is null and a.del_flag = #{DEL_FLAG_NORMAL})
+			</if>
 			<if test="promulgator != null and promulgator != ''">
 				AND a.promulgator = #{promulgator}
 			</if>

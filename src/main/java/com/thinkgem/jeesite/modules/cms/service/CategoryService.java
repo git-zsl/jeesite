@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import com.thinkgem.jeesite.modules.custom.entity.CustomCategory;
+import com.thinkgem.jeesite.modules.custom.service.CustomCategoryService;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,13 +38,24 @@ import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 public class CategoryService extends TreeService<CategoryDao, Category> {
 
 	public static final String CACHE_CATEGORY_LIST = "categoryList";
+	public static final String CACHE_CATEGORY_ISSHOWHOME_LIST = "categoryIsShowHomeList";
+	public static final String CACHE_CATEGORY_AD_LIST = "categoryADList";
 
 	private Category entity = new Category();
+
+	@Autowired
+	private CustomCategoryService customCategoryService;
 	
 	@SuppressWarnings("unchecked")
-	public List<Category> findByUser(boolean isCurrentSite, String module,String isShowHome){
-		
-		List<Category> list = (List<Category>)UserUtils.getCache(CACHE_CATEGORY_LIST);
+	public List<Category> findByUser(boolean isCurrentSite, String module,String isShowHome,String ad){
+		List<Category> list = null;
+		if(StringUtils.isBlank(isShowHome) /*&& StringUtils.isBlank(ad)*/){
+			list = (List<Category>)UserUtils.getCache(CACHE_CATEGORY_LIST);
+		}else{
+			list = (List<Category>)UserUtils.getCache(CACHE_CATEGORY_ISSHOWHOME_LIST);
+		}/*else if(!StringUtils.isBlank(ad)){
+			list = (List<Category>)UserUtils.getCache(CACHE_CATEGORY_AD_LIST);
+		}*/
 		if (list == null){
 			User user = UserUtils.getUser();
 			Category category = new Category();
@@ -51,6 +65,13 @@ public class CategoryService extends TreeService<CategoryDao, Category> {
 			category.setSite(new Site());
 			category.setParent(new Category());
 			list = dao.findList(category);
+			if(StringUtils.isNotBlank(ad)){
+				CustomCategory gg = customCategoryService.findByMark(Global.GG);
+				String categoryId = gg.getCategoryId();
+				category.setIsAD(categoryId);
+				category.setIsShowHome("");
+				list = dao.findADList(category);
+			}
 			// 将没有父节点的节点，找到父节点
 			Set<String> parentIdSet = Sets.newHashSet();
 			for (Category e : list){
@@ -75,7 +96,12 @@ public class CategoryService extends TreeService<CategoryDao, Category> {
 //				dc.addOrder(Order.asc("site.id")).addOrder(Order.asc("sort"));
 //				list.addAll(0, dao.find(dc));
 			}
-			UserUtils.putCache(CACHE_CATEGORY_LIST, list);
+			if(StringUtils.isBlank(isShowHome) /*&& StringUtils.isBlank(ad)*/){
+				UserUtils.putCache(CACHE_CATEGORY_LIST, list);
+			}else{
+				UserUtils.putCache(CACHE_CATEGORY_ISSHOWHOME_LIST, list);
+			}
+
 		}
 		
 		if (isCurrentSite){

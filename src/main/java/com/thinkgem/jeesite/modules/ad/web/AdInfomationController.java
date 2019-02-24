@@ -65,9 +65,12 @@ public class AdInfomationController extends BaseController {
 	
 	@RequiresPermissions("ad:adInfomation:view")
 	@RequestMapping(value = {"list", ""})
-	public String list(AdInfomation adInfomation, HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String list(AdInfomation adInfomation, HttpServletRequest request, HttpServletResponse response, Model model,@RequestParam(required = false) String show) {
 		List<AdInfomation> list = adInfomationService.findList(adInfomation); 
 		model.addAttribute("list", list);
+		if(StringUtils.isNotBlank(show)){
+			return "modules/ad/adInfomationList2";
+		}
 		return "modules/ad/adInfomationList";
 	}
 
