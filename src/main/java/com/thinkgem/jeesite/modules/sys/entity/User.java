@@ -54,6 +54,7 @@ public class User extends DataEntity<User> {
 	private String isCompany;   //是否企业
 	private String attentionNum;  //关注数
 	private String attention2Num;  //被关注数
+	private String isCreateByMySelf;  // 是否自己创建办理人和修改人
 	
 	private Role role;	// 根据角色查询用户条件
 	
@@ -362,6 +363,14 @@ public class User extends DataEntity<User> {
 
 	public void setAttention2Num(String attention2Num) {
 		this.attention2Num = attention2Num;
+	}
+
+	public String getIsCreateByMySelf() {
+		return isCreateByMySelf;
+	}
+
+	public void setIsCreateByMySelf(String isCreateByMySelf) {
+		this.isCreateByMySelf = isCreateByMySelf;
 	}
 
 	@Override

@@ -50,7 +50,13 @@
 			<form:option value="" label="请选择"/>
 			<form:options items="${fns:getDictList('yes_no')}" htmlEscape="false" itemLabel="label" itemValue="value"/>
 		</form:select>&nbsp;
+		<label>已审核：</label>
+		<form:select id="isRead" path="isRead" class="input-medium" style = "width:80px;">
+			<form:option value="" label="请选择"/>
+			<form:options items="${fns:getDictList('yes_no')}" htmlEscape="false" itemLabel="label" itemValue="value"/>
+		</form:select>&nbsp;
 		<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>&nbsp;&nbsp;
+		<br/><br/>
 		<label>状态：</label>
 		<form:radiobuttons onclick="$('#searchForm').submit();" path="delFlag" items="${fns:getDictList('custom_article')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 	</form:form>
@@ -62,7 +68,7 @@
 			<tr>
 				<td><a href="javascript:" onclick="$('#categoryId').val('${article.category.id}');$('#categoryName').val('${article.category.name}');$('#searchForm').submit();return false;">${article.category.name}</a></td>
 				<td><a href="${ctx}/cms/article/form?id=${article.id}" title="${article.title}">${fns:abbr(article.title,40)}</a></td>
-				<td>${author}</td>
+				<td>${article.author}</td>
 				<td>${article.weight}</td>
 				<td>${article.hits}</td>
 				<td>${article.user.name}</td>

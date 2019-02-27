@@ -57,7 +57,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">标题111:</label>
+			<label class="control-label">标题:</label>
 			<div class="controls">
 				<form:input path="title" htmlEscape="false" maxlength="200" class="input-xxlarge measure-input required"/>
 				<%--&nbsp;<label>颜色:</label>
@@ -110,12 +110,12 @@
 				<span class="help-inline">数值越大排序越靠前，过期时间可为空，过期后取消置顶。</span>--%>
 			</div>
 		</div>
-		<div class="control-group">
+	<%--	<div class="control-group">
 			<label class="control-label">第几页广告:</label>
 			<div class="controls">
 				<form:input path="pageNum" htmlEscape="false" maxlength="200" class="input-mini required digits"/>&nbsp;
 			</div>
-		</div>
+		</div>--%>
 		<div class="control-group">
 			<label class="control-label">摘要:</label>
 			<div class="controls">
@@ -195,12 +195,18 @@
 				<form:radiobuttons path="articleData.allowComment" items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 			</div>
 		</div>
-	<%--	<div class="control-group">
+	<div class="control-group">
 			<label class="control-label">是否置顶:</label>
 			<div class="controls">
-				<form:input path="isTop" htmlEscape="false" maxlength="200" class="input-mini required digits"/>&nbsp;
+				<form:radiobuttons path="isTop" items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 			</div>
-		</div>--%>
+	</div>
+	<div class="control-group">
+			<label class="control-label">是否推荐:</label>
+			<div class="controls">
+				<form:radiobuttons path="isRecommend" items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+			</div>
+	</div>
 	<%--	<div class="control-group">
 			<label class="control-label">推荐位:</label>
 			<div class="controls">

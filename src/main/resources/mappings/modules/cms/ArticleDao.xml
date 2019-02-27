@@ -150,7 +150,8 @@
 		jc.city AS "jcity",
 		a.classifying_id AS "classifying.id",
 		a.article_classify_id AS "cmsArticleClassify.id",
-		a.is_putaway AS "isPutaway"
+		a.is_putaway AS "isPutaway",
+		a.is_read AS "isRead"
 	</sql>
 
     <sql id="cmsJobArticleJoins">
@@ -240,6 +241,9 @@
             </if>
             <if test="isTop != null and isTop != ''">
                 AND a.is_top = #{isTop}
+            </if>
+            <if test="isRead != null and isRead != ''">
+                AND a.is_read = #{isRead}
             </if>
         </where>
         <choose>
@@ -452,7 +456,8 @@
             collect_num,
             like_num,
             page_num,
-            is_putaway
+            is_putaway,
+            is_read
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -490,7 +495,8 @@
 		    #{collectNum},
 		    #{likeNum},
 		    #{pageNum},
-		    #{isPutaway}
+		    #{isPutaway},
+		    #{isRead}
 		)
 	</insert>
 
@@ -530,7 +536,8 @@
 		    collect_num = #{collectNum},
 		    like_num = #{likeNum},
 		    page_num = #{pageNum},
-		    is_putaway = #{isPutaway}
+		    is_putaway = #{isPutaway},
+		    is_read = #{isRead}
 		WHERE id = #{id}
 	</update>
 

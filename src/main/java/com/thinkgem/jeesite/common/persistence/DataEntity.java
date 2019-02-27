@@ -4,6 +4,7 @@
 package com.thinkgem.jeesite.common.persistence;
 
 import java.util.Date;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.Length;
@@ -48,10 +49,12 @@ public abstract class DataEntity<T> extends BaseEntity<T> {
 		if (!this.isNewRecord){
 			setId(IdGen.uuid());
 		}
-		User user = UserUtils.getUser();
-		if (StringUtils.isNotBlank(user.getId())){
-			this.updateBy = user;
-			this.createBy = user;
+		if(Objects.isNull(this.getCreateBy())){
+			User user = UserUtils.getUser();
+			if (StringUtils.isNotBlank(user.getId())){
+				this.updateBy = user;
+				this.createBy = user;
+			}
 		}
 		this.updateDate = new Date();
 		this.createDate = this.updateDate;

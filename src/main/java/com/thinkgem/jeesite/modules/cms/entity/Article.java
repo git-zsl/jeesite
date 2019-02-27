@@ -64,6 +64,7 @@ public class Article extends DataEntity<Article> {
 	private String likeNum;    //点赞数
 	private String pageNum;    // 第几页的广告
 	private String isPutaway;   // 是否已上架
+	private String isRead;   // 是否已上架
 
 	private User user;
     
@@ -421,6 +422,14 @@ public class Article extends DataEntity<Article> {
 
 	public void setIsPutaway(String isPutaway) {
 		this.isPutaway = isPutaway;
+	}
+
+	public String getIsRead() {
+		return isRead;
+	}
+
+	public void setIsRead(String isRead) {
+		this.isRead = isRead;
 	}
 }
 

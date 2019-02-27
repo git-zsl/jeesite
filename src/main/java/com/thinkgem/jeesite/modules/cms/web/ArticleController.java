@@ -576,6 +576,9 @@ public class ArticleController extends BaseController {
             articleData.setAllowComment(Global.YES);
             article.setArticleData(articleData);
             article.setDelFlag(Article.DEL_FLAG_AUDIT);
+            article.setCreateBy(user);
+            article.setAuthor(user.getLoginName());
+            articleData.setCreateBy(user);
             articleService.save(article);
            /* CacheUtils.remove(categoryId + "_" + userId + "path");*/
             //保存内容(如果需要设置相关请教，则在ArticleData处添加)
