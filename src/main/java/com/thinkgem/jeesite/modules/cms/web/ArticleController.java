@@ -223,6 +223,10 @@ public class ArticleController extends BaseController {
         if (!UserUtils.getSubject().isPermitted("cms:article:audit")) {
             addMessage(redirectAttributes, "你没有删除或发布权限");
         }
+        //判断是否发布人
+        if(!isRe){
+            article.setPromulgator1(UserUtils.getUser());
+        }
         articleService.delete(article, isRe);
         addMessage(redirectAttributes, (isRe ? "删除" : "发布") + "文章成功");
         if(StringUtils.isNotBlank(ad)){
@@ -746,5 +750,24 @@ public class ArticleController extends BaseController {
             model.addAttribute("adInfomation", adInfomation);
         }
         return "modules/ad/adInfomationForm";
+    }
+
+    @RequestMapping(value = "changFlag")
+    public String changFlag(Model model,Article article,String flag) {
+        Article article1 = articleService.get(article);
+        if(Objects.nonNull(article1)){
+            if(Global.YES.equals(flag)){
+                if(StringUtils.isNotBlank(article.getIsTop())){
+                    article1.setIsTop(article.getIsTop());
+                    articleService.updateIsTop(article1);
+                }
+            }else{
+                if(StringUtils.isNotBlank(article.getIsRecommend())){
+                    article1.setIsRecommend(article.getIsRecommend());
+                    articleService.updateIsRecommend(article1);
+                }
+            }
+        }
+        return "redirect:" + adminPath + "/cms/article/allList?init=2";
     }
 }

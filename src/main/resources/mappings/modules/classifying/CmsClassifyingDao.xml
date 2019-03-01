@@ -4,7 +4,8 @@
     
 	<sql id="cmsClassifyingColumns">
 		a.id AS "id",
-		a.classifying AS "classifying"
+		a.classifying AS "classifying",
+		a.sort
 	</sql>
 	
 	<sql id="cmsClassifyingJoins">
@@ -58,10 +59,12 @@
 	<insert id="insert">
 		INSERT INTO cms_classifying(
 			id,
-			classifying
+			classifying,
+			sort
 		) VALUES (
 			#{id},
-			#{classifying}
+			#{classifying},
+			#{sort}
 		)
 	</insert>
 	

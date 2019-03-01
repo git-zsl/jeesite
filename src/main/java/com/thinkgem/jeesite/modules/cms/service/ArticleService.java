@@ -126,6 +126,8 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
             articleData.setId(article.getId());
             dao.update(article);
             articleDataDao.update(article.getArticleData());
+
+
         }
     }
 
@@ -136,7 +138,7 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         //Article article = dao.get(article.getId());
         article.setDelFlag(isRe ? Article.DEL_FLAG_DELETE : Article.DEL_FLAG_NORMAL);
         //dao.insert(article);
-        dao.newDelete(article.getDelFlag(), article.getId());
+        dao.newDelete(article.getDelFlag(), article.getId(),article.getPromulgator1().getId());
     }
 
     /**
@@ -276,7 +278,23 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
     }
 
     /**
-     * 修改点赞数
+     * 修改推荐顶状态
+     */
+    @Transactional(readOnly = false)
+    public void updateIsRecommend(Article article) {
+        dao.updateIsRecommend(article);
+    }
+
+    /**
+     * 修改置顶状态
+     */
+    @Transactional(readOnly = false)
+    public void updateIsTop(Article article) {
+        dao.updateIsTop(article);
+    }
+
+    /**
+     * 修改收藏数
      */
     @Transactional(readOnly = false)
     public void updateCollectNum(Article article) {

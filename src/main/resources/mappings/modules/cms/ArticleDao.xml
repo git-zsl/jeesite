@@ -151,7 +151,9 @@
 		a.classifying_id AS "classifying.id",
 		a.article_classify_id AS "cmsArticleClassify.id",
 		a.is_putaway AS "isPutaway",
-		a.is_read AS "isRead"
+		a.is_read AS "isRead",
+		a.promulgator AS "promulgator1.id",
+		a.verifier AS "verifier.id"
 	</sql>
 
     <sql id="cmsJobArticleJoins">
@@ -457,7 +459,9 @@
             like_num,
             page_num,
             is_putaway,
-            is_read
+            is_read,
+            promulgator,
+            verifier
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -496,7 +500,9 @@
 		    #{likeNum},
 		    #{pageNum},
 		    #{isPutaway},
-		    #{isRead}
+		    #{isRead},
+		    #{promulgator1.id},
+		    #{verifier.id}
 		)
 	</insert>
 
@@ -537,7 +543,9 @@
 		    like_num = #{likeNum},
 		    page_num = #{pageNum},
 		    is_putaway = #{isPutaway},
-		    is_read = #{isRead}
+		    is_read = #{isRead},
+		    promulgator = #{promulgator1.id},
+		    verifier = #{verifier.id}
 		WHERE id = #{id}
 	</update>
 
@@ -549,13 +557,25 @@
 
     <update id="newDelete">
 		UPDATE cms_article SET
-			del_flag = #{delFlag}
+			del_flag = #{delFlag},
+			promulgator = #{promulgatorId}
 		WHERE id = #{id}
 	</update>
 
     <update id="updateLikeNum">
 		UPDATE cms_article SET
 			like_num = #{likeNum}
+		WHERE id = #{id}
+	</update>
+    <update id="updateIsRecommend">
+		UPDATE cms_article SET
+			is_recommend = #{isRecommend}
+		WHERE id = #{id}
+	</update>
+
+    <update id="updateIsTop">
+		UPDATE cms_article SET
+			is_top = #{isTop}
 		WHERE id = #{id}
 	</update>
 

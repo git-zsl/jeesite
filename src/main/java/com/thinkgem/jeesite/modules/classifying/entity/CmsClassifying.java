@@ -16,6 +16,7 @@ public class CmsClassifying extends DataEntity<CmsClassifying> {
 	
 	private static final long serialVersionUID = 1L;
 	private String classifying;		// 分类
+	private String sort;            // 排序
 	
 	public CmsClassifying() {
 		super();
@@ -33,5 +34,12 @@ public class CmsClassifying extends DataEntity<CmsClassifying> {
 	public void setClassifying(String classifying) {
 		this.classifying = classifying;
 	}
-	
+
+	public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
 }

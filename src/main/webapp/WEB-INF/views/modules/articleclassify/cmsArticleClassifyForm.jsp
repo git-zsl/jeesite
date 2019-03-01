@@ -36,7 +36,13 @@
 		<div class="control-group">
 			<label class="control-label">文章分类：</label>
 			<div class="controls">
-				<form:input path="articleClassify" htmlEscape="false" maxlength="255" class="input-xlarge "/>
+				<form:input path="articleClassify" htmlEscape="false" maxlength="255" class="required digits"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">排序:</label>
+			<div class="controls">
+				<form:input path="sort" htmlEscape="false" maxlength="255" class="input-xlarge "/>
 			</div>
 		</div>
 		<div class="form-actions">

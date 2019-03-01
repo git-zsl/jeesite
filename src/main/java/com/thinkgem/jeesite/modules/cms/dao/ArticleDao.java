@@ -37,6 +37,10 @@ public interface ArticleDao extends CrudDao<Article> {
 
 	public void updateLikeNum(Article article);
 
+	public void updateIsRecommend(Article article);
+
+	public void updateIsTop(Article article);
+
 	public void updateCollectNum(Article article);
 
 	public List<Article> findHostKeywords(Article article);
@@ -62,5 +66,5 @@ public interface ArticleDao extends CrudDao<Article> {
 //		return update("update Article set weight=0 where weight > 0 and weightDate < current_timestamp()");
 //	}
 
-	public void newDelete(@Param("delFlag") String delFlag,@Param("id") String id);
+	public void newDelete(@Param("delFlag") String delFlag,@Param("id") String id,@Param("promulgatorId") String promulgatorId);
 }

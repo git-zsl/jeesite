@@ -30,6 +30,8 @@ public abstract class DataEntity<T> extends BaseEntity<T> {
 	protected User updateBy;	// 更新者
 	protected Date updateDate;	// 更新日期
 	protected String delFlag; 	// 删除标记（0：正常；1：删除；2：审核）
+	protected User promulgator1; //发布者
+	protected User verifier; //审核人
 	
 	public DataEntity() {
 		super();
@@ -68,6 +70,7 @@ public abstract class DataEntity<T> extends BaseEntity<T> {
 		User user = UserUtils.getUser();
 		if (StringUtils.isNotBlank(user.getId())){
 			this.updateBy = user;
+			this.verifier = user;
 		}
 		this.updateDate = new Date();
 	}
@@ -127,4 +130,19 @@ public abstract class DataEntity<T> extends BaseEntity<T> {
 		this.delFlag = delFlag;
 	}
 
+	public User getPromulgator1() {
+		return promulgator1;
+	}
+
+	public void setPromulgator1(User promulgator1) {
+		this.promulgator1 = promulgator1;
+	}
+
+	public User getVerifier() {
+		return verifier;
+	}
+
+	public void setVerifier(User verifier) {
+		this.verifier = verifier;
+	}
 }

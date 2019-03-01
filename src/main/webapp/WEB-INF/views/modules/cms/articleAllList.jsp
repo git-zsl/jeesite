@@ -71,9 +71,9 @@
 				<td>${article.author}</td>
 				<td>${article.weight}</td>
 				<td>${article.hits}</td>
-				<td>${article.user.name}</td>
+				<td>${article.promulgator1}</td>
 				<td><fmt:formatDate value="${article.updateDate}" type="both"/></td>
-				<td>${article.updateBy}</td>
+				<td>${article.verifier}</td>
 				<td>
 					<a href="${pageContext.request.contextPath}${fns:getFrontPath()}/view-${article.category.id}-${article.id}${fns:getUrlSuffix()}" target="_blank">访问</a>
 					<shiro:hasPermission name="cms:article:edit">
@@ -82,8 +82,10 @@
 						</shiro:hasPermission></c:if>
 	    				<a href="${ctx}/cms/article/form?all=1&id=${article.id}">修改</a>
 	    				<shiro:hasPermission name="cms:article:audit"><%----%>
-							<a href="${ctx}/cms/article/delete?all=1&id=${article.id}${article.delFlag eq 0?'&isRe=true':'&isRe=false'}&categoryId=${article.category.id}" onclick="return confirmx('确认要${article.delFlag ne 0?'发布':'删除'}该文章吗？', this.href)" >${article.delFlag ne 0?'发布':'删除'}</a>
+							<a href="${ctx}/cms/article/delete?all=1&id=${article.id}${article.delFlag eq 0?'&isRe=true':'&isRe=false'}&categoryId=${article.category.id}" onclick="return confirmx('确认要${article.delFlag ne 0?'发布':'删除'}该文章吗？', this.href)" >${article.delFlag ne 0? (article.verifier != null?'发布':''):'删除'}</a>
 						</shiro:hasPermission>
+						<a href="${ctx}/cms/article/changFlag?flag=1&id=${article.id}&isTop=${article.isTop eq 0?"1":"0"}">${article.isTop eq 0?"置顶":"已置顶"}</a>
+						<a href="${ctx}/cms/article/changFlag?flag=0&id=${article.id}&isRecommend=${article.isRecommend eq 0?"1":"0"}">${article.isRecommend eq 0?"推荐":"已推荐"}</a>
 					</shiro:hasPermission>
 				</td>
 			</tr>

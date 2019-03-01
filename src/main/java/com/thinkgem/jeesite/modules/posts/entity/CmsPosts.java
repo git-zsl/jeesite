@@ -16,6 +16,7 @@ public class CmsPosts extends DataEntity<CmsPosts> {
 	
 	private static final long serialVersionUID = 1L;
 	private String posts;		// 岗位
+	private String sort;       // 排序
 	
 	public CmsPosts() {
 		super();
@@ -33,5 +34,12 @@ public class CmsPosts extends DataEntity<CmsPosts> {
 	public void setPosts(String posts) {
 		this.posts = posts;
 	}
-	
+
+	public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
+	}
 }

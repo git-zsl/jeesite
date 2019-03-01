@@ -6,6 +6,8 @@ package com.thinkgem.jeesite.modules.articleclassify.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
@@ -21,6 +24,8 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.articleclassify.entity.CmsArticleClassify;
 import com.thinkgem.jeesite.modules.articleclassify.service.CmsArticleClassifyService;
+
+import java.util.List;
 
 /**
  * 文章分类Controller
@@ -78,6 +83,20 @@ public class CmsArticleClassifyController extends BaseController {
 		cmsArticleClassifyService.delete(cmsArticleClassify);
 		addMessage(redirectAttributes, "删除分类成功");
 		return "redirect:"+Global.getAdminPath()+"/articleclassify/cmsArticleClassify/?repage";
+	}
+
+
+	@RequestMapping(value = "findAllClassify")
+	@ResponseBody
+	public ReturnEntity findAllClassify(@ModelAttribute CmsArticleClassify cmsArticleClassify) {
+		List<CmsArticleClassify> list = null;
+		try{
+			list = cmsArticleClassifyService.findList(cmsArticleClassify);
+		}catch (Exception e){
+			e.printStackTrace();
+			LogUtils.getLogInfo(CmsArticleClassifyController.class).info("查询出错");
+		}
+		return ReturnEntity.success(list,"获取成功");
 	}
 
 }

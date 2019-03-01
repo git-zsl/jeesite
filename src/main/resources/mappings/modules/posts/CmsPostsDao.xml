@@ -4,7 +4,8 @@
     
 	<sql id="cmsPostsColumns">
 		a.id AS "id",
-		a.posts AS "posts"
+		a.posts AS "posts",
+		a.sort
 	</sql>
 	
 	<sql id="cmsPostsJoins">
@@ -72,10 +73,12 @@
 	<insert id="insert">
 		INSERT INTO cms_posts(
 			id,
-			posts
+			posts,
+			sort
 		) VALUES (
 			#{id},
-			#{posts}
+			#{posts},
+			#{sort}
 		)
 	</insert>
 	

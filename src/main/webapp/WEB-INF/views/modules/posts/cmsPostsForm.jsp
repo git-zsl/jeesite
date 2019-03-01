@@ -36,8 +36,14 @@
 		<div class="control-group">
 			<label class="control-label">岗位：</label>
 				<div class="controls">
-					<form:input path="posts" htmlEscape="false" maxlength="200" class="input-xlarge"/>
+					<form:input path="posts" htmlEscape="false" maxlength="200" class="required digits"/>
 			    </div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">排序:</label>
+			<div class="controls">
+				<form:input path="sort" htmlEscape="false" maxlength="255" class="input-xlarge "/>
+			</div>
 		</div>
 		<div class="form-actions">
 			<shiro:hasPermission name="posts:cmsPosts:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>

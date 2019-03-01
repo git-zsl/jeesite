@@ -66,6 +66,7 @@ public class Article extends DataEntity<Article> {
 	private String isPutaway;   // 是否已上架
 	private String isRead;   // 是否已上架
 
+
 	private User user;
     
 	public Article() {
@@ -431,6 +432,7 @@ public class Article extends DataEntity<Article> {
 	public void setIsRead(String isRead) {
 		this.isRead = isRead;
 	}
+
 }
 
 
