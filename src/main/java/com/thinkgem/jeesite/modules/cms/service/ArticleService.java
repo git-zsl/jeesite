@@ -138,7 +138,11 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         //Article article = dao.get(article.getId());
         article.setDelFlag(isRe ? Article.DEL_FLAG_DELETE : Article.DEL_FLAG_NORMAL);
         //dao.insert(article);
-        dao.newDelete(article.getDelFlag(), article.getId(),article.getPromulgator1().getId());
+        String promulgator1Id = null;
+        if(Objects.nonNull(article.getPromulgator1())){
+            promulgator1Id = article.getPromulgator1().getId();
+        }
+        dao.newDelete(article.getDelFlag(), article.getId(),promulgator1Id);
     }
 
     /**

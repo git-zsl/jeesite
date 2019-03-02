@@ -62,9 +62,9 @@
 						<c:if test="${article.category.allowComment eq '1'}"><shiro:hasPermission name="cms:comment:view">
 							<a href="${ctx}/cms/comment/?module=article&contentId=${article.id}&delFlag=2" onclick="return viewComment(this.href);">评论</a>
 						</shiro:hasPermission></c:if>
-	    				<a href="${ctx}/cms/article/form?id=${article.id}">修改</a>
+	    				<a href="${ctx}/cms/article/form?id=${article.id}&parentCategoryId=${parentCategoryId}">修改</a>
 	    				<shiro:hasPermission name="cms:article:audit"><%----%>
-							<a href="${ctx}/cms/article/delete?id=${article.id}${article.delFlag eq 0?'&isRe=true':'&isRe=false'}&categoryId=${article.category.id}" onclick="return confirmx('确认要${article.delFlag ne 0?'发布':'删除'}该文章吗？', this.href)" >${article.delFlag ne 0?'发布':'删除'}</a>
+							<a href="${ctx}/cms/article/delete?id=${article.id}${article.delFlag eq 0?'&isRe=true':'&isRe=false'}&categoryId=${article.category.id}&parentCategoryId=${parentCategoryId}" onclick="return confirmx('确认要${article.delFlag ne 0?'发布':'删除'}该文章吗？', this.href)" >${article.delFlag ne 0?'发布':'删除'}</a>
 						</shiro:hasPermission>
 						<a href="${ctx}/cms/article/adForm?id=${article.id}">${article.isPutaway eq 0?'上架':'已上架'}</a>
 					</shiro:hasPermission>

@@ -123,6 +123,7 @@ public class ArticleController extends BaseController {
         model.addAttribute("page", page);
         String returnPage = "";
         if(!StringUtils.isBlank(ad)){
+            model.addAttribute("parentCategoryId", article.getCategory().getId());
             returnPage = "modules/cms/articleADList";
         }else{
             returnPage = "modules/cms/articleList";
@@ -132,7 +133,7 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = "form")
-    public String form(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all) {
+    public String form(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId , @RequestParam(value = "all", required = false) String all) {
         try {
             model.addAttribute("postsList", cmsPostsService.findPosts(new CmsPosts()));
             model.addAttribute("cityList", jobCityService.findList(new JobCity()));
@@ -152,6 +153,9 @@ public class ArticleController extends BaseController {
                     CmsUtils.addViewConfigAttribute(model, article.getCategory());
                     if (!StringUtils.isBlank(article.getCategory().getId())) {
                         String formContent = TxtReadUtil.getFormContent(article.getCategory().getId(), categoryService);
+                        if(StringUtils.isNotBlank(parentCategoryId)){
+                            model.addAttribute("parentCategoryId",parentCategoryId);
+                        }
                         return formContent != null ? formContent : "modules/cms/articleForm";
                     }
                     return "modules/cms/articleForm";
@@ -170,6 +174,9 @@ public class ArticleController extends BaseController {
             CmsUtils.addViewConfigAttribute(model, article.getCategory());
             if (!StringUtils.isBlank(article.getCategory().getId())) {
                 String formContent = TxtReadUtil.getFormContent(article.getCategory().getId(), categoryService);
+                if(StringUtils.isNotBlank(parentCategoryId)){
+                    model.addAttribute("parentCategoryId",parentCategoryId);
+                }
                 return formContent != null ? formContent : "modules/cms/articleForm";
             }
         } catch (Exception e) {
@@ -181,7 +188,7 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:edit")
     @RequestMapping(value = "save")
-    public String save(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "ad", required = false) String ad) {
+    public String save(Article article, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "ad", required = false) String ad) {
         String path = "";
         if (!StringUtils.isBlank(all)) {
             path = "allList";
@@ -193,15 +200,21 @@ public class ArticleController extends BaseController {
             article.setIsRecommend(Global.NO);
         }
         if (!beanValidator(model, article)) {
-            return form(article, model, redirectAttributes, all);
+            return form(article, model, redirectAttributes, all,parentCategoryId);
         }
         articleService.save(article);
         addMessage(redirectAttributes, "保存文章'" + StringUtils.abbr(article.getTitle(), 50) + "'成功");
         String categoryId = article.getCategory() != null ? article.getCategory().getId() : null;
         if(StringUtils.isNotBlank(ad)){
-            return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&delFlag=2&category.id=" + (categoryId != null ? categoryId : "");
+            if(StringUtils.isNotBlank(all)){
+                return "redirect:" + adminPath + "/cms/article/" + path + "?repage&delFlag=2&category.id=";
+            }
+            if(StringUtils.isNotBlank(parentCategoryId)){
+                return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&category.id=" + (categoryId != null ? parentCategoryId : "");
+            }
+            return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&category.id=" + (categoryId != null ? categoryId : "");
         }
-        return "redirect:" + adminPath + "/cms/article/" + path + "?repage&delFlag=2&category.id=" + (categoryId != null ? categoryId : "");
+        return "redirect:" + adminPath + "/cms/article/" + path + "?repage&delFlag=2&category.id=" /*+ (categoryId != null ? categoryId : "")*/;
     }
 
     @RequiresPermissions("cms:article:edit")
@@ -214,7 +227,7 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:edit")
     @RequestMapping(value = "delete")
-    public String delete(Article article, String categoryId, @RequestParam(required = false) Boolean isRe, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "ad", required = false) String ad) {
+    public String delete(Article article, String categoryId, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId, @RequestParam(required = false) Boolean isRe, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "ad", required = false) String ad) {
         String path = "";
         if (!StringUtils.isBlank(all)) {
             path = "allList";
@@ -229,6 +242,9 @@ public class ArticleController extends BaseController {
         }
         articleService.delete(article, isRe);
         addMessage(redirectAttributes, (isRe ? "删除" : "发布") + "文章成功");
+        if(StringUtils.isNotBlank(parentCategoryId)){
+            return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&category.id=" + (categoryId != null ? parentCategoryId : "");
+        }
         if(StringUtils.isNotBlank(ad)){
             return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&delFlag=2&category.id=" + (categoryId != null ? categoryId : "");
         }
