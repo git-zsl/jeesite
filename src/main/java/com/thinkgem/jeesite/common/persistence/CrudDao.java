@@ -75,6 +75,13 @@ public interface CrudDao<T> extends BaseDao {
 	 * @param entity
 	 * @return
 	 */
+	public List<T> findconsultationArticlePage(T entity);
+
+	/**
+	 * 查询数据列表，如果需要分页，请设置分页对象，如：entity.setPage(new Page<T>());
+	 * @param entity
+	 * @return
+	 */
 	public List<T> findHomeCollects(T entity);
 
 	/**

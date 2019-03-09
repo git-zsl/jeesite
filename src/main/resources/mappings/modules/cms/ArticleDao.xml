@@ -153,7 +153,8 @@
 		a.is_putaway AS "isPutaway",
 		a.is_read AS "isRead",
 		a.promulgator AS "promulgator1.id",
-		a.verifier AS "verifier.id"
+		a.verifier AS "verifier.id",
+		a.comment_num AS "commentNum"
 	</sql>
 
     <sql id="cmsJobArticleJoins">
@@ -273,11 +274,38 @@
             a.del_flag = #{DEL_FLAG_NORMAL}
         </where>
         <choose>
-            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+            <when test="page != null and page.orderBy != null and page.orderBy != ''">
                 ORDER BY ${page.orderBy}
             </when>
             <otherwise>
                 ORDER BY a.weight DESC, a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findconsultationArticlePage" resultType="Article">
+        SELECT
+        <include refid="cmsArticleColumns"/>
+        FROM cms_article a
+        <include refid="cmsArticleJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="isRecommend != null and isRecommend != ''">
+                AND a.is_recommend = #{isRecommend}
+            </if>
+            <if test="commentNum == 1 ">
+                AND a.comment_num = 0
+            </if>
+            <if test="category != null and category.id != null and category.id != ''">
+                AND a.category_id = #{category.id}
+            </if>
+        </where>
+        <choose>
+            <when test="page != null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY a.create_date DESC,${page.orderBy}
+            </when>
+            <otherwise>
+                ORDER BY a.create_date DESC
             </otherwise>
         </choose>
     </select>
@@ -461,7 +489,8 @@
             is_putaway,
             is_read,
             promulgator,
-            verifier
+            verifier,
+            comment_num
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -502,7 +531,8 @@
 		    #{isPutaway},
 		    #{isRead},
 		    #{promulgator1.id},
-		    #{verifier.id}
+		    #{verifier.id},
+		    #{commentNum}
 		)
 	</insert>
 
@@ -545,7 +575,8 @@
 		    is_putaway = #{isPutaway},
 		    is_read = #{isRead},
 		    promulgator = #{promulgator1.id},
-		    verifier = #{verifier.id}
+		    verifier = #{verifier.id},
+		    comment_num = #{commentNum}
 		WHERE id = #{id}
 	</update>
 
@@ -582,6 +613,12 @@
     <update id="updateCollectNum">
 		UPDATE cms_article SET
 			collect_num = #{collectNum}
+		WHERE id = #{id}
+	</update>
+
+    <update id="updataArticleCommentNum">
+		UPDATE cms_article SET
+			comment_num = #{commentNum}
 		WHERE id = #{id}
 	</update>
 

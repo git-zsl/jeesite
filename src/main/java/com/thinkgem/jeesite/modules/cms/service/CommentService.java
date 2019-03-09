@@ -4,7 +4,9 @@
 package com.thinkgem.jeesite.modules.cms.service;
 
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +27,9 @@ import java.util.Objects;
 @Service
 @Transactional(readOnly = true)
 public class CommentService extends CrudService<CommentDao, Comment> {
+
+    @Autowired
+    private ArticleService articleService;
 
     public Page<Comment> findPage(Page<Comment> page, Comment comment) {
 //		DetachedCriteria dc = commentDao.createDetachedCriteria();
@@ -86,6 +91,10 @@ public class CommentService extends CrudService<CommentDao, Comment> {
         List<Comment> parents = dao.findParent(comment);
         if(!parents.isEmpty()){
             findParentCommentAndSet(parents.get(0));
+        }else{
+            Article article = articleService.get(comment.getContentId());
+            article.setCommentNum(article.getCommentNum() + 1);
+            articleService.updataArticleCommentNum(article);
         }
     }
 

@@ -68,6 +68,18 @@ public abstract class CrudService<D extends CrudDao<T>, T extends DataEntity<T>>
 	 * @param entity
 	 * @return
 	 */
+	public Page<T> findconsultationArticlePage(Page<T> page, T entity) {
+		entity.setPage(page);
+		page.setList(dao.findconsultationArticlePage(entity));
+		return page;
+	}
+
+	/**
+	 * 查询分页数据
+	 * @param page 分页对象
+	 * @param entity
+	 * @return
+	 */
 	public Page<T> findPage(Page<T> page, T entity) {
 		entity.setPage(page);
 		page.setList(dao.findList(entity));

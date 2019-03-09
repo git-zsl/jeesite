@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
+import com.thinkgem.jeesite.modules.cms.entity.Category;
+import com.thinkgem.jeesite.modules.cms.service.ArticleService;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,9 @@ public class CommentController extends BaseController {
 	@Autowired
 	private CommentService commentService;
 	
+	@Autowired
+	private ArticleService articleService;
+
 	@ModelAttribute
 	public Comment get(@RequestParam(required=false) String id) {
 		if (StringUtils.isNotBlank(id)){
@@ -152,5 +157,25 @@ public class CommentController extends BaseController {
 			comment.setDelFlag(Comment.DEL_FLAG_NORMAL);
 			commentService.save(comment);
 		return ReturnEntity.success("保存成功");
+	}
+
+	/**
+	 * 查询请教列表接口
+	 */
+	@RequestMapping(value = "consultationArticleList",method = RequestMethod.POST)
+	@ResponseBody
+	public ReturnEntity<Page<Comment>> findConsultationArticleList(HttpServletRequest request, HttpServletResponse response,@RequestParam(value = "categoryId") String categoryId,@ModelAttribute Comment comment) {
+		Article article = new Article();
+		article.setCategory(new Category(categoryId));
+		article.setIsRecommend(comment.getIsRecommend());
+		article.setCommentNum(Integer.parseInt(comment.getCommentNum()));
+		Page<Article> articlePage = null;
+		try{
+			articlePage = articleService.findconsultationArticlePage(new Page<Article>(request, response), article);
+		}catch (Exception e){
+			e.printStackTrace();
+			LogUtils.getLogInfo(CommentController.class).info("程序出错",e);
+		}
+		return ReturnEntity.success(articlePage,"查询成功");
 	}
 }

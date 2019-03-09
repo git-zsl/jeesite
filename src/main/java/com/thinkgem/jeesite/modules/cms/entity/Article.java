@@ -65,6 +65,7 @@ public class Article extends DataEntity<Article> {
 	private String pageNum;    // 第几页的广告
 	private String isPutaway;   // 是否已上架
 	private String isRead;   // 是否已上架
+	private int commentNum;  // 评论数
 
 
 	private User user;
@@ -433,6 +434,13 @@ public class Article extends DataEntity<Article> {
 		this.isRead = isRead;
 	}
 
+	public int getCommentNum() {
+		return commentNum;
+	}
+
+	public void setCommentNum(int commentNum) {
+		this.commentNum = commentNum;
+	}
 }
 
 

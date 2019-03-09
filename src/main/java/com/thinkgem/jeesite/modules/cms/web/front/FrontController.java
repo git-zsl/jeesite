@@ -308,6 +308,9 @@ public class FrontController extends BaseController{
 						commentService.findParentCommentAndSet(replyComment);
 					}else{
 						comment.setContent(content);
+						Article article = articleService.get(comment.getContentId());
+						article.setCommentNum(article.getCommentNum() + 1);
+						articleService.updataArticleCommentNum(article);
 					}
 				}
 				comment.setIp(request.getRemoteAddr());
@@ -315,6 +318,7 @@ public class FrontController extends BaseController{
 				comment.setDelFlag(Comment.DEL_FLAG_NORMAL);
 				commentService.save(comment);
 				return ReturnEntity.success("提交成功");
+
 			}else{
 				return new ReturnEntity(ReturnStatus.OPTFAIL, "验证码不正确");
 			}
