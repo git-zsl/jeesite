@@ -48,6 +48,7 @@ import java.util.*;
  * @author zsl
  */
 @Controller
+@RequestMapping("filter")
 public class HomeLoginController extends BaseController {
 
     @Autowired

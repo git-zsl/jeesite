@@ -96,7 +96,7 @@ public class ArticleCollectController extends BaseController {
 	/**
 	 * 收藏文章接口
 	 */
-	@RequestMapping(value = "collectArticle")
+	@RequestMapping(value = "filter/collectArticle")
 	@ResponseBody
 	public ReturnEntity collectArticle(@RequestParam(value = "userId") String userId,@RequestParam(value = "articleId") String articleId){
 		try{
@@ -119,7 +119,7 @@ public class ArticleCollectController extends BaseController {
 	/**
 	 * 查询用户收藏列表接口
 	 */
-	@RequestMapping("collectList")
+	@RequestMapping("filter/collectList")
 	@ResponseBody
 	public ReturnEntity collectList(@ModelAttribute ArticleCollect articleCollect,@RequestParam("userId") String userId ,HttpServletRequest request, HttpServletResponse response) {
 		List<Article> articlecollects = null;
@@ -150,7 +150,7 @@ public class ArticleCollectController extends BaseController {
 	/**
 	 * 查看当前文章收藏人列表（包含人数）
 	 */
-	@RequestMapping("collectUsers")
+	@RequestMapping("filter/collectUsers")
 	@ResponseBody
 	public ReturnEntity findCollectUsers(@ModelAttribute ArticleCollect articleCollect){
 		List<ArticleCollect> collectUsers = null;

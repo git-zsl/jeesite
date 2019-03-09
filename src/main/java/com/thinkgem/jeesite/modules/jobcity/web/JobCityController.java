@@ -87,7 +87,7 @@ public class JobCityController extends BaseController {
 	/**
 	 * 招聘城市接口选择
 	 */
-	@RequestMapping(value = "findJobCity",method = RequestMethod.POST)
+	@RequestMapping(value = "filter/findJobCity",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity findJobCity(JobCity jobCity){
 		List<JobCity> codes = null;
@@ -115,7 +115,7 @@ public class JobCityController extends BaseController {
 	/**
 	 * 招聘城市列表接口
 	 */
-	@RequestMapping(value = "findAllJobCity",method = RequestMethod.POST)
+	@RequestMapping(value = "filter/findAllJobCity",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity findAllJobCity(JobCity jobCity){
 		List<JobCity> list = null;

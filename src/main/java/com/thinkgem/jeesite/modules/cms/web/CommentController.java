@@ -91,7 +91,7 @@ public class CommentController extends BaseController {
 	/**
 	 * 主页获取请教接口
 	 */
-	@RequestMapping(value = "consultationList",method = RequestMethod.POST)
+	@RequestMapping(value = "filter/consultationList",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity<Page<Comment>> findConsultationList(@ModelAttribute Comment comment, HttpServletRequest request, HttpServletResponse response) {
 		Page<Comment> page = new Page<Comment>(request, response);
@@ -148,7 +148,7 @@ public class CommentController extends BaseController {
 	/**
 	 * 主页请教保存接口
 	 */
-	@RequestMapping(value = "homeSsave")
+	@RequestMapping(value = "filter/homeSsave")
 	public ReturnEntity homeSsave(@ModelAttribute Comment comment) {
 			if (comment.getAuditUser() == null){
 				comment.setAuditUser(UserUtils.getUser());
@@ -162,7 +162,7 @@ public class CommentController extends BaseController {
 	/**
 	 * 查询请教列表接口
 	 */
-	@RequestMapping(value = "consultationArticleList",method = RequestMethod.POST)
+	@RequestMapping(value = "filter/consultationArticleList",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity<Page<Comment>> findConsultationArticleList(HttpServletRequest request, HttpServletResponse response,@RequestParam(value = "categoryId") String categoryId,@ModelAttribute Comment comment) {
 		Article article = new Article();

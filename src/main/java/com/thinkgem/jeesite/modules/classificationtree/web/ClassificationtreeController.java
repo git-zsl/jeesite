@@ -128,7 +128,7 @@ public class ClassificationtreeController extends BaseController {
 	 *
 	 */
 
-	@RequestMapping(value = "findClassification" ,method = RequestMethod.POST)
+	@RequestMapping(value = "filter/findClassification" ,method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity<List<Classificationtree>> findClassification() {
 		Classificationtree classificationtree = new Classificationtree();

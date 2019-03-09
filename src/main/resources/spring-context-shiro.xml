@@ -15,12 +15,7 @@
 		<constructor-arg>
 			<value>
 				/h/** = anon
-				${adminPath}//book/bookManager/bookSoft anon
-				${adminPath}/classificationtree/classificationtree/findClassification anon
-				${adminPath}//cms/category/navigationBar anon
-				${adminPath}/notice/bookNotice/notice anon
-				${adminPath}/cms/article/adsList anon
-				${adminPath}/cms/article/readScene anon
+				${adminPath}/**/filter/** = anon
 				/static/** = anon
 				/userfiles/** = anon
 				${adminPath}/cas = cas

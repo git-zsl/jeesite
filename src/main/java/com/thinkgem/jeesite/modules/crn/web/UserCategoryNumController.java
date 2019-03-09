@@ -120,7 +120,7 @@ public class UserCategoryNumController extends BaseController {
 		return "redirect:"+Global.getAdminPath()+"/crn/userCategoryNum/?repage";
 	}
 
-	@RequestMapping(value = "ownNum")
+	@RequestMapping(value = "filter/ownNum")
 	@ResponseBody
 	public Integer findOwnNum(String id,String createBy) {
 		Integer ownNum = articleService.findOwnNum(id,createBy);

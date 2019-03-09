@@ -296,7 +296,7 @@ public class ArticleController extends BaseController {
      * 主页广告接口
      */
 
-    @RequestMapping(value = "adsList", method = RequestMethod.POST)
+    @RequestMapping(value = "filter/adsList", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<List<Article>> adsList(Article article, Category category, HttpServletRequest request) {
         List<Article> articles = null;
@@ -319,7 +319,7 @@ public class ArticleController extends BaseController {
      * 主页阅读场景接口
      */
 
-    @RequestMapping(value = "readScene", method = RequestMethod.POST)
+    @RequestMapping(value = "filter/readScene", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<List<Article>> readScene(Article article, Category category, HttpServletRequest request) {
         List<Article> articles = null;
@@ -344,7 +344,7 @@ public class ArticleController extends BaseController {
      * param category.id （不必须）
      */
 
-    @RequestMapping(value = "getAllArticle", method = RequestMethod.POST)
+    @RequestMapping(value = "filter/getAllArticle", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, @RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -386,7 +386,7 @@ public class ArticleController extends BaseController {
      * param c
      */
 
-    @RequestMapping(value = "getHostAuthor", method = RequestMethod.POST)
+    @RequestMapping(value = "filter/getHostAuthor", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<List<Article>> getHostAuthor(@ModelAttribute Article article, HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -403,7 +403,7 @@ public class ArticleController extends BaseController {
      * 热门关键词
      * keywords
      */
-    @RequestMapping(value = "getHostKeywords", method = RequestMethod.POST)
+    @RequestMapping(value = "filter/getHostKeywords", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<List<Article>> getHostKeywords(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -425,7 +425,7 @@ public class ArticleController extends BaseController {
      * 文章详情
      * content
      */
-    @RequestMapping(value = "getArticleContent", method = RequestMethod.POST)
+    @RequestMapping(value = "filter/getArticleContent", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<List<Article>> getArticleContent(@ModelAttribute Article article) {
         try {
@@ -442,7 +442,7 @@ public class ArticleController extends BaseController {
      * 评论详情
      * comment
      */
-    @RequestMapping(value = "getArticleComment", method = RequestMethod.POST)
+    @RequestMapping(value = "filter/getArticleComment", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<List<Article>> getArticleComment(@ModelAttribute Article article, HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -462,7 +462,7 @@ public class ArticleController extends BaseController {
      * param
      */
 
-    @RequestMapping(value = "getHostPost", method = RequestMethod.POST)
+    @RequestMapping(value = "filter/getHostPost", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<List<Article>> getHostPost(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -483,7 +483,7 @@ public class ArticleController extends BaseController {
      * param category.id （不必须）
      */
 
-    @RequestMapping(value = "getAllJobArticle", method = RequestMethod.POST)
+    @RequestMapping(value = "filter/getAllJobArticle", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<List<Article>> getAllJobArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -517,7 +517,7 @@ public class ArticleController extends BaseController {
     /**
      * 请教/文章保存接口
      */
-    @RequestMapping(value = "consultationSave", method = RequestMethod.POST)
+    @RequestMapping(value = "filter/consultationSave", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity consultationSave(@ModelAttribute Article article, @RequestParam(value = "classifying", required = false) String classifying, @ModelAttribute ArticleData articleData, HttpServletRequest request, @RequestParam("userId") String userId, @RequestParam(value = "categoryId") String categoryId) {
         if (!StringUtils.isBlank(categoryId)) {
@@ -614,7 +614,7 @@ public class ArticleController extends BaseController {
     /**
      * 富文本编辑器上传文章图片接口
      */
-    @RequestMapping(value = "uploadArticleSave", method = RequestMethod.POST)
+    @RequestMapping(value = "filter/uploadArticleSave", method = RequestMethod.POST)
     @ResponseBody
     public UploadVo uploadArticleSave(@RequestParam("userId") String userId, HttpServletRequest request) {
         User user = null;
@@ -666,7 +666,7 @@ public class ArticleController extends BaseController {
     /**
      * 点赞接口
      */
-    @RequestMapping(value = "like")
+    @RequestMapping(value = "filter/like")
     @ResponseBody
     public ReturnEntity updateLikeNum(@ModelAttribute Article article) {
         try {
@@ -682,7 +682,7 @@ public class ArticleController extends BaseController {
     /**
      * 查询对应用户最新动态接口
      */
-    @RequestMapping("latestAction")
+    @RequestMapping("filter/latestAction")
     @ResponseBody
     public ReturnEntity latestAction(@RequestParam("userId") String userId) {
         List<Article> articleLists = Lists.newArrayList();
@@ -734,7 +734,7 @@ public class ArticleController extends BaseController {
     /**
      * 请教分类接口：
      */
-    @RequestMapping("findClassifying")
+    @RequestMapping("filter/findClassifying")
     @ResponseBody
     public ReturnEntity findClassifying() {
         List<CmsClassifying> list = null;
@@ -749,7 +749,7 @@ public class ArticleController extends BaseController {
     }
 
 
-    @RequestMapping(value = "newlist")
+    @RequestMapping(value = "filter/newlist")
     public String list(Model model,@RequestParam(value ="isShowHome",required = false) String isShowHome) {
         List<Category> list = Lists.newArrayList();
         List<Category> sourcelist = categoryService.findByUser(true, null,isShowHome,"");
@@ -758,7 +758,7 @@ public class ArticleController extends BaseController {
         return "modules/cms/categoryADList";
     }
 
-    @RequestMapping(value = "adForm")
+    @RequestMapping(value = "filter/adForm")
     public String adForm(Model model,Article article) {
         Article article1 = articleService.get(article);
         if(Objects.nonNull(article1)){
@@ -768,7 +768,7 @@ public class ArticleController extends BaseController {
         return "modules/ad/adInfomationForm";
     }
 
-    @RequestMapping(value = "changFlag")
+    @RequestMapping(value = "filter/changFlag")
     public String changFlag(Model model,Article article,String flag) {
         Article article1 = articleService.get(article);
         if(Objects.nonNull(article1)){

@@ -98,7 +98,7 @@ public class UserAttentionUseridsController extends BaseController {
 	/**
 	 * 用户关注人列表(我关注了什么人)
 	 */
-	@RequestMapping("attentionList")
+	@RequestMapping("filter/attentionList")
 	@ResponseBody
 	public ReturnEntity findAttentionList(@RequestParam("userId") String userId,UserAttentionUserids userAttentionUserids){
 		UserAttentionUserids userAttentionUserids1 = null;
@@ -130,7 +130,7 @@ public class UserAttentionUseridsController extends BaseController {
 	/**
 	 * 关注按钮功能接口(未判断重复关注)
 	 */
-	@RequestMapping("attention")
+	@RequestMapping("filter/attention")
 	@ResponseBody
 	public ReturnEntity attentionSave(@RequestParam("userId") String userId,@RequestParam("attention2UserId") String attention2UserId,UserAttentionUserids userAttentionUserids){
 		try{
@@ -191,7 +191,7 @@ public class UserAttentionUseridsController extends BaseController {
 	/**
 	 * 用户关注人列表(什么人关注了我)
 	 */
-	@RequestMapping("attention2List")
+	@RequestMapping("filter/attention2List")
 	@ResponseBody
 	public ReturnEntity findAttention2MeList(@RequestParam("userId") String userId,UserAttentionUserids userAttentionUserids){
 		UserAttentionUserids userAttentionUserids1 = null;

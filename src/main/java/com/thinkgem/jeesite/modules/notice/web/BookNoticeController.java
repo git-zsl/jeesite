@@ -87,7 +87,7 @@ public class BookNoticeController extends BaseController {
 	 * 主页公告接口
 	 */
 
-	@RequestMapping(value = "notice",method = RequestMethod.POST)
+	@RequestMapping(value = "filter/notice",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity<List<BookNotice>> notice(BookNotice bookNotice) {
 		List<BookNotice> bookNotices = bookNoticeService.findList(bookNotice);

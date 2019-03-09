@@ -175,7 +175,7 @@ public class CategoryController extends BaseController {
 	/**
 	 * 主页导航栏接口/(获取子栏目列表)
 	 */
-	@RequestMapping(value = "navigationBar",method = RequestMethod.POST)
+	@RequestMapping(value = "filter/navigationBar",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity<List<Category>> navigationBar(Category category,@RequestParam(value = "allchildcategory",required = false) String allchildcategory) {
         List<Category> parentList = new ArrayList<>();
@@ -227,7 +227,7 @@ public class CategoryController extends BaseController {
 	/**
 	 * 上传文章分类接口
 	 */
-	@RequestMapping("updateArticleClassify")
+	@RequestMapping("filter/updateArticleClassify")
 	@ResponseBody
 	public ReturnEntity findUpdateArticleClassify(){
 		List<Category> updateArticleClassify = null;

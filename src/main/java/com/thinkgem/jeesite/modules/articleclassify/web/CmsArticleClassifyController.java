@@ -86,7 +86,7 @@ public class CmsArticleClassifyController extends BaseController {
 	}
 
 
-	@RequestMapping(value = "findAllClassify")
+	@RequestMapping(value = "filter/findAllClassify")
 	@ResponseBody
 	public ReturnEntity findAllClassify(@ModelAttribute CmsArticleClassify cmsArticleClassify) {
 		List<CmsArticleClassify> list = null;

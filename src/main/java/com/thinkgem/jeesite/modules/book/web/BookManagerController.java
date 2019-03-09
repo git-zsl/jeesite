@@ -122,7 +122,7 @@ public class BookManagerController extends BaseController {
 	 * 主页图书排序规则接口
 	 */
 
-	@RequestMapping(value = "bookSoft",method = RequestMethod.POST)
+	@RequestMapping(value = "filter/bookSoft",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity<List<BookManager>> bookSoft(@RequestParam Map<String,String> map,BookManager bookManager,HttpServletResponse response,HttpServletRequest request) {
 		Page page1 = new Page();
