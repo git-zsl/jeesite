@@ -43,8 +43,8 @@
 					<td>${tpl.remarks}</td>
 					<td>
 						<shiro:hasPermission name="ad:adInfomation:edit">
-							<a href="${ctx}/ad/adInfomation/form?id={{row.id}}">修改</a>
-							<a href="${ctx}/ad/adInfomation/delete?id={{row.id}}" onclick="return confirmx('确认要删除该广告信息及所有子广告信息吗？', this.href)">删除</a>
+							<a href="${ctx}/ad/adInfomation/form?id=${tpl.id}">修改</a>
+							<a href="${ctx}/ad/adInfomation/delete?id=${tpl.id}" onclick="return confirmx('确认要删除该广告信息及所有子广告信息吗？', this.href)">删除</a>
 						</shiro:hasPermission>
 					</td>
 				</tr>

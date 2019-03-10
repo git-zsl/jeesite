@@ -45,7 +45,11 @@ public class AdInfomationService extends TreeService<AdInfomationDao, AdInfomati
 	public void save(AdInfomation adInfomation) {
 		super.save(adInfomation);
 	}
-	
+
+	public List<AdInfomation> findByCategoryAndWinId(AdInfomation adInfomation) {
+		return dao.findByCategoryAndWinId(adInfomation);
+	}
+
 	@Transactional(readOnly = false)
 	public void delete(AdInfomation adInfomation) {
 		super.delete(adInfomation);

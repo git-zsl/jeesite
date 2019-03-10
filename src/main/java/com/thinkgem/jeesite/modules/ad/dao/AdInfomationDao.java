@@ -7,6 +7,8 @@ import com.thinkgem.jeesite.common.persistence.TreeDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.ad.entity.AdInfomation;
 
+import java.util.List;
+
 /**
  * 广告信息DAO接口
  * @author zsl
@@ -14,5 +16,6 @@ import com.thinkgem.jeesite.modules.ad.entity.AdInfomation;
  */
 @MyBatisDao
 public interface AdInfomationDao extends TreeDao<AdInfomation> {
-	
+
+    public List<AdInfomation> findByCategoryAndWinId(AdInfomation adInfomation);
 }

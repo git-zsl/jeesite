@@ -137,6 +137,23 @@
 		ORDER BY a.sort ASC
 	</select>
 	
+	<select id="findByCategoryAndWinId" resultType="AdInfomation">
+		SELECT
+			<include refid="adInfomationColumns"/>
+		FROM ad_infomation a
+		<include refid="adInfomationJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} AND a.article_id is not null
+			<if test="category != null and category.id != null and category.id != ''">
+				AND a.category_id = #{category.id}
+			</if>
+			<if test="id != null and id != ''">
+				AND a.parent_id = #{id}
+			</if>
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+
 	<select id="findByParentIdsLike" resultType="AdInfomation">
 		SELECT
 			a.id,

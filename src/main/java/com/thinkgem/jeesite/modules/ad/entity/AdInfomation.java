@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.ad.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.validation.constraints.NotNull;
 
+import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
 import org.hibernate.validator.constraints.Length;
 import java.util.Date;
@@ -33,6 +34,7 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 	private Date soldOutTime;		// 下架时间
 	private String promulgator;		// 发布者
 	private String isConfig;         // 配置标志
+	private List<AdInfomation> childerAdInfomations = Lists.newArrayList();
 	
 	public AdInfomation() {
 		super();
@@ -133,6 +135,14 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 
 	public void setIsConfig(String isConfig) {
 		this.isConfig = isConfig;
+	}
+
+	public List<AdInfomation> getChilderAdInfomations() {
+		return childerAdInfomations;
+	}
+
+	public void setChilderAdInfomations(List<AdInfomation> childerAdInfomations) {
+		this.childerAdInfomations = childerAdInfomations;
 	}
 
 	public static void sortList(List<AdInfomation> list, List<AdInfomation> sourcelist, String parentId){

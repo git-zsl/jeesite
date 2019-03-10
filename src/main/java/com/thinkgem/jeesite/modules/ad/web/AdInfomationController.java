@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.ad.web;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.ad.entity.AdInfomation;
@@ -13,9 +14,11 @@ import com.thinkgem.jeesite.modules.ad.service.AdInfomationService;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.cms.entity.ArticleData;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
+import com.thinkgem.jeesite.modules.cms.entity.Comment;
 import com.thinkgem.jeesite.modules.cms.service.ArticleDataService;
 import com.thinkgem.jeesite.modules.cms.service.ArticleService;
 import com.thinkgem.jeesite.modules.cms.service.CategoryService;
+import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import sun.misc.Cache;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -180,5 +184,52 @@ public class AdInfomationController extends BaseController {
 		}
 		return mapList;
 	}
-	
+
+
+	/**
+	 * 获取所有广告窗信息接口
+	 */
+	@RequestMapping("filter/findAllAdInfomationList")
+	@ResponseBody
+	public ReturnEntity findAllAdInfomationList(AdInfomation adInfomation){
+		List<AdInfomation> list = null;
+		List<AdInfomation> newConfigList = Lists.newArrayList();
+		try{
+			list = adInfomationService.findConfigList(adInfomation);
+			if(!list.isEmpty()){
+				for (AdInfomation c : list) {
+					for (AdInfomation cc : list) {
+						if(c.getId().equals(cc.getParentId())){
+							c.getChilderAdInfomations().add(cc);
+						}
+					}
+					if(StringUtils.isBlank(c.getParentId()) || Global.NO.equals(c.getParentId())){
+						newConfigList.add(c);
+					}
+				}
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+			LogUtils.getLogInfo(AdInfomationController.class).info("程序出错",e);
+		}
+		return ReturnEntity.success(newConfigList,"查询成功");
+	}
+
+	/**
+	 * 广告窗对应广告查询接口
+	 */
+	@RequestMapping("filter/findAdWindowAdInfomationList")
+	@ResponseBody
+	public ReturnEntity findAdWindowAdInfomationList(@ModelAttribute AdInfomation adInfomation,@RequestParam("categoryId") String categoryId){
+		Category category = new Category(categoryId);
+		adInfomation.setCategory(category);
+		List<AdInfomation> list = null;
+		try{
+			list = adInfomationService.findByCategoryAndWinId(adInfomation);
+		}catch (Exception e){
+			e.printStackTrace();
+			LogUtils.getLogInfo(AdInfomationController.class).info("程序出错",e);
+		}
+		return ReturnEntity.success(list,"查询成功");
+	}
 }

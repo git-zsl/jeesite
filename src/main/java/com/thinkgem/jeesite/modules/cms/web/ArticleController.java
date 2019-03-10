@@ -749,7 +749,7 @@ public class ArticleController extends BaseController {
     }
 
 
-    @RequestMapping(value = "filter/newlist")
+    @RequestMapping(value = "newlist")
     public String list(Model model,@RequestParam(value ="isShowHome",required = false) String isShowHome) {
         List<Category> list = Lists.newArrayList();
         List<Category> sourcelist = categoryService.findByUser(true, null,isShowHome,"");
@@ -758,7 +758,7 @@ public class ArticleController extends BaseController {
         return "modules/cms/categoryADList";
     }
 
-    @RequestMapping(value = "filter/adForm")
+    @RequestMapping(value = "adForm")
     public String adForm(Model model,Article article) {
         Article article1 = articleService.get(article);
         if(Objects.nonNull(article1)){
@@ -768,7 +768,7 @@ public class ArticleController extends BaseController {
         return "modules/ad/adInfomationForm";
     }
 
-    @RequestMapping(value = "filter/changFlag")
+    @RequestMapping(value = "changFlag")
     public String changFlag(Model model,Article article,String flag) {
         Article article1 = articleService.get(article);
         if(Objects.nonNull(article1)){
