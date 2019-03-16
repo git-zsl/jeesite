@@ -37,6 +37,14 @@
         WHERE a.id = #{id}
     </select>
 
+    <select id="findByUserId" resultType="SysOfficeInformation">
+        SELECT
+        <include refid="sysOfficeInformationColumns"/>
+        FROM sys_office_information a
+        <include refid="sysOfficeInformationJoins"/>
+        WHERE a.user_id = #{userId}
+    </select>
+
     <select id="findList" resultType="SysOfficeInformation">
         SELECT
         <include refid="sysOfficeInformationColumns"/>

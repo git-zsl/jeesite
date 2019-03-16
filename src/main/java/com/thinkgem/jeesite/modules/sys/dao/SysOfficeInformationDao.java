@@ -14,5 +14,6 @@ import com.thinkgem.jeesite.modules.sys.entity.SysOfficeInformation;
  */
 @MyBatisDao
 public interface SysOfficeInformationDao extends CrudDao<SysOfficeInformation> {
-	
+
+    public SysOfficeInformation findByUserId(String userId);
 }

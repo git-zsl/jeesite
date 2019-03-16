@@ -6,9 +6,11 @@ package com.thinkgem.jeesite.modules.sys.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.service.OfficeService;
+import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
@@ -83,5 +86,20 @@ public class SysOfficeInformationController extends BaseController {
 		sysOfficeInformationService.delete(sysOfficeInformation);
 		addMessage(redirectAttributes, "删除信息成功");
 		return "redirect:"+Global.getAdminPath()+"/sys/sysOfficeInformation/?repage";
+	}
+	/**
+	 * 机构用户查询机构详情
+	 */
+	@RequestMapping("filter/findOfficeInfomation")
+	@ResponseBody
+	public ReturnEntity findOfficeInfomation(@RequestParam("userId") String userId){
+		SysOfficeInformation sysOfficeInformation = null;
+		try{
+			sysOfficeInformation = sysOfficeInformationService.findByUserId(userId);
+		}catch (Exception e){
+			e.printStackTrace();
+			LogUtils.getLogInfo(SysOfficeInformationController.class).info("程序出错",e);
+		}
+		return ReturnEntity.success(sysOfficeInformation,"查询成功");
 	}
 }

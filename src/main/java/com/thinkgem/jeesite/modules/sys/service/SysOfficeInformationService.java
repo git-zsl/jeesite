@@ -34,7 +34,11 @@ public class SysOfficeInformationService extends CrudService<SysOfficeInformatio
 	public SysOfficeInformation get(String id) {
 		return super.get(id);
 	}
-	
+
+	public SysOfficeInformation findByUserId(String userId) {
+		return dao.findByUserId(userId);
+	}
+
 	public List<SysOfficeInformation> findList(SysOfficeInformation sysOfficeInformation) {
 		return super.findList(sysOfficeInformation);
 	}

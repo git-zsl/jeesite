@@ -38,7 +38,7 @@
 		FROM ad_infomation a
 		<include refid="adInfomationJoins"/>
 		<where>
-			a.del_flag = #{DEL_FLAG_NORMAL}
+			a.del_flag = #{DEL_FLAG_NORMAL} AND a.article_id is null
 			<if test="parent != null and parent.id != null and parent.id != ''">
 				AND a.parent_id = #{parent.id}
 			</if>
