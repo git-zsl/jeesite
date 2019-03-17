@@ -8,6 +8,7 @@
 		a.parent_ids AS "parentIds",
 		a.name AS "name",
 		a.sort AS "sort",
+		a.link,
 		a.category_id AS "category.id",
 		a.article_id AS "articleId",
 		a.release_time AS "releaseTime",
@@ -38,7 +39,7 @@
 		FROM ad_infomation a
 		<include refid="adInfomationJoins"/>
 		<where>
-			a.del_flag = #{DEL_FLAG_NORMAL} AND a.article_id is null
+			a.del_flag = #{DEL_FLAG_NORMAL}
 			<if test="parent != null and parent.id != null and parent.id != ''">
 				AND a.parent_id = #{parent.id}
 			</if>
@@ -133,6 +134,7 @@
 		<include refid="adInfomationJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND a.article_id is null
 		</where>
 		ORDER BY a.sort ASC
 	</select>
@@ -175,6 +177,7 @@
 			parent_ids,
 			name,
 			sort,
+			link,
 			category_id,
 			article_id,
 			release_time,
@@ -192,6 +195,7 @@
 			#{parentIds},
 			#{name},
 			#{sort},
+			#{link},
 			#{category.id},
 			#{articleId},
 			#{releaseTime},
@@ -212,6 +216,7 @@
 			parent_ids = #{parentIds},
 			name = #{name},
 			sort = #{sort},
+			link = #{link},
 			category_id = #{category.id},
 			article_id = #{articleId},
 			release_time = #{releaseTime},

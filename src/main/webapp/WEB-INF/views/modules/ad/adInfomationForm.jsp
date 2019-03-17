@@ -56,6 +56,13 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">链接：</label>
+			<div class="controls">
+				<form:input path="link" htmlEscape="false" maxlength="255" class="input-xlarge required"/>
+				<span class="help-inline"><font color="red">*</font> </span>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">排序：</label>
 			<div class="controls">
 				<form:input path="sort" htmlEscape="false" class="input-xlarge required"/>

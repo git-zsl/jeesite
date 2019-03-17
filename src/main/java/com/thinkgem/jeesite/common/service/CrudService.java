@@ -54,6 +54,15 @@ public abstract class CrudService<D extends CrudDao<T>, T extends DataEntity<T>>
 	}
 
 	/**
+	 * 查询属于文章类型的列表数据
+	 * @param entity
+	 * @return
+	 */
+	public List<T> findArticleList(T entity) {
+		return dao.findArticleList(entity);
+	}
+
+	/**
 	 * 查询列表数据
 	 * @param entity
 	 * @return

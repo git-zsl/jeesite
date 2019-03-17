@@ -72,7 +72,7 @@
         <div id="linkBody" class="control-group" style="display:none">
             <label class="control-label">外部链接:</label>
             <div class="controls">
-                <form:input path="link" htmlEscape="false" maxlength="200" class="input-xlarge"/>
+                <form:input path="link" htmlEscape="false" maxlength="2000" class="input-xlarge"/>
                 <span class="help-inline">绝对或相对地址。</span>
             </div>
         </div>

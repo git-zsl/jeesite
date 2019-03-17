@@ -154,7 +154,8 @@
 		a.is_read AS "isRead",
 		a.promulgator AS "promulgator1.id",
 		a.verifier AS "verifier.id",
-		a.comment_num AS "commentNum"
+		a.comment_num AS "commentNum",
+		u.isCompany AS "user.isCompany"
 	</sql>
 
     <sql id="cmsJobArticleJoins">
@@ -324,13 +325,45 @@
                 <if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
                 <if test="dbName == 'mysql'">CONCAT('%', #{title}, '%')</if>
             </if>
+            <if test="image != null and image != ''">
+                AND a.image = #{image}
+            </if>
+            <if test="id != null and id != ''">
+                AND a.id = #{id}
+            </if>
+            <if test="company != null and company != ''">
+                AND (a.company like
+                <if test="dbName == 'oracle'">'%'||#{company}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{company}+'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{company}, '%')</if>
+                or a.posts like
+                <if test="dbName == 'oracle'">'%'||#{company}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{company}+'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{company}, '%')</if>
+                )
+            </if>
+            <if test="isRecommend != null and isRecommend != ''">
+                AND a.is_recommend = #{isRecommend}
+            </if>
+            <if test="isTop != null and isTop != ''">
+                AND a.is_top = #{isTop}
+            </if>
+            <if test="isRead != null and isRead != ''">
+                AND a.is_read = #{isRead}
+            </if>
         </where>
         <choose>
+            <when test="hits != null and hits != ''">
+                ORDER BY a.hits DESC,a.weight DESC,a.create_date DESC
+            </when>
             <when test="page !=null and page.orderBy != null and page.orderBy != ''">
                 ORDER BY ${page.orderBy}
             </when>
+            <when test="createBy != null and createBy.id != null and createBy.id != ''">
+                ORDER BY a.weight DESC, a.create_date DESC
+            </when>
             <otherwise>
-                ORDER BY a.weight DESC, a.update_date DESC
+                ORDER BY a.weight DESC, a.create_date DESC
             </otherwise>
         </choose>
     </select>

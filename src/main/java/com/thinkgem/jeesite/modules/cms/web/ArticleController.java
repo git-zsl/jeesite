@@ -367,10 +367,20 @@ public class ArticleController extends BaseController {
                 return ReturnEntity.success(article1, "获取列表成功");
             }
             if (Global.YES.equals(article.getHits() + "")) {
-                List<Article> list = articleService.findList(article);
+                List<Article> list = null;
+                if(Objects.nonNull(article.getCategory()) && StringUtils.isNotBlank(article.getCategory().getId())){
+                    list = articleService.findList(article);
+                }else{
+                    list = articleService.findArticleList(article);
+                }
                 return ReturnEntity.success(list, "获取列表成功");
             } else {
-                Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
+                Page<Article> page = null;
+                if(Objects.nonNull(article.getCategory()) && StringUtils.isNotBlank(article.getCategory().getId())){
+                    page =  articleService.findPage(new Page<Article>(request, response), article, true);
+                }else{
+                    page = articleService.findArticlePage(new Page<Article>(request, response), article, true);
+                }
                 return ReturnEntity.success(page, "获取数据成功");
             }
         } catch (Exception e) {

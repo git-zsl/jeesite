@@ -130,7 +130,7 @@ public class AdInfomationController extends BaseController {
 		}
 		adInfomationService.save(adInfomation);
 		addMessage(redirectAttributes, "保存广告信息成功");
-		return "redirect:"+Global.getAdminPath()+"/ad/adInfomation/?repage";
+		return "redirect:"+Global.getAdminPath()+"/ad/adInfomation?category.id="+adInfomation.getCategory().getId()+"&show=1&repage";
 	}
 
 	/**
@@ -163,7 +163,7 @@ public class AdInfomationController extends BaseController {
 		}
 		adInfomationService.delete(adInfomation);
 		addMessage(redirectAttributes, "删除广告信息成功");
-		return "redirect:"+Global.getAdminPath()+"/ad/adInfomation/?repage";
+		return "redirect:"+Global.getAdminPath()+"/ad/adInfomation?category.id="+adInfomation.getCategory().getId()+"&show=1&repage";
 	}
 
 	@RequiresPermissions("user")
@@ -171,7 +171,7 @@ public class AdInfomationController extends BaseController {
 	@RequestMapping(value = "treeData")
 	public List<Map<String, Object>> treeData(@RequestParam(required=false) String extId, HttpServletResponse response) {
 		List<Map<String, Object>> mapList = Lists.newArrayList();
-		List<AdInfomation> list = adInfomationService.findList(new AdInfomation());
+		List<AdInfomation> list = adInfomationService.findAllList(new AdInfomation());
 		for (int i=0; i<list.size(); i++){
 			AdInfomation e = list.get(i);
 			if (StringUtils.isBlank(extId) || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1)){

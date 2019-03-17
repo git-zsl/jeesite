@@ -34,6 +34,13 @@ public class AdInfomationService extends TreeService<AdInfomationDao, AdInfomati
 		}
 		return super.findList(adInfomation);
 	}
+
+	public List<AdInfomation> findAllList(AdInfomation adInfomation) {
+		if (StringUtils.isNotBlank(adInfomation.getParentIds())){
+			adInfomation.setParentIds(","+adInfomation.getParentIds()+",");
+		}
+		return dao.findAllList(adInfomation);
+	}
 	public List<AdInfomation> findConfigList(AdInfomation adInfomation) {
 		if (StringUtils.isNotBlank(adInfomation.getParentIds())){
 			adInfomation.setParentIds(","+adInfomation.getParentIds()+",");
@@ -59,6 +66,7 @@ public class AdInfomationService extends TreeService<AdInfomationDao, AdInfomati
 		AdInfomation adInfomation = new AdInfomation();
 		adInfomation.setArticleId(article.getId());
 		adInfomation.setName(article.getTitle());
+		adInfomation.setLink(article.getLink());
 		return adInfomation;
 	}
 }
