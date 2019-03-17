@@ -67,6 +67,7 @@ public class AdInfomationService extends TreeService<AdInfomationDao, AdInfomati
 		adInfomation.setArticleId(article.getId());
 		adInfomation.setName(article.getTitle());
 		adInfomation.setLink(article.getLink());
+		adInfomation.setImage(article.getImage());
 		return adInfomation;
 	}
 }

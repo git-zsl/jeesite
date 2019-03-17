@@ -29,6 +29,7 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 	private String name;		// 广告位名称
 	private Integer sort;		// 排序
 	private String link;        // 链接
+	private String image;          // 图片
 	private Category category;		// 广告对应的栏目id
 	private String articleId;         // 文章 id
 	private Date releaseTime;		// 发布时间
@@ -136,6 +137,14 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 
 	public void setIsConfig(String isConfig) {
 		this.isConfig = isConfig;
+	}
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	public String getLink() {

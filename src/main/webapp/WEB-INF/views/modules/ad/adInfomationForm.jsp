@@ -51,14 +51,14 @@
 		<div class="control-group">
 			<label class="control-label">广告标题：</label>
 			<div class="controls">
-				<form:input path="name" htmlEscape="false" maxlength="255" class="input-xlarge required"/>
+				<form:input path="name" readonly="true" htmlEscape="false" maxlength="255" class="input-xlarge required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">链接：</label>
 			<div class="controls">
-				<form:input path="link" htmlEscape="false" maxlength="255" class="input-xlarge required"/>
+				<form:input path="link" readonly="true" htmlEscape="false" maxlength="255" class="input-xlarge required"/>
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
@@ -69,14 +69,12 @@
 				<span class="help-inline"><font color="red">*</font> </span>
 			</div>
 		</div>
-		<%--<div class="control-group">
-			<label class="control-label">广告对应的栏目id：</label>
+		<div class="control-group">
+			<label class="control-label">缩略图:</label>
 			<div class="controls">
-				<form:input path="categoryId" htmlEscape="false" maxlength="64" class="input-xlarge required"/>
-				<span class="help-inline"><font color="red">*</font> </span>
+				<form:input path="image" readonly="true" htmlEscape="false" class="input-xxlarge"/>
 			</div>
-		</div>--%>
-
+		</div>
 		<div class="control-group">
 			<label class="control-label">发布时间：</label>
 			<div class="controls">
