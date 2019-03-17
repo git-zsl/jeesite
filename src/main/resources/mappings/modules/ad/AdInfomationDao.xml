@@ -153,6 +153,10 @@
 			<if test="id != null and id != ''">
 				AND a.parent_id = #{id}
 			</if>
+			<if test="nowDate != null and nowDate != ''">
+				AND a.release_time &lt;= #{nowDate}
+				AND a.sold_out_time >= #{nowDate}
+			</if>
 		</where>
 		ORDER BY a.sort ASC
 	</select>

@@ -3,6 +3,8 @@
  */
 package com.thinkgem.jeesite.modules.ad.service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import com.thinkgem.jeesite.modules.cms.entity.Article;
@@ -54,6 +56,9 @@ public class AdInfomationService extends TreeService<AdInfomationDao, AdInfomati
 	}
 
 	public List<AdInfomation> findByCategoryAndWinId(AdInfomation adInfomation) {
+		Date date = new Date();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		adInfomation.setNowDate(simpleDateFormat.format(date));
 		return dao.findByCategoryAndWinId(adInfomation);
 	}
 

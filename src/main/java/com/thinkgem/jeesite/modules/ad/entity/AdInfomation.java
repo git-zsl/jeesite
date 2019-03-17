@@ -30,6 +30,7 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 	private Integer sort;		// 排序
 	private String link;        // 链接
 	private String image;          // 图片
+	private String nowDate;          // 当前时间
 	private Category category;		// 广告对应的栏目id
 	private String articleId;         // 文章 id
 	private Date releaseTime;		// 发布时间
@@ -145,6 +146,14 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 
 	public void setImage(String image) {
 		this.image = image;
+	}
+
+	public String getNowDate() {
+		return nowDate;
+	}
+
+	public void setNowDate(String nowDate) {
+		this.nowDate = nowDate;
 	}
 
 	public String getLink() {
