@@ -152,7 +152,7 @@
 			<label class="control-label">缩略图:</label>
 			<div class="controls">
                 <input type="hidden" id="image" name="image" value="${article.imageSrc}" />
-				<sys:ckfinder input="image" type="thumb" uploadPath="/cms/article" selectMultiple="false"/>
+				<sys:ckfinder input="image" type="images" uploadPath="/cms/article" selectMultiple="false"/>
 			</div>
 		</div>
 		<div class="control-group">

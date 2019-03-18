@@ -94,12 +94,12 @@
 				</span>
 			</div>
 		</div>
-		<div class="control-group">
+	<%--	<div class="control-group">
 			<label class="control-label">第几页广告:</label>
 			<div class="controls">
 				<form:input path="pageNum" htmlEscape="false" maxlength="200" class="input-mini required digits"/>&nbsp;
 			</div>
-		</div>
+		</div>--%>
 		<div class="control-group">
 			<label class="control-label">摘要:</label>
 			<div class="controls">
@@ -110,7 +110,7 @@
 			<label class="control-label">缩略图:</label>
 			<div class="controls">
                 <input type="hidden" id="image" name="image" value="${article.imageSrc}" />
-				<sys:ckfinder input="image" type="thumb" uploadPath="/cms/article" selectMultiple="false"/>
+				<sys:ckfinder input="image" type="images" uploadPath="/cms/article" selectMultiple="false"/>
 			</div>
 		</div>
 		<div class="control-group">

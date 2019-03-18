@@ -66,7 +66,7 @@
 			<label class="control-label">缩略图:</label>
 			<div class="controls">
 				<form:hidden path="image" htmlEscape="false" maxlength="255" class="input-xlarge"/>
-				<sys:ckfinder input="image" type="thumb" uploadPath="/cms/category"/>
+				<sys:ckfinder input="image" type="images" uploadPath="/cms/category"/>
 			</div>
 		</div>
 		<div class="control-group">
