@@ -203,6 +203,14 @@ public class ArticleController extends BaseController {
             return form(article, model, redirectAttributes, all,parentCategoryId);
         }
         articleService.save(article);
+        AdInfomation adInfomation = new AdInfomation(article.getId());
+        List<AdInfomation> AdInfomations = adInfomationService.findByArticleId(adInfomation);
+        if(!AdInfomations.isEmpty()){
+            for (AdInfomation a : AdInfomations) {
+                AdInfomation adInfomation1 = adInfomationService.setOldAdInfomationData(a,article);
+                adInfomationService.save(adInfomation1);
+            }
+        }
         addMessage(redirectAttributes, "保存文章'" + StringUtils.abbr(article.getTitle(), 50) + "'成功");
         String categoryId = article.getCategory() != null ? article.getCategory().getId() : null;
         if(StringUtils.isNotBlank(ad)){

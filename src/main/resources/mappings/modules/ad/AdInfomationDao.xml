@@ -33,7 +33,15 @@
 		<include refid="adInfomationJoins"/>
 		WHERE a.id = #{id}
 	</select>
-	
+
+	<select id="findByArticleId" resultType="AdInfomation">
+		SELECT
+			<include refid="adInfomationColumns"/>
+		FROM ad_infomation a
+		<include refid="adInfomationJoins"/>
+		WHERE a.article_id = #{id}
+	</select>
+
 	<select id="findList" resultType="AdInfomation">
 		SELECT 
 			<include refid="adInfomationColumns"/>

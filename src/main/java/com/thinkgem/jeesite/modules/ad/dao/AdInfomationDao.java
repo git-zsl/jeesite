@@ -18,4 +18,6 @@ import java.util.List;
 public interface AdInfomationDao extends TreeDao<AdInfomation> {
 
     public List<AdInfomation> findByCategoryAndWinId(AdInfomation adInfomation);
+
+    public List<AdInfomation> findByArticleId(AdInfomation adInfomation);
 }
