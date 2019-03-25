@@ -5,10 +5,9 @@ package com.thinkgem.jeesite.modules.cms.web;
 
 import java.io.File;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +16,7 @@ import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
+import com.thinkgem.jeesite.common.utils.MyPageUtil;
 import com.thinkgem.jeesite.modules.ad.entity.AdInfomation;
 import com.thinkgem.jeesite.modules.ad.service.AdInfomationService;
 import com.thinkgem.jeesite.modules.articleclassify.entity.CmsArticleClassify;
@@ -40,6 +40,7 @@ import com.thinkgem.jeesite.modules.posts.service.CmsPostsService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -321,6 +322,46 @@ public class ArticleController extends BaseController {
             return ReturnEntity.fail("系统内部错误成功，请联系管理员");
         }
         return ReturnEntity.success(articles, "查询广告成功");
+    }
+
+    /**
+     * 主页广告投放记录接口
+     */
+
+    @RequestMapping(value = "filter/adhistoryList", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity<List<Article>> adsHistoryList(Article article,String userId,@RequestParam(value = "flag",required = false,defaultValue = "true") String flag, Category category, HttpServletRequest request,HttpServletResponse response) {
+        Page<AdInfomation> page = new Page<AdInfomation>(request, response);
+        List<Article> articles = null;
+        List<AdInfomation> adInfomations = Lists.newArrayList();
+        try {
+            CustomCategory gg = customCategoryService.findByMark(Global.GG);
+            if (Objects.isNull(gg)) {
+                LogUtils.saveLog(request, gg, new Exception(), "没有找到对应的自定义栏目，请配置");
+                return ReturnEntity.success(null, "请先设置自定义栏目标志‘GG’");
+            }
+            List<String> byParentIdNoSite = categoryService.findByParentIdNoSite(gg.getCategoryId());
+            articles = articleService.findByCategoryIdIn(byParentIdNoSite);
+            if(StringUtils.isBlank(userId)){
+                LogUtils.getLogInfo(ArticleController.class).info("用户id 为空 ：" + userId);
+                return ReturnEntity.fail("用户id 为空 ：" + userId);
+            }
+            List<Article> byCreateUser = articleService.findByCreateUser(articles, userId);
+            for (Article a : byCreateUser) {
+                AdInfomation ad = new AdInfomation();
+                ad.setId(a.getId());
+                List<AdInfomation> byArticleId = adInfomationService.findByArticleId(ad);
+                adInfomations.addAll(byArticleId);
+            }
+            //模拟分页
+            List<AdInfomation> pageList = MyPageUtil.getPageList(adInfomations, request, response);
+            page.setList(adInfomationService.getRuntimeOrHistoryADList(adInfomationService.getSortList(pageList),flag));
+        } catch (Exception e) {
+            e.printStackTrace();
+           /* LogUtils.saveLog(request, articles, e, "没有找到对应的自定义栏目，请配置");*/
+            return ReturnEntity.fail("系统内部错误成功，请联系管理员");
+        }
+        return ReturnEntity.success(page, "查询广告成功");
     }
 
     /**

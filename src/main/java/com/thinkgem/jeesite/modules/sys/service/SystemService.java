@@ -3,17 +3,6 @@
  */
 package com.thinkgem.jeesite.modules.sys.service;
 
-import java.util.*;
-
-import com.thinkgem.jeesite.modules.sys.dao.OfficeDao;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.identity.Group;
-import org.apache.shiro.session.Session;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.security.Digests;
@@ -25,6 +14,7 @@ import com.thinkgem.jeesite.common.utils.Encodes;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.Servlets;
 import com.thinkgem.jeesite.modules.sys.dao.MenuDao;
+import com.thinkgem.jeesite.modules.sys.dao.OfficeDao;
 import com.thinkgem.jeesite.modules.sys.dao.RoleDao;
 import com.thinkgem.jeesite.modules.sys.dao.UserDao;
 import com.thinkgem.jeesite.modules.sys.entity.Menu;
@@ -33,7 +23,17 @@ import com.thinkgem.jeesite.modules.sys.entity.Role;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.security.SystemAuthorizingRealm;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
+import com.thinkgem.jeesite.modules.sys.utils.LoginUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.identity.Group;
+import org.apache.shiro.session.Session;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 /**
  * 系统管理，安全相关实体的管理类,包括用户、角色、菜单.
@@ -305,7 +305,12 @@ public class SystemService extends BaseService implements InitializingBean {
 	public List<Role> findAllRole(){
 		return UserUtils.getRoleList();
 	}
-	
+
+	@Transactional(readOnly = false)
+	public void updateHomeUserInformation(User user){
+		userDao.updateHomeUserInformation(user);
+	}
+
 	@Transactional(readOnly = false)
 	public void saveRole(Role role) {
 		if (StringUtils.isBlank(role.getId())){
@@ -587,5 +592,30 @@ public class SystemService extends BaseService implements InitializingBean {
 	}
 	
 	///////////////// Synchronized to the Activiti end //////////////////
-	
+
+
+	public User decode(User user) throws Exception{
+		String sex = Encodes.urlDecode(user.getSex());
+		String email = Encodes.urlDecode(user.getEmail());
+		String name = Encodes.urlDecode(user.getName());
+		String information = Encodes.urlDecode(user.getInformation());
+		String provence = Encodes.urlDecode(user.getProvence());
+		String city = Encodes.urlDecode(user.getCity());
+		String district = Encodes.urlDecode(user.getDistrict());
+		user.setName(name);
+		user.setSex(sex);
+		user.setEmail(email);
+		user.setProvence(provence);
+		user.setInformation(information);
+		user.setCity(city);
+		user.setDistrict(district);
+		user.setPassword(LoginUtils.entryptPassword(user.getPassword()));
+		return user;
+	}
+
+	//替换值
+	public User replaceUser(User user,User user1){
+
+		return null;
+	}
 }

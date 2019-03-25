@@ -3,6 +3,8 @@
  */
 package com.thinkgem.jeesite.modules.sys.web;
 
+import java.io.File;
+import java.net.URLDecoder;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -13,9 +15,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
-import com.thinkgem.jeesite.modules.sys.entity.Email;
+import com.thinkgem.jeesite.common.utils.Encodes;
+import com.thinkgem.jeesite.modules.sys.entity.*;
 import com.thinkgem.jeesite.modules.sys.service.OfficeService;
 import com.thinkgem.jeesite.modules.sys.utils.EmailUtils;
+import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.common.collect.Lists;
@@ -40,11 +46,9 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.modules.sys.entity.Office;
-import com.thinkgem.jeesite.modules.sys.entity.Role;
-import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import org.springframework.web.util.WebUtils;
 
 /**
  * 用户Controller
@@ -573,38 +577,54 @@ public class UserController extends BaseController {
         model.addAttribute("allRoles", systemService.findAllRole());
         return "modules/business/bussinessUserForm";
     }
-        /**
-         *更新人物头像接口
-         */
-    @RequestMapping("updateImage")
-    @ResponseBody
-    public ReturnEntity updateImage(){
 
-        return ReturnEntity.success("更新成功");
+    /**
+     * 个人信息更新接口
+     */
+    @RequestMapping("/h/updateInformation")
+    @ResponseBody
+    public ReturnEntity updateInformation(@ModelAttribute User user,HttpServletRequest request){
+        MultipartFile image = null;
+        try{
+            //解码
+            user = systemService.decode(user);
+            boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+            if (isMultipart) {
+                MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
+                image = multipartRequest.getFile("image");
+                String originalFilename = Encodes.urlDecode(image.getOriginalFilename());
+                String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
+                File file1 = new File(configPath + "/" + Global.getConfig("homePhoto") +user.getLoginName() + "/" + originalFilename);
+                if (!file1.getParentFile().exists()) {
+                    file1.getParentFile().mkdirs();
+                }
+                String wappPath = request.getSession().getServletContext().getContextPath();
+                image.transferTo(file1);
+                String s = wappPath + "/" + file1.getPath().substring(configPath.length()+1);
+                user.setPhoto(s);
+                systemService.updateHomeUserInformation(user);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            LogUtils.getLogInfo(UserController.class).info("程序出错",e);
+        }
+        return ReturnEntity.success(UserUtils.get(user.getId()),"更新成功");
     }
 
-/*	@RequiresPermissions("sys:user:view")
-	@RequestMapping(value = {"customizationList"})
-	public String personalList(User user, @RequestParam(value="officeId",required=false) String officeId,HttpServletRequest request, HttpServletResponse response, Model model) {
-		Office office = new Office();
-		if(!StringUtils.isBlank(officeId)){
-			office = officeService.get(officeId);
-		}
-		*//*List<Office> listByName = officeService.findListByName(office);*//*
-		user.setOffice(office);
-		Page<User> page = systemService.findUser(new Page<User>(request, response), user);
-		if(OFFICE_TYPE_2.equals(office.getName())){
-			if(user.getDelFlag().equals("1")){
-				page.setList(systemService.findBlacklist(user));
-			}
-			model.addAttribute("page", page);
-			return "modules/peruser/personalUserList";
-		}else{
-			if(!user.getDelFlag().equals("0")){
-				page.setList(systemService.findCompanyBlacklist(user));
-			}
-			model.addAttribute("page", page);
-			return "modules/business/bussinessUserList";
-		}
-	}*/
+    /**
+     * 企业信息更新接口
+     */
+    @RequestMapping("filter/updateOfficeInformation")
+    @ResponseBody
+    public ReturnEntity updateOfficeInformation(MultipartFile headPhoto,@ModelAttribute User user, @ModelAttribute SysOfficeInformation sysOfficeInformation){
+        try{
+
+            systemService.updateHomeUserInformation(user);
+        }catch (Exception e){
+            e.printStackTrace();
+            LogUtils.getLogInfo(UserController.class).info("程序出错",e);
+        }
+        return ReturnEntity.success(UserUtils.get(user.getId()),"更新成功");
+    }
+
 }

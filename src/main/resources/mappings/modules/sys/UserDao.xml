@@ -105,7 +105,18 @@
     	ou2.id AS "office.deputyPerson.id",
     	ou2.name AS "office.deputyPerson.name",
     	a.attentionNum,
-    	a.attention2Num
+    	a.attention2Num,
+    	<!--主页的属性-->
+    	a.sex,
+		a.district,
+		a.city,
+		a.provence,
+		a.subscription,
+		a.information,
+		a.dou_ban AS "douBan",
+		a.zhi_hu AS "zhiHu",
+		a.wei_bo AS "weiBo",
+		a.wei_xin_code AS "weiXinCode"
     </sql>
     
     <sql id="userJoins">
@@ -371,5 +382,26 @@
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
-	
+
+	<!-- 更新主页用户信息  -->
+	<update id="updateHomeUserInformation">
+		UPDATE sys_user SET
+		photo = #{photo},
+		name = #{name},
+		email = #{email},
+		mobile = #{mobile},
+		password = #{password},
+		sex = #{sex},
+		district = #{district},
+		city = #{city},
+		provence = #{provence},
+		subscription = #{subscription},
+	    information = #{information},
+		dou_ban = #{douBan},
+		zhi_hu = #{zhiHu},
+		wei_bo = #{weiBo},
+		wei_xin_code = #{weiXinCode}
+		WHERE id = #{id}
+	</update>
+
 </mapper>

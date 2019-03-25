@@ -4,9 +4,13 @@
 package com.thinkgem.jeesite.modules.ad.service;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.collect.Lists;
+import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.springframework.stereotype.Service;
@@ -39,6 +43,43 @@ public class AdInfomationService extends TreeService<AdInfomationDao, AdInfomati
 
 	public List<AdInfomation> findByArticleId(AdInfomation adInfomation) {
 		return dao.findByArticleId(adInfomation);
+	}
+
+	public List<AdInfomation> getSortList(List<AdInfomation> lists) {
+		Collections.sort(lists, new Comparator<AdInfomation>(){
+			public int compare(AdInfomation p1, AdInfomation p2) {
+				if (p1.getReleaseTime().getTime() > p2.getReleaseTime().getTime()) {
+					return 1;
+				}
+				if (p1.getReleaseTime().getTime() == p2.getReleaseTime().getTime()) {
+					return 0;
+				}
+				return -1;
+			}
+		});
+		return lists;
+	}
+
+	/**
+	 * 区分是历史，还是正在上架中广告
+	 * @param lists
+	 * @return
+	 */
+	public List<AdInfomation> getRuntimeOrHistoryADList(List<AdInfomation> lists,String flag) {
+		Date date = new Date();
+		long time = date.getTime();
+		List<AdInfomation> historyADList = Lists.newArrayList();
+		List<AdInfomation> runtimeADList = Lists.newArrayList();
+		for (AdInfomation a : lists) {
+			if(a.getReleaseTime().getTime() <= time && a.getSoldOutTime().getTime() >= time){
+				runtimeADList.add(a);
+			}
+				historyADList.add(a);
+		}
+		if(Global.TRUE.equals(flag)){
+			return runtimeADList;
+		}
+		return historyADList;
 	}
 
 	public List<AdInfomation> findAllList(AdInfomation adInfomation) {

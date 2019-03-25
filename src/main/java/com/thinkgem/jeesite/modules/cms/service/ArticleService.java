@@ -236,6 +236,16 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         return dao.findByCategoryIdIn(ids);
     }
 
+    public List<Article> findByCreateUser(List<Article> list ,String userId) {
+        List<Article> newList = Lists.newArrayList();
+        for (Article a : list ) {
+            if(userId.equals(a.getCreateBy().getId())){
+                newList.add(a);
+            }
+        }
+        return newList;
+    }
+
     public List<Article> findByCategoryIdInAndPageNum(List<String> ids,String pageNum) {
         return dao.findByCategoryIdInAndPageNum(ids,pageNum);
     }

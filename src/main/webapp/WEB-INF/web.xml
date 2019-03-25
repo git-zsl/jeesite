@@ -33,7 +33,16 @@
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+
+	<!-- HomeLoginVerificationFilter -->
+	<filter>
+		<filter-name>HomeLoginVerificationFilter</filter-name>
+		<filter-class>com.thinkgem.jeesite.common.filter.HomeLoginVerificationFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>HomeLoginVerificationFilter</filter-name>
+		<url-pattern>/a/sys/user/h/*</url-pattern>
+	</filter-mapping>
 	<!-- Apache Shiro -->
 	<filter>
 		<filter-name>shiroFilter</filter-name>
@@ -85,15 +94,6 @@
 		<url-pattern>/a/cms/comment/save</url-pattern>
 	</filter-mapping>
 
-	<!-- HomeLoginVerificationFilter -->
-	<filter>
-		<filter-name>HomeLoginVerificationFilter</filter-name>
-		<filter-class>com.thinkgem.jeesite.common.filter.HomeLoginVerificationFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>HomeLoginVerificationFilter</filter-name>
-		<url-pattern>/h/*</url-pattern>
-	</filter-mapping>
 	<!-- SiteMesh -->
 	<filter>
 		<filter-name>sitemeshFilter</filter-name>

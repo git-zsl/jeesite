@@ -28,6 +28,7 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 	private String parentIds;		// 所有父级编号
 	private String name;		// 广告位名称
 	private Integer sort;		// 排序
+	private String period;       //周期
 	private String link;        // 链接
 	private String image;          // 图片
 	private String nowDate;          // 当前时间
@@ -154,6 +155,14 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 
 	public void setNowDate(String nowDate) {
 		this.nowDate = nowDate;
+	}
+
+	public String getPeriod() {
+		return period;
+	}
+
+	public void setPeriod(String period) {
+		this.period = period;
 	}
 
 	public String getLink() {

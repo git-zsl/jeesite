@@ -333,6 +333,7 @@
 				AND a.parent_id  = #{parent.id}
 			</if>
 		</where>
+		ORDER BY a.create_date DESC
 	</select>
 
 	<select id="findCategorysByParentId" resultType="Category">

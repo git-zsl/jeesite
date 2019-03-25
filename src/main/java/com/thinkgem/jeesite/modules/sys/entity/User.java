@@ -43,6 +43,16 @@ public class User extends DataEntity<User> {
 	private Date loginDate;	// 最后登陆日期
 	private String loginFlag;	// 是否允许登陆
 	private String photo;	// 头像
+	private String sex;     // 性别
+	private String provence;  // 省
+	private String city;    // 市
+	private String district;      // 区
+	private String subscription;   //订阅
+	private String information;   //个人签名
+	private String douBan;    //豆瓣链接
+	private String zhiHu;     // 短乎链接
+	private String weiBo;     //微薄链接
+	private String weiXinCode;   //微信二维码
 
 	private String oldLoginName;// 原登录名
 	private String newPassword;	// 新密码
@@ -371,6 +381,86 @@ public class User extends DataEntity<User> {
 
 	public void setIsCreateByMySelf(String isCreateByMySelf) {
 		this.isCreateByMySelf = isCreateByMySelf;
+	}
+
+	public String getSex() {
+		return sex;
+	}
+
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
+	public String getProvence() {
+		return provence;
+	}
+
+	public void setProvence(String provence) {
+		this.provence = provence;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+
+	public String getSubscription() {
+		return subscription;
+	}
+
+	public void setSubscription(String subscription) {
+		this.subscription = subscription;
+	}
+
+	public String getInformation() {
+		return information;
+	}
+
+	public void setInformation(String information) {
+		this.information = information;
+	}
+
+	public String getDouBan() {
+		return douBan;
+	}
+
+	public void setDouBan(String douBan) {
+		this.douBan = douBan;
+	}
+
+	public String getZhiHu() {
+		return zhiHu;
+	}
+
+	public void setZhiHu(String zhiHu) {
+		this.zhiHu = zhiHu;
+	}
+
+	public String getWeiBo() {
+		return weiBo;
+	}
+
+	public void setWeiBo(String weiBo) {
+		this.weiBo = weiBo;
+	}
+
+	public String getWeiXinCode() {
+		return weiXinCode;
+	}
+
+	public void setWeiXinCode(String weiXinCode) {
+		this.weiXinCode = weiXinCode;
 	}
 
 	@Override

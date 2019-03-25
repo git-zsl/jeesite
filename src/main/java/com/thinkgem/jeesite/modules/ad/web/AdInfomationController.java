@@ -33,6 +33,7 @@ import sun.misc.Cache;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -128,6 +129,11 @@ public class AdInfomationController extends BaseController {
 		if (!beanValidator(model, adInfomation)){
 			return form(adInfomation, model);
 		}
+		//计算周期
+		long l = adInfomation.getSoldOutTime().getTime() - adInfomation.getReleaseTime().getTime();
+		DecimalFormat df = new DecimalFormat("#h");
+		//只能取整，不足整，去掉
+		adInfomation.setPeriod(df.format(l/(60*60*1000)));
 		adInfomationService.save(adInfomation);
 		addMessage(redirectAttributes, "保存广告信息成功");
 		return "redirect:"+Global.getAdminPath()+"/ad/adInfomation?category.id="+adInfomation.getCategory().getId()+"&show=1&repage";
