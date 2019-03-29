@@ -121,13 +121,13 @@
                 <span class="help-inline">绝对或相对地址。</span>
             </div>
         </div>
-		<%--<div class="control-group">
-			<label class="control-label">关键字:</label>
+		<div class="control-group">
+			<label class="control-label">福利关键词:</label>
 			<div class="controls">
 				<form:input path="keywords" htmlEscape="false" maxlength="200" class="input-xlarge"/>
 				<span class="help-inline">多个关键字，用空格分隔。</span>
 			</div>
-		</div>--%>
+		</div>
 		<div class="control-group">
 			<label class="control-label">权重:</label>
 			<div class="controls">
@@ -143,9 +143,21 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">摘要:</label>
+			<label class="control-label">招聘人数:</label>
 			<div class="controls">
-				<form:textarea path="description" htmlEscape="false" rows="4" maxlength="200" class="input-xxlarge"/>
+				<form:input path="jobNum" htmlEscape="false" maxlength="200" class="input-mini required digits"/>&nbsp;
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">一句描述:</label>
+			<div class="controls">
+				<form:textarea path="description" htmlEscape="false" rows="4" maxlength="2000" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">岗位描述:</label>
+			<div class="controls">
+				<form:textarea path="jobDescription" htmlEscape="false" rows="4" maxlength="2000" class="input-xxlarge"/>
 			</div>
 		</div>
 		<div class="control-group">
@@ -156,9 +168,9 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">正文:</label>
+			<label class="control-label">岗位要求:</label>
 			<div class="controls">
-				<form:textarea id="content" htmlEscape="true" path="articleData.content" rows="4" maxlength="200" class="input-xxlarge"/>
+				<form:textarea id="content" htmlEscape="true" path="articleData.content" rows="4" maxlength="2000" class="input-xxlarge"/>
 				<sys:ckeditor replace="content" uploadPath="/cms/article" />
 			</div>
 		</div>

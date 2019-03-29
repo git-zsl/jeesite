@@ -155,7 +155,10 @@
 		a.promulgator AS "promulgator1.id",
 		a.verifier AS "verifier.id",
 		a.comment_num AS "commentNum",
-		u.isCompany AS "user.isCompany"
+		u.isCompany AS "user.isCompany",
+		a.email,
+		a.Job_description AS "jobDescription",
+		a.job_num AS "jobNum"
 	</sql>
 
     <sql id="cmsJobArticleJoins">
@@ -523,7 +526,10 @@
             is_read,
             promulgator,
             verifier,
-            comment_num
+            comment_num,
+            email,
+            job_description,
+            job_num
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -565,7 +571,10 @@
 		    #{isRead},
 		    #{promulgator1.id},
 		    #{verifier.id},
-		    #{commentNum}
+		    #{commentNum},
+		    #{email},
+		    #{jobDescription},
+		    #{jobNum}
 		)
 	</insert>
 
@@ -609,7 +618,10 @@
 		    is_read = #{isRead},
 		    promulgator = #{promulgator1.id},
 		    verifier = #{verifier.id},
-		    comment_num = #{commentNum}
+		    comment_num = #{commentNum},
+		    email = #{email},
+		    job_description = #{jobDescription},
+		    job_num = #{jobNum}
 		WHERE id = #{id}
 	</update>
 

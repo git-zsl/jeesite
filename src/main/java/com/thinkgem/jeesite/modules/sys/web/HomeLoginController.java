@@ -242,7 +242,7 @@ public class HomeLoginController extends BaseController {
             LogUtils.getLogInfo(clazz).info("程序出错", e);
             return ReturnEntity.fail("程序出错");
         }
-        return ReturnEntity.success(byLoginName,"登录成功");
+        return ReturnEntity.fail("登录失败");
     }
 
     /**

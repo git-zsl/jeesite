@@ -120,12 +120,12 @@ public class CommentController extends BaseController {
 				}
 			}*/
 			//模拟分页
-			for (int i = 0; i < comments.size(); i++) {
+		/*	for (int i = 0; i < comments.size(); i++) {
 				if( i >= ((page.getPageNo()-1)*page.getPageSize()) && i <= (page.getPageNo()*page.getPageSize()-1)){
 					lists.add(comments.get(i));
 				}
 			}
-			page.setList(lists);
+			page.setList(lists);*/
 		//不分页
 		/*	page.setList(comments);*/
 		/*	if(Global.YES.equals(comment.getIsRecommend())){
@@ -142,7 +142,7 @@ public class CommentController extends BaseController {
 			e.printStackTrace();
 			ReturnEntity.fail("程序出错");
 		}
-		return ReturnEntity.success(page,"获取评论列表成功");
+		return ReturnEntity.success(comments,"获取评论列表成功");
 	}
 
 	/**

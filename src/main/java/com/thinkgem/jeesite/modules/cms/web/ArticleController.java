@@ -845,4 +845,19 @@ public class ArticleController extends BaseController {
         }
         return "redirect:" + adminPath + "/cms/article/allList?init=2";
     }
+
+    /***
+     * 主页发布招聘
+     */
+    @RequestMapping("filter/saveJob")
+    public ReturnEntity saveJob(Category category,String userId){
+        try{
+
+        }catch (Exception e){
+            LogUtils.getLogInfo(ArticleController.class).info("发布出错", e);
+            e.printStackTrace();
+            return ReturnEntity.fail("发布出错");
+        }
+        return ReturnEntity.success(null,"发布成功");
+    }
 }

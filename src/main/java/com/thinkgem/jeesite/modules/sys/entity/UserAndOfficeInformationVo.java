@@ -28,6 +28,7 @@ public class UserAndOfficeInformationVo {
 
 	private String userId;   //用户id
 	private String officeInfomationId;  // 企业信息id
+	private String officeIntroduction;  // 机构简介
 	private String email;	// 邮箱
 	private String mobile;	// 手机
 	private String photo;	// 头像
@@ -196,5 +197,13 @@ public class UserAndOfficeInformationVo {
 
 	public void setOfficeImage(String officeImage) {
 		this.officeImage = officeImage;
+	}
+
+	public String getOfficeIntroduction() {
+		return officeIntroduction;
+	}
+
+	public void setOfficeIntroduction(String officeIntroduction) {
+		this.officeIntroduction = officeIntroduction;
 	}
 }

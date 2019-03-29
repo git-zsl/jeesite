@@ -725,6 +725,7 @@ public class SystemService extends BaseService implements InitializingBean {
 		vo.setAttention2Num(user.getAttention2Num());
 		vo.setAttentionNum(user.getAttentionNum());
 		vo.setUserId(user.getId());
+		vo.setOfficeIntroduction(sysOfficeInformation.getOfficeIntroduction());
 		vo.setOfficeInfomationId(sysOfficeInformation.getId());
 		vo.setEmail(user.getEmail());
 		vo.setMobile(user.getMobile());

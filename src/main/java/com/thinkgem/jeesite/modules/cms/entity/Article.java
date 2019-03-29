@@ -66,6 +66,10 @@ public class Article extends DataEntity<Article> {
 	private String isPutaway;   // 是否已上架
 	private String isRead;   // 是否已上架
 	private int commentNum;  // 评论数
+    private String email;    // 邮箱
+    private String jobDescription;  // 招聘描述
+	private String jobNum;    // 招聘人数
+
 
 
 	private User user;
@@ -440,6 +444,31 @@ public class Article extends DataEntity<Article> {
 
 	public void setCommentNum(int commentNum) {
 		this.commentNum = commentNum;
+	}
+
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getJobDescription() {
+		return jobDescription;
+	}
+
+	public void setJobDescription(String jobDescription) {
+		jobDescription = jobDescription;
+	}
+
+	public String getJobNum() {
+		return jobNum;
+	}
+
+	public void setJobNum(String jobNum) {
+		this.jobNum = jobNum;
 	}
 }
 
