@@ -699,4 +699,45 @@ public class UserController extends BaseController {
         return ReturnEntity.success(UserUtils.get(user.getId()),"更新成功");
     }
 
+
+    /**
+     * 获取个人信息接口
+     *
+     */
+    @RequestMapping("filter/findInformation1")
+    @ResponseBody
+    public ReturnEntity findInformation(String userId){
+        User user =null;
+        try{
+            user = UserUtils.get(userId);
+        }catch (Exception e){
+            e.printStackTrace();
+            LogUtils.getLogInfo(UserController.class).info("程序出错",e);
+            return ReturnEntity.fail("程序出错");
+        }
+        return ReturnEntity.success(user,"获取成功");
+
+    }
+
+
+    /**
+     * 获取企业信息接口
+     *
+     */
+    @RequestMapping("filter/findOfficeInformation1")
+    @ResponseBody
+    public ReturnEntity findOfficeInformation(String userId){
+        UserAndOfficeInformationVo vo = null;
+        try{
+            User user = UserUtils.get(userId);
+            SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(userId);
+            vo = systemService.setUserAndOfficeInformationVoData(user, byUserId);
+            //封装数据
+        }catch (Exception e){
+            e.printStackTrace();
+            LogUtils.getLogInfo(UserController.class).info("程序出错",e);
+            return ReturnEntity.fail("程序出错");
+        }
+        return ReturnEntity.success(vo,"获取成功");
+    }
 }

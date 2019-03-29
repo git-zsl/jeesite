@@ -716,4 +716,31 @@ public class SystemService extends BaseService implements InitializingBean {
 		return false;
 	}
 
+
+	/**
+	 * 封闭用户与企业信息
+	 */
+	public UserAndOfficeInformationVo setUserAndOfficeInformationVoData(User user,SysOfficeInformation sysOfficeInformation){
+		UserAndOfficeInformationVo vo = new UserAndOfficeInformationVo();
+		vo.setAttention2Num(user.getAttention2Num());
+		vo.setAttentionNum(user.getAttentionNum());
+		vo.setUserId(user.getId());
+		vo.setOfficeInfomationId(sysOfficeInformation.getId());
+		vo.setEmail(user.getEmail());
+		vo.setMobile(user.getMobile());
+		vo.setPhoto(user.getPhoto());
+		vo.setSubscription(user.getSubscription());
+		vo.setDouBan(user.getDouBan());
+		vo.setWeiXinCode(user.getWeiXinCode());
+		vo.setWeiBo(user.getWeiBo());
+		vo.setZhiHu(user.getZhiHu());
+		vo.setProvence(sysOfficeInformation.getProvence());
+		vo.setCity(sysOfficeInformation.getCity());
+		vo.setDistrict(sysOfficeInformation.getDistrict());
+		vo.setOfficeLink(sysOfficeInformation.getOfficeLink());
+		vo.setName(user.getName());
+		vo.setTeamSize(sysOfficeInformation.getTeamSize());
+		vo.setOfficeImage(sysOfficeInformation.getOfficeImage());
+		return vo;
+	}
 }
