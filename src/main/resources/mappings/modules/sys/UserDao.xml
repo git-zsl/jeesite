@@ -383,7 +383,7 @@
 		WHERE id = #{id}
 	</update>
 
-	<!-- 更新主页用户信息  -->
+	<!-- 更新主页个人用户信息  -->
 	<update id="updateHomeUserInformation">
 		UPDATE sys_user SET
 		photo = #{photo},
@@ -397,6 +397,22 @@
 		provence = #{provence},
 		subscription = #{subscription},
 	    information = #{information},
+		dou_ban = #{douBan},
+		zhi_hu = #{zhiHu},
+		wei_bo = #{weiBo},
+		wei_xin_code = #{weiXinCode}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 更新主页企业用户信息  -->
+	<update id="updateHomeUserOfficeInformation">
+		UPDATE sys_user SET
+		photo = #{photo},
+		name = #{name},
+		email = #{email},
+		mobile = #{mobile},
+		password = #{password},
+		subscription = #{subscription},
 		dou_ban = #{douBan},
 		zhi_hu = #{zhiHu},
 		wei_bo = #{weiBo},

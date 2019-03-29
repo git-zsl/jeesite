@@ -37,6 +37,8 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 	private Date releaseTime;		// 发布时间
 	private Date soldOutTime;		// 下架时间
 	private String promulgator;		// 发布者
+	private String description;		// 摘要
+	private String type;		// 类型
 	private String isConfig;         // 配置标志
 	private List<AdInfomation> childerAdInfomations = Lists.newArrayList();
 	
@@ -173,8 +175,24 @@ public class AdInfomation extends TreeEntity<AdInfomation> {
 		this.link = link;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public List<AdInfomation> getChilderAdInfomations() {
 		return childerAdInfomations;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public void setChilderAdInfomations(List<AdInfomation> childerAdInfomations) {

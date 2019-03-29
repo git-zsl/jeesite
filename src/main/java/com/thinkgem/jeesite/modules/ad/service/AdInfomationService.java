@@ -122,6 +122,7 @@ public class AdInfomationService extends TreeService<AdInfomationDao, AdInfomati
 	}
 
 	public AdInfomation setOldAdInfomationData(AdInfomation adInfomation,Article article){
+		adInfomation.setDescription(article.getDescription());
 		adInfomation.setArticleId(article.getId());
 		adInfomation.setName(article.getTitle());
 		adInfomation.setLink(article.getLink());

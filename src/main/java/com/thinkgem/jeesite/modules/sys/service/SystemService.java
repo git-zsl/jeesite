@@ -17,10 +17,7 @@ import com.thinkgem.jeesite.modules.sys.dao.MenuDao;
 import com.thinkgem.jeesite.modules.sys.dao.OfficeDao;
 import com.thinkgem.jeesite.modules.sys.dao.RoleDao;
 import com.thinkgem.jeesite.modules.sys.dao.UserDao;
-import com.thinkgem.jeesite.modules.sys.entity.Menu;
-import com.thinkgem.jeesite.modules.sys.entity.Office;
-import com.thinkgem.jeesite.modules.sys.entity.Role;
-import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.entity.*;
 import com.thinkgem.jeesite.modules.sys.security.SystemAuthorizingRealm;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LoginUtils;
@@ -32,7 +29,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -309,6 +309,10 @@ public class SystemService extends BaseService implements InitializingBean {
 	@Transactional(readOnly = false)
 	public void updateHomeUserInformation(User user){
 		userDao.updateHomeUserInformation(user);
+	}
+	@Transactional(readOnly = false)
+	public void updateHomeUserOfficeInformation(User user){
+		userDao.updateHomeUserOfficeInformation(user);
 	}
 
 	@Transactional(readOnly = false)
@@ -593,8 +597,13 @@ public class SystemService extends BaseService implements InitializingBean {
 	
 	///////////////// Synchronized to the Activiti end //////////////////
 
-
-	public User decode(User user) throws Exception{
+	/**
+	 * 个人信息解码
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	public User decode(User user,User user1) throws Exception{
 		String sex = Encodes.urlDecode(user.getSex());
 		String email = Encodes.urlDecode(user.getEmail());
 		String name = Encodes.urlDecode(user.getName());
@@ -602,20 +611,109 @@ public class SystemService extends BaseService implements InitializingBean {
 		String provence = Encodes.urlDecode(user.getProvence());
 		String city = Encodes.urlDecode(user.getCity());
 		String district = Encodes.urlDecode(user.getDistrict());
-		user.setName(name);
-		user.setSex(sex);
-		user.setEmail(email);
-		user.setProvence(provence);
-		user.setInformation(information);
-		user.setCity(city);
-		user.setDistrict(district);
-		user.setPassword(LoginUtils.entryptPassword(user.getPassword()));
-		return user;
+		user1.setName(name);
+		user1.setSex(sex);
+		user1.setEmail(email);
+		user1.setProvence(provence);
+		user1.setInformation(information);
+		user1.setCity(city);
+		user1.setDistrict(district);
+		user1.setPassword(LoginUtils.entryptPassword(user.getNewPassword()));
+		user1.setMobile(user.getMobile());
+		user1.setSubscription(user.getSubscription());
+		user1.setZhiHu(user.getZhiHu());
+		user1.setWeiBo(user.getWeiBo());
+		user1.setDouBan(user.getDouBan());
+		return user1;
 	}
 
-	//替换值
-	public User replaceUser(User user,User user1){
-
-		return null;
+	/**
+	 * 企业信息解码
+	 * @param user
+	 * @return
+	 * @throws Exception
+	 */
+	public User officeDecode(User user,User user1) throws Exception{
+		String email = Encodes.urlDecode(user.getEmail());
+		String name = Encodes.urlDecode(user.getName());
+		user1.setName(name);
+		user1.setEmail(email);
+		user1.setPassword(LoginUtils.entryptPassword(user.getNewPassword()));
+		user1.setZhiHu(user.getZhiHu());
+		user1.setWeiBo(user.getWeiBo());
+		user1.setDouBan(user.getDouBan());
+		return user1;
 	}
+
+	/**
+	 * 企业详细信息解码
+	 * @param
+	 * @return
+	 * @throws Exception
+	 */
+	public SysOfficeInformation officeInformationDecode(SysOfficeInformation sysOfficeInformation) throws Exception{
+		String provence = Encodes.urlDecode(sysOfficeInformation.getProvence());
+		String name = Encodes.urlDecode(sysOfficeInformation.getName());
+		String city = Encodes.urlDecode(sysOfficeInformation.getCity());
+		String district = Encodes.urlDecode(sysOfficeInformation.getDistrict());
+		String teamSize = Encodes.urlDecode(sysOfficeInformation.getTeamSize());
+		sysOfficeInformation.setProvence(provence);
+		sysOfficeInformation.setCity(city);
+		sysOfficeInformation.setName(name);
+		sysOfficeInformation.setTeamSize(teamSize);
+		sysOfficeInformation.setDistrict(district);
+		return sysOfficeInformation;
+	}
+
+/**
+ * 创作环境图片保存
+ */
+	public void saveOfficeImage(String roolPath,MultipartFile file,SysOfficeInformation sysOfficeInformation,String wappPath)throws Exception{
+		StringBuffer sb = new StringBuffer();
+		if(Objects.nonNull(file)){
+			String originalFilename = Encodes.urlDecode(file.getOriginalFilename());
+			File path = new File(roolPath + "/" + Global.getConfig("homePhoto") +sysOfficeInformation.getName() + "/" + originalFilename);
+			if (!path.getParentFile().exists()) {
+				path.getParentFile().mkdirs();
+			}
+			file.transferTo(path);
+			String s = wappPath + "/" + path.getPath().substring(roolPath.length()+1);
+			String officeImage = sysOfficeInformation.getOfficeImage();
+			if(StringUtils.isNotBlank(officeImage)){
+				sb.append(officeImage).append(",").append(s);
+				sysOfficeInformation.setOfficeImage(sb.toString());
+			}else{
+				sysOfficeInformation.setOfficeImage(s);
+			}
+		}
+	}
+
+
+	/**
+	 * 微信二维码图片保存
+	 */
+	public void saveWechatImage(String roolPath,MultipartFile file,User user,String wappPath)throws Exception{
+		if(Objects.nonNull(file)){
+			String originalFilename = Encodes.urlDecode(file.getOriginalFilename());
+			File path = new File(roolPath + "/" + Global.getConfig("homePhoto") + user.getLoginName() + "/wechat/" + originalFilename);
+			if (!path.getParentFile().exists()) {
+				path.getParentFile().mkdirs();
+			}
+			file.transferTo(path);
+			String s = wappPath + "/" + path.getPath().substring(roolPath.length()+1);
+			user.setWeiXinCode(s);
+		}
+	}
+
+	/**
+	 * 判断是否符合旧密码
+	 */
+	public boolean checkOldPassword(String oldPassword,String Password){
+		String p = LoginUtils.entryptPassword(Password);
+		if(oldPassword.equals(p)){
+			return true;
+		}
+		return false;
+	}
+
 }

@@ -101,6 +101,18 @@
 			</div>
 		</div>--%>
 		<div class="control-group">
+			<label class="control-label">摘要:</label>
+			<div class="controls">
+				<form:textarea path="description"  readonly="true" htmlEscape="false" rows="4" maxlength="2000" class="input-xlarge required"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">广告类型:</label>
+			<div class="controls">
+				<form:input path="type"  htmlEscape="false" rows="4" maxlength="2000" class="input-xlarge required"/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">备注信息：</label>
 			<div class="controls">
 				<form:textarea path="remarks" htmlEscape="false" rows="4" maxlength="2000" class="input-xxlarge "/>

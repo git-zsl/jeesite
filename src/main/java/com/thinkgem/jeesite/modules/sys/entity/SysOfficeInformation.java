@@ -28,6 +28,8 @@ public class SysOfficeInformation extends DataEntity<SysOfficeInformation> {
 	private String officeType;		// 机构类型
 	private String image;		// 执照
 	private String file;		// 机构相关文件
+	private String teamSize;       //团队人数
+	private String officeImage;    // 创作环境
 	
 	public SysOfficeInformation() {
 		super();
@@ -136,5 +138,21 @@ public class SysOfficeInformation extends DataEntity<SysOfficeInformation> {
 
 	public void setOfficeLink(String officeLink) {
 		this.officeLink = officeLink;
+	}
+
+	public String getTeamSize() {
+		return teamSize;
+	}
+
+	public void setTeamSize(String teamSize) {
+		this.teamSize = teamSize;
+	}
+
+	public String getOfficeImage() {
+		return officeImage;
+	}
+
+	public void setOfficeImage(String officeImage) {
+		this.officeImage = officeImage;
 	}
 }

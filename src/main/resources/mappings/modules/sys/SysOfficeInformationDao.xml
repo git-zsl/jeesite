@@ -8,6 +8,7 @@
 		a.user_id AS "user.id",
 		a.provence AS "provence",
 		a.city AS "city",
+		a.team_size AS "teamSize",
 		a.district AS "district",
 		a.office_introduction AS "officeIntroduction",
 		a.office_link AS "officeLink",
@@ -16,6 +17,7 @@
 		a.office_type AS "officeType",
 		a.image AS "image",
 		a.file AS "file",
+		a.office_image AS "officeImage",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
@@ -107,7 +109,9 @@
 			city,
 			district,
 			office_introduction,
-			office_link
+			office_link,
+			team_size,
+			office_image
 		) VALUES (
 			#{id},
 			#{office.id},
@@ -127,7 +131,9 @@
 			#{city},
 			#{district},
 			#{officeIntroduction},
-			#{officeLink}
+			#{officeLink},
+			#{teamSize},
+			#{officeImage}
 		)
 	</insert>
 
@@ -147,13 +153,30 @@
 			city  = #{city},
 			district = #{district},
 			office_introduction = #{officeIntroduction},
-			office_link = #{officeLink}
+			office_link = #{officeLink},
+			team_size = #{teamSize},
+			office_image = #{officeImage}
 		WHERE id = #{id}
 	</update>
 
     <update id="delete">
 		UPDATE sys_office_information SET 
 			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateHomeInformation">
+		UPDATE sys_office_information SET
+		name = #{name},
+		update_by = #{updateBy.id},
+		update_date = #{updateDate},
+		user_id = #{user.id},
+		provence = #{provence},
+		city  = #{city},
+		district = #{district},
+		office_link = #{officeLink},
+		team_size = #{teamSize},
+		office_image = #{officeImage}
 		WHERE id = #{id}
 	</update>
 

@@ -16,4 +16,6 @@ import com.thinkgem.jeesite.modules.sys.entity.SysOfficeInformation;
 public interface SysOfficeInformationDao extends CrudDao<SysOfficeInformation> {
 
     public SysOfficeInformation findByUserId(String userId);
+
+    public void updateHomeInformation(SysOfficeInformation sysOfficeInformation);
 }

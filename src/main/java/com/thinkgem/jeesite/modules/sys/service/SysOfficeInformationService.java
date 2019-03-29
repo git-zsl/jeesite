@@ -51,7 +51,12 @@ public class SysOfficeInformationService extends CrudService<SysOfficeInformatio
 	public void save(SysOfficeInformation sysOfficeInformation) {
 		super.save(sysOfficeInformation);
 	}
-	
+
+	@Transactional(readOnly = false)
+	public void updateHomeInformation(SysOfficeInformation sysOfficeInformation) {
+		dao.updateHomeInformation(sysOfficeInformation);
+	}
+
 	@Transactional(readOnly = false)
 	public void delete(SysOfficeInformation sysOfficeInformation) {
 		super.delete(sysOfficeInformation);
