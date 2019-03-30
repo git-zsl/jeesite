@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.ad.dao.AdRequirementDao">
+    
+	<sql id="adRequirementColumns">
+		a.id AS "id",
+		a.title AS "title",
+		a.ad_type AS "adType",
+		a.email AS "email",
+		a.wechat_id AS "wechatId",
+		a.period AS "period",
+		a.content AS "content",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="adRequirementJoins">
+	</sql>
+    
+	<select id="get" resultType="AdRequirement">
+		SELECT 
+			<include refid="adRequirementColumns"/>
+		FROM ad_requirement a
+		<include refid="adRequirementJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="AdRequirement">
+		SELECT 
+			<include refid="adRequirementColumns"/>
+		FROM ad_requirement a
+		<include refid="adRequirementJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="title != null and title != ''">
+				AND a.title LIKE 
+					<if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{title},'%')</if>
+			</if>
+			<if test="email != null and email != ''">
+				AND a.email LIKE 
+					<if test="dbName == 'oracle'">'%'||#{email}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{email}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{email},'%')</if>
+			</if>
+			<if test="wechatId != null and wechatId != ''">
+				AND a.wechat_id LIKE 
+					<if test="dbName == 'oracle'">'%'||#{wechatId}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{wechatId}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{wechatId},'%')</if>
+			</if>
+			<if test="createDate != null and createDate != ''">
+				AND a.create_date = #{createDate}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="AdRequirement">
+		SELECT 
+			<include refid="adRequirementColumns"/>
+		FROM ad_requirement a
+		<include refid="adRequirementJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ad_requirement(
+			id,
+			title,
+			ad_type,
+			email,
+			wechat_id,
+			period,
+			content,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			#{id},
+			#{title},
+			#{adType},
+			#{email},
+			#{wechatId},
+			#{period},
+			#{content},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ad_requirement SET 	
+			title = #{title},
+			ad_type = #{adType},
+			email = #{email},
+			wechat_id = #{wechatId},
+			period = #{period},
+			content = #{content},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE ad_requirement SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

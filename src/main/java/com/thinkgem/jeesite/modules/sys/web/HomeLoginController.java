@@ -116,24 +116,31 @@ public class HomeLoginController extends BaseController {
             }
             MultipartFile file = null;
             MultipartFile image = null;
+            String originalFilename = null;
+            String originalFilename1 = null;
             String loginName = map.get("loginName");
             boolean isMultipart = ServletFileUpload.isMultipartContent(request);
             if (isMultipart) {
                 MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
                 file = multipartRequest.getFile("file");
                 image = multipartRequest.getFile("image");
-                String originalFilename = image.getOriginalFilename();
-                String originalFilename1 = file.getOriginalFilename();
                 String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
-                File file1 = new File(configPath + "/" + loginName + "/" + originalFilename);
-                File file2 = new File(configPath + "/" + loginName + "/" + originalFilename1);
-                if (!file1.getParentFile().exists()) {
-                    file1.getParentFile().mkdirs();
+                File file0 = new File(configPath + "/" + loginName);
+                if (!file0.exists()) {
+                    file0.mkdirs();
                 }
-                image.transferTo(file1);
-                file.transferTo(file2);
-                map.put("image", file1.getPath());
-                map.put("file", file2.getPath());
+                if(Objects.nonNull(image)){
+                    originalFilename = image.getOriginalFilename();
+                    File file1 = new File(configPath + "/" + loginName + "/" + originalFilename);
+                    image.transferTo(file1);
+                    map.put("image", file1.getPath());
+                }
+                if(Objects.nonNull(file)){
+                    originalFilename1 = file.getOriginalFilename();
+                    File file2 = new File(configPath + "/" + loginName + "/" + originalFilename1);
+                    file.transferTo(file2);
+                    map.put("file", file2.getPath());
+                }
             }
             //个人用户字段
             String email = map.get("email");
@@ -168,7 +175,7 @@ public class HomeLoginController extends BaseController {
             if (StringUtils.isBlank(map.get("loginName")) && StringUtils.isBlank(email)) {
                 return ReturnEntity.fail("用户名或者邮箱不能为空");
             }
-            String content = "<a href=http://" + Global.getConfig("serverAddress") + "filter/homeLogin?loginName=" + loginName + "&isCompany=" + isCompany + ">请点击完成此处激活帐号完成注册</a><br/>";
+            String content = "<a href=http://" + Global.getConfig("serverAddress") + "/filter/homeLogin?loginName=" + loginName + "&isCompany=" + isCompany + ">请点击完成此处激活帐号完成注册</a><br/>";
             EmailUtils.sendHtmlMail(new Email(email, "注册验证", content));
             CacheUtils.putMapAll(loginName, map);
         } catch (Exception e) {

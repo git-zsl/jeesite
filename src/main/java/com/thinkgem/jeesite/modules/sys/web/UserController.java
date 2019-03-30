@@ -785,6 +785,7 @@ public class UserController extends BaseController {
      * 清除用户缓存接口
      */
     @RequestMapping("filter/clearCache")
+    @ResponseBody
     public ReturnEntity clearCache(String userId){
         try{
             // 清除用户缓存
