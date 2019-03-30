@@ -158,7 +158,9 @@
 		u.isCompany AS "user.isCompany",
 		a.email,
 		a.Job_description AS "jobDescription",
-		a.job_num AS "jobNum"
+		a.job_num AS "jobNum",
+		a.district AS "district",
+		a.city AS "city"
 	</sql>
 
     <sql id="cmsJobArticleJoins">
@@ -529,7 +531,9 @@
             comment_num,
             email,
             job_description,
-            job_num
+            job_num,
+            district,
+            city
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -574,7 +578,9 @@
 		    #{commentNum},
 		    #{email},
 		    #{jobDescription},
-		    #{jobNum}
+		    #{jobNum},
+		    #{district},
+		    #{city}
 		)
 	</insert>
 
@@ -621,7 +627,9 @@
 		    comment_num = #{commentNum},
 		    email = #{email},
 		    job_description = #{jobDescription},
-		    job_num = #{jobNum}
+		    job_num = #{jobNum},
+		    district = #{district},
+		    city   = #{city}
 		WHERE id = #{id}
 	</update>
 

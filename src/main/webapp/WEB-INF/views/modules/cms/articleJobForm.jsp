@@ -82,8 +82,19 @@
 		<div class="control-group">
 			<label class="control-label">地区:</label>
 			<div class="controls">
-				<%--<form:input path="area" htmlEscape="false" maxlength="200" class="input-xxlarge"/>--%>
 					<form:select id="area" path="area" class="input-medium">
+						<form:option value="" label="请选择"/>
+						<form:options items="${cityList}" htmlEscape="false" itemLabel="city" itemValue="id"/>
+					</form:select>
+			</div>
+			<div class="controls">
+					<form:select id="city" path="city" class="input-medium">
+						<form:option value="" label="请选择"/>
+						<form:options items="${cityList}" htmlEscape="false" itemLabel="city" itemValue="id"/>
+					</form:select>
+			</div>
+			<div class="controls">
+					<form:select id="district" path="district" class="input-medium">
 						<form:option value="" label="请选择"/>
 						<form:options items="${cityList}" htmlEscape="false" itemLabel="city" itemValue="id"/>
 					</form:select>

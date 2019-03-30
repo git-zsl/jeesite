@@ -88,6 +88,13 @@ public interface UserDao extends CrudDao<User> {
 	public int updateHomeUserOfficeInformation(User user);
 
 	/**
+	 * 更新主页企业updateBackground
+	 * @param user
+	 * @return
+	 */
+	public void updateBackground(User user);
+
+	/**
 	 * 查找个人黑名单列表
 	 * @param
 	 * @return

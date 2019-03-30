@@ -53,6 +53,7 @@ public class User extends DataEntity<User> {
 	private String zhiHu;     // 短乎链接
 	private String weiBo;     //微薄链接
 	private String weiXinCode;   //微信二维码
+	private String background;   //微信二维码
 
 	private String oldLoginName;// 原登录名
 	private String newPassword;	// 新密码
@@ -461,6 +462,14 @@ public class User extends DataEntity<User> {
 
 	public void setWeiXinCode(String weiXinCode) {
 		this.weiXinCode = weiXinCode;
+	}
+
+	public String getBackground() {
+		return background;
+	}
+
+	public void setBackground(String background) {
+		this.background = background;
 	}
 
 	@Override

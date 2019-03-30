@@ -116,7 +116,8 @@
 		a.dou_ban AS "douBan",
 		a.zhi_hu AS "zhiHu",
 		a.wei_bo AS "weiBo",
-		a.wei_xin_code AS "weiXinCode"
+		a.wei_xin_code AS "weiXinCode",
+		a.background
     </sql>
     
     <sql id="userJoins">
@@ -279,7 +280,8 @@
 			position,
 			isCompany,
 			attentionNum,
-			attention2Num
+			attention2Num,
+			background
 		) VALUES (
 			#{id}, 
 			#{company.id}, 
@@ -303,7 +305,8 @@
 			#{position},
 			#{isCompany},
 			#{attentionNum},
-			#{attention2Num}
+			#{attention2Num},
+			#{background}
 		)
 	</insert>
 	
@@ -328,7 +331,8 @@
 			position = #{position},
 			isCompany = #{isCompany},
 			attentionNum = #{attentionNum},
-			attention2Num = #{attention2Num}
+			attention2Num = #{attention2Num},
+			background = #{background}
 		WHERE id = #{id}
 	</update>
 	
@@ -417,6 +421,13 @@
 		zhi_hu = #{zhiHu},
 		wei_bo = #{weiBo},
 		wei_xin_code = #{weiXinCode}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 更新主页企业背景  -->
+	<update id="updateackground">
+		UPDATE sys_user SET
+		background = #{background},
 		WHERE id = #{id}
 	</update>
 

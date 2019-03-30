@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.modules.sys.entity.Area;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -104,6 +105,7 @@ public class SysOfficeInformationService extends CrudService<SysOfficeInformatio
 		user.setPosition(map.get("position"));  // 职务
 		user.setMobile(map.get("mobile"));   // 联系电话
 		user.setPhoto(map.get("photo"));    //  用户头像
+		user.setLoginFlag(Global.NO);
 		return user;
 	}
 }

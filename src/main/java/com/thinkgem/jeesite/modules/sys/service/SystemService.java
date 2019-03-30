@@ -604,13 +604,13 @@ public class SystemService extends BaseService implements InitializingBean {
 	 * @throws Exception
 	 */
 	public User decode(User user,User user1) throws Exception{
-		String sex = Encodes.urlDecode(user.getSex());
-		String email = Encodes.urlDecode(user.getEmail());
-		String name = Encodes.urlDecode(user.getName());
-		String information = Encodes.urlDecode(user.getInformation());
-		String provence = Encodes.urlDecode(user.getProvence());
-		String city = Encodes.urlDecode(user.getCity());
-		String district = Encodes.urlDecode(user.getDistrict());
+		String sex = Encodes.urlDecode(StringUtils.isNotBlank(user.getSex())?user.getSex():"");
+		String email = Encodes.urlDecode(StringUtils.isNotBlank(user.getEmail())?user.getEmail():"");
+		String name = Encodes.urlDecode(StringUtils.isNotBlank(user.getName())?user.getName():"");
+		String information = Encodes.urlDecode(StringUtils.isNotBlank(user.getInformation())?user.getInformation():"");
+		String provence = Encodes.urlDecode(StringUtils.isNotBlank(user.getProvence())?user.getProvence():"");
+		String city = Encodes.urlDecode(StringUtils.isNotBlank(user.getCity())?user.getCity():"");
+		String district = Encodes.urlDecode(StringUtils.isNotBlank(user.getDistrict())?user.getDistrict():"");
 		user1.setName(name);
 		user1.setSex(sex);
 		user1.setEmail(email);

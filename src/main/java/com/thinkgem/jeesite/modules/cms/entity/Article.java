@@ -69,6 +69,8 @@ public class Article extends DataEntity<Article> {
     private String email;    // 邮箱
     private String jobDescription;  // 招聘描述
 	private String jobNum;    // 招聘人数
+	private String district;    // 区
+	private String city;    // 市
 
 
 
@@ -460,7 +462,7 @@ public class Article extends DataEntity<Article> {
 	}
 
 	public void setJobDescription(String jobDescription) {
-		jobDescription = jobDescription;
+		this.jobDescription = jobDescription;
 	}
 
 	public String getJobNum() {
@@ -470,6 +472,24 @@ public class Article extends DataEntity<Article> {
 	public void setJobNum(String jobNum) {
 		this.jobNum = jobNum;
 	}
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+
 }
 
 

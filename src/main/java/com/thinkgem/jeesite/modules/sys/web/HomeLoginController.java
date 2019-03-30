@@ -168,7 +168,7 @@ public class HomeLoginController extends BaseController {
             if (StringUtils.isBlank(map.get("loginName")) && StringUtils.isBlank(email)) {
                 return ReturnEntity.fail("用户名或者邮箱不能为空");
             }
-            String content = "<a href=http://" + Global.getConfig("serverAddress") + "/homeLogin?loginName=" + loginName + "&isCompany=" + isCompany + ">请点击完成此处激活帐号完成注册</a><br/>";
+            String content = "<a href=http://" + Global.getConfig("serverAddress") + "filter/homeLogin?loginName=" + loginName + "&isCompany=" + isCompany + ">请点击完成此处激活帐号完成注册</a><br/>";
             EmailUtils.sendHtmlMail(new Email(email, "注册验证", content));
             CacheUtils.putMapAll(loginName, map);
         } catch (Exception e) {
@@ -227,6 +227,9 @@ public class HomeLoginController extends BaseController {
             }
             if (!byLoginName.getIsCompany().equals(isCompany)) {
                 return ReturnEntity.fail(Global.TRUE.equals(isCompany) ? "请选择个人登录入口登录" : "请选择企业登录入口登录");
+            }
+            if (byLoginName.getIsCompany().equals(Global.TRUE) && !byLoginName.getLoginFlag().equals(Global.YES)) {
+                return ReturnEntity.fail( "当前企业用户还在审核，或者未通过审核");
             }
             //验证密码
             if (LoginUtils.validatePassword(password, byLoginName.getPassword())) {

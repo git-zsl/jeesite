@@ -850,14 +850,27 @@ public class ArticleController extends BaseController {
      * 主页发布招聘
      */
     @RequestMapping("filter/saveJob")
-    public ReturnEntity saveJob(Category category,String userId){
+    @ResponseBody
+    public ReturnEntity saveJob(Article article,ArticleData articleData,String categoryId,String userId){
         try{
-
+            if(StringUtils.isNotBlank(categoryId)){
+                article.setCategory(new Category(categoryId));
+            }
+            if(StringUtils.isNotBlank(userId)){
+                User user = UserUtils.get(userId);
+                article.setCreateBy(user);
+                article.setUpdateBy(user);
+            }
+            article.setIsTop(Global.NO);
+            article.setIsRecommend(Global.NO);
+            article.setDelFlag(Article.DEL_FLAG_AUDIT);
+            article.setArticleData(articleData);
+            articleService.save(article);
         }catch (Exception e){
             LogUtils.getLogInfo(ArticleController.class).info("发布出错", e);
             e.printStackTrace();
             return ReturnEntity.fail("发布出错");
         }
-        return ReturnEntity.success(null,"发布成功");
+        return ReturnEntity.success(article,"发布成功");
     }
 }

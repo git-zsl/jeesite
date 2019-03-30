@@ -588,18 +588,17 @@ public class UserController extends BaseController {
      */
     @RequestMapping("filter/updateInformation")
     @ResponseBody
-    public ReturnEntity updateInformation(String userId, User user,HttpServletRequest request){
+    public ReturnEntity updateInformation(String userId, User user, HttpServletRequest request) {
         MultipartFile image = null;
         MultipartFile weChatCode = null;
         User user1 = UserUtils.get(userId);
-        try{
-            boolean b = LoginUtils.validatePassword( user.getPassword(),user1.getPassword());
-            if(!b){
+        try {
+            boolean b = LoginUtils.validatePassword(user.getPassword(), user1.getPassword());
+            if (!b) {
                 return ReturnEntity.fail("原密码不正确，请重新输入");
             }
             //解码
-            user = systemService.decode(user,user1);
-
+            user = systemService.decode(user, user1);
             boolean isMultipart = ServletFileUpload.isMultipartContent(request);
             if (isMultipart) {
                 MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
@@ -607,22 +606,26 @@ public class UserController extends BaseController {
                 weChatCode = multipartRequest.getFile("weChatCode");
                 String originalFilename = Encodes.urlDecode(image.getOriginalFilename());
                 String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
-                File file1 = new File(configPath + "/" + Global.getConfig("homePhoto") +user.getLoginName() + "/" + originalFilename);
+                File file1 = new File(configPath + "/" + Global.getConfig("homePhoto") + user.getLoginName() + "/" + originalFilename);
                 if (!file1.getParentFile().exists()) {
                     file1.getParentFile().mkdirs();
                 }
                 String wappPath = request.getSession().getServletContext().getContextPath();
                 image.transferTo(file1);
-                String s = wappPath + "/" + file1.getPath().substring(configPath.length()+1);
+                String s = wappPath + "/" + file1.getPath().substring(configPath.length() + 1);
                 user.setPhoto(s);
-                systemService.saveWechatImage(configPath,weChatCode,user,wappPath);
-                systemService.updateHomeUserInformation(user);
+                systemService.saveWechatImage(configPath, weChatCode, user, wappPath);
             }
-        }catch (Exception e){
+            systemService.updateHomeUserInformation(user);
+            // 清除用户缓存
+            user.setLoginName(user.getLoginName());
+            UserUtils.clearCache(user);
+        } catch (Exception e) {
             e.printStackTrace();
-            LogUtils.getLogInfo(UserController.class).info("程序出错",e);
+            LogUtils.getLogInfo(UserController.class).info("程序出错", e);
+            return ReturnEntity.fail("更新失败");
         }
-        return ReturnEntity.success(UserUtils.get(user.getId()),"更新成功");
+        return ReturnEntity.success(UserUtils.get(user.getId()), "更新成功");
     }
 
     /**
@@ -630,11 +633,11 @@ public class UserController extends BaseController {
      */
     @RequestMapping("filter/updateOfficeInformation")
     @ResponseBody
-    public ReturnEntity updateOfficeInformation(String userId,User user,HttpServletRequest request,SysOfficeInformation sysOfficeInformation){
-        try{
+    public ReturnEntity updateOfficeInformation(String userId, User user, HttpServletRequest request, SysOfficeInformation sysOfficeInformation) {
+        try {
             User user1 = UserUtils.get(userId);
-            boolean b = LoginUtils.validatePassword(user.getPassword(),user1.getPassword());
-            if(!b){
+            boolean b = LoginUtils.validatePassword(user.getPassword(), user1.getPassword());
+            if (!b) {
                 return ReturnEntity.fail("原密码不正确，请重新输入");
             }
             MultipartFile headImage = null;
@@ -643,12 +646,12 @@ public class UserController extends BaseController {
             MultipartFile file3 = null;
             MultipartFile weChatCode = null;
             //解码
-            user = systemService.officeDecode(user,user1);
+            user = systemService.officeDecode(user, user1);
             SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(userId);
-            if(Objects.isNull(byUserId)){
+            if (Objects.isNull(byUserId)) {
                 sysOfficeInformation = systemService.officeInformationDecode(sysOfficeInformation);
 
-            }else{
+            } else {
                 byUserId.setName(sysOfficeInformation.getName());
                 byUserId.setOfficeLink(sysOfficeInformation.getOfficeLink());
                 byUserId.setTeamSize(sysOfficeInformation.getTeamSize());
@@ -669,75 +672,130 @@ public class UserController extends BaseController {
                 weChatCode = multipartRequest.getFile("weChatCode");
                 String originalFilename = Encodes.urlDecode(headImage.getOriginalFilename());
                 String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
-                File path = new File(configPath + "/" + Global.getConfig("homePhoto") +user.getLoginName() + "/" + originalFilename);
+                File path = new File(configPath + "/" + Global.getConfig("homePhoto") + user.getLoginName() + "/" + originalFilename);
                 if (!path.getParentFile().exists()) {
                     path.getParentFile().mkdirs();
                 }
                 String wappPath = request.getSession().getServletContext().getContextPath();
                 headImage.transferTo(path);
-                String s = wappPath + "/" + path.getPath().substring(configPath.length()+1);
+                String s = wappPath + "/" + path.getPath().substring(configPath.length() + 1);
                 user.setPhoto(s);
-                systemService.saveWechatImage(configPath,weChatCode,user,wappPath);
-                systemService.saveOfficeImage(configPath,file1,sysOfficeInformation,wappPath);
-                systemService.saveOfficeImage(configPath,file2,sysOfficeInformation,wappPath);
-                systemService.saveOfficeImage(configPath,file3,sysOfficeInformation,wappPath);
+                systemService.saveWechatImage(configPath, weChatCode, user, wappPath);
+                systemService.saveOfficeImage(configPath, file1, sysOfficeInformation, wappPath);
+                systemService.saveOfficeImage(configPath, file2, sysOfficeInformation, wappPath);
+                systemService.saveOfficeImage(configPath, file3, sysOfficeInformation, wappPath);
             }
 
-            if(Objects.isNull(byUserId)){
+            if (Objects.isNull(byUserId)) {
                 sysOfficeInformation.setId(null);
                 sysOfficeInformationService.save(sysOfficeInformation);
-            }else{
+            } else {
                 sysOfficeInformation.setId(byUserId.getId());
                 sysOfficeInformationService.updateHomeInformation(sysOfficeInformation);
             }
             systemService.updateHomeUserOfficeInformation(user);
-        }catch (Exception e){
+            // 清除用户缓存
+            user.setLoginName(user.getLoginName());
+            UserUtils.clearCache(user);
+        } catch (Exception e) {
             e.printStackTrace();
-            LogUtils.getLogInfo(UserController.class).info("程序出错",e);
+            LogUtils.getLogInfo(UserController.class).info("程序出错", e);
             return ReturnEntity.fail("程序出错");
         }
-        return ReturnEntity.success(UserUtils.get(user.getId()),"更新成功");
+        return ReturnEntity.success(UserUtils.get(user.getId()), "更新成功");
     }
 
 
     /**
      * 获取个人信息接口
-     *
      */
     @RequestMapping("filter/findInformation1")
     @ResponseBody
-    public ReturnEntity findInformation(String userId){
-        User user =null;
-        try{
+    public ReturnEntity findInformation(String userId) {
+        User user = null;
+        try {
             user = UserUtils.get(userId);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            LogUtils.getLogInfo(UserController.class).info("程序出错",e);
+            LogUtils.getLogInfo(UserController.class).info("程序出错", e);
             return ReturnEntity.fail("程序出错");
         }
-        return ReturnEntity.success(user,"获取成功");
+        return ReturnEntity.success(user, "获取成功");
 
     }
 
 
     /**
      * 获取企业信息接口
-     *
      */
     @RequestMapping("filter/findOfficeInformation1")
     @ResponseBody
-    public ReturnEntity findOfficeInformation(String userId){
+    public ReturnEntity findOfficeInformation(String userId) {
         UserAndOfficeInformationVo vo = null;
-        try{
+        try {
             User user = UserUtils.get(userId);
             SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(userId);
+            if(Objects.isNull(byUserId)){
+                byUserId = new SysOfficeInformation();
+            }
             vo = systemService.setUserAndOfficeInformationVoData(user, byUserId);
-            //封装数据
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            LogUtils.getLogInfo(UserController.class).info("程序出错",e);
+            LogUtils.getLogInfo(UserController.class).info("程序出错", e);
             return ReturnEntity.fail("程序出错");
         }
-        return ReturnEntity.success(vo,"获取成功");
+        return ReturnEntity.success(vo, "获取成功");
+    }
+
+    /**
+     * 更新企业背景接口
+     */
+    @RequestMapping("filter/background")
+    @ResponseBody
+    public ReturnEntity updateBackground(String userId, HttpServletRequest request) {
+        MultipartFile background = null;
+        String s = null;
+        try {
+            User user = UserUtils.get(userId);
+            boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+            if (isMultipart) {
+                MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
+                background = multipartRequest.getFile("background");
+                String originalFilename = Encodes.urlDecode(background.getOriginalFilename());
+                String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
+                File file1 = new File(configPath + "/" + Global.getConfig("homePhoto") + user.getLoginName() + "/background/" + originalFilename);
+                if (!file1.getParentFile().exists()) {
+                    file1.getParentFile().mkdirs();
+                }
+                String wappPath = request.getSession().getServletContext().getContextPath();
+                background.transferTo(file1);
+                 s = wappPath + "/" + file1.getPath().substring(configPath.length() + 1);
+                user.setPhoto(s);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtils.getLogInfo(UserController.class).info("程序出错", e);
+            return ReturnEntity.fail("程序出错");
+        }
+        return ReturnEntity.success(s,"保存成功");
+    }
+
+
+    /**
+     * 清除用户缓存接口
+     */
+    @RequestMapping("filter/clearCache")
+    public ReturnEntity clearCache(String userId){
+        try{
+            // 清除用户缓存
+            User user = UserUtils.get(userId);
+            user.setLoginName(user.getLoginName());
+            UserUtils.clearCache(user);
+        }catch (Exception e){
+            e.printStackTrace();
+            LogUtils.getLogInfo(UserController.class).info("程序出错", e);
+            return ReturnEntity.fail("程序出错");
+        }
+        return ReturnEntity.success("清除成功");
     }
 }
