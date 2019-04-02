@@ -3,20 +3,18 @@
  */
 package com.thinkgem.jeesite.modules.cms.web;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
+import com.thinkgem.jeesite.modules.cms.entity.Comment;
 import com.thinkgem.jeesite.modules.cms.service.ArticleService;
+import com.thinkgem.jeesite.modules.cms.service.CommentService;
+import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,13 +22,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.modules.cms.entity.Comment;
-import com.thinkgem.jeesite.modules.cms.service.CommentService;
-import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
-import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 评论Controller
@@ -93,12 +89,28 @@ public class CommentController extends BaseController {
 	 */
 	@RequestMapping(value = "filter/consultationList",method = RequestMethod.POST)
 	@ResponseBody
-	public ReturnEntity<Page<Comment>> findConsultationList(@ModelAttribute Comment comment, HttpServletRequest request, HttpServletResponse response) {
-		Page<Comment> page = new Page<Comment>(request, response);
-		List<Comment> lists = new ArrayList<Comment>();
+	public ReturnEntity<Page<Comment>> findConsultationList(String userId,String categoryId,@ModelAttribute Comment comment, HttpServletRequest request, HttpServletResponse response) {
+	/*	Page<Comment> page = new Page<Comment>(request, response);
+		List<Comment> lists = new ArrayList<Comment>();*/
 		List<Comment> comments =new ArrayList<>();
+		List<Comment> newComments =new ArrayList<>();
 		try{
+			if(StringUtils.isNotBlank(categoryId)){
+				comment.setCategory(new Category(categoryId));
+			}
 			List<Comment> list = commentService.findconsultationList(comment);
+			if(!StringUtils.isBlank(userId)){
+				for (Comment comment1: list) {
+					if(StringUtils.isBlank(comment1.getParentContentId())){
+						if(comment1.getCreateBy().getId().equals(userId)){
+							newComments.add(comment1);
+						}
+						continue;
+					}
+					newComments.add(comment1);
+				}
+				list = newComments;
+			}
 			if(!list.isEmpty()){
 				for (Comment c : list) {
 					for (Comment cc : list) {

@@ -38,6 +38,7 @@ public class Comment extends DataEntity<Comment> {
 	private String isTop;  // 是否置顶
 	private String isRecommend; //是否推荐
 	private String commentNum;   //评论数
+	private String categoryIdFlag;   //是否文章标志
 	private String isValidate;   //是否需要验证码
 	private User user;
 
@@ -202,5 +203,13 @@ public class Comment extends DataEntity<Comment> {
 
 	public void setIsValidate(String isValidate) {
 		this.isValidate = isValidate;
+	}
+
+	public String getCategoryIdFlag() {
+		return categoryIdFlag;
+	}
+
+	public void setCategoryIdFlag(String categoryIdFlag) {
+		this.categoryIdFlag = categoryIdFlag;
 	}
 }

@@ -71,6 +71,7 @@ public class Article extends DataEntity<Article> {
 	private String jobNum;    // 招聘人数
 	private String district;    // 区
 	private String city;    // 市
+	private String createTimeSort;    // 市
 
 
 
@@ -489,7 +490,13 @@ public class Article extends DataEntity<Article> {
 		this.city = city;
 	}
 
+	public String getCreateTimeSort() {
+		return createTimeSort;
+	}
 
+	public void setCreateTimeSort(String createTimeSort) {
+		this.createTimeSort = createTimeSort;
+	}
 }
 
 

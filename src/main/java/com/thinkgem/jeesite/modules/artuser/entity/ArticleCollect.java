@@ -22,6 +22,7 @@ public class ArticleCollect extends DataEntity<ArticleCollect> {
 	private static final long serialVersionUID = 1L;
 	private User user;		// 用户id
 	private String articleId;		// 收藏的文章id
+	private String updateTime ;		// 更新标志
 	private List<Article> articles = Lists.newArrayList();     //收藏文章集合
 	
 	public ArticleCollect() {
@@ -55,5 +56,13 @@ public class ArticleCollect extends DataEntity<ArticleCollect> {
 
 	public void setArticles(List<Article> articles) {
 		this.articles = articles;
+	}
+
+	public String getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
 	}
 }

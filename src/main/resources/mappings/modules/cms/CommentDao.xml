@@ -108,6 +108,12 @@
 			<if test="contentId != null and contentId != ''">
 				AND a.content_id = #{contentId}
 			</if>
+			<if test="categoryIdFlag != null and categoryIdFlag != ''">
+				AND a.category_id in (select categoryId from cms_is_article)
+			</if>
+			<if test="category != null and category.id != null and category.id != ''">
+				AND a.category_id = #{category.id}
+			</if>
 			<if test="isRecommend != null and isRecommend != ''">
 				AND a.is_recommend = #{isRecommend}
 			</if>

@@ -242,9 +242,9 @@
                 <if test="dbName == 'mysql'">CONCAT('%', #{company}, '%')</if>
                 )
             </if>
-           <!-- <if test="createBy != null and createBy.id != null and createBy.id != ''">
+           <if test="createBy != null and createBy.id != null and createBy.id != ''">
                 AND a.create_by = #{createBy.id}
-            </if>-->
+            </if>
             <if test="isRecommend != null and isRecommend != ''">
                 AND a.is_recommend = #{isRecommend}
             </if>
@@ -256,8 +256,11 @@
             </if>
         </where>
         <choose>
+            <when test="createTimeSort != null and createTimeSort != ''">
+                ORDER BY a.create_date DESC,a.hits DESC
+            </when>
             <when test="hits != null and hits != ''">
-                ORDER BY a.hits DESC,a.update_date DESC
+                ORDER BY a.hits DESC,a.create_date DESC
             </when>
             <when test="page !=null and page.orderBy != null and page.orderBy != ''">
                 ORDER BY ${page.orderBy}
