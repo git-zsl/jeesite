@@ -20,6 +20,7 @@ import com.thinkgem.jeesite.modules.cms.service.ArticleService;
 import com.thinkgem.jeesite.modules.cms.service.CategoryService;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import com.thinkgem.jeesite.modules.sysinfo.entity.SysSendInformation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -34,6 +35,7 @@ import sun.misc.Cache;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -166,6 +168,14 @@ public class AdInfomationController extends BaseController {
 			article.setArticleData(articleData);
 			article.setIsPutaway(Global.NO);
 			articleService.save(article);
+			//发送给用户系统消息
+			/*if(StringUtils.isNotBlank(article.getIsSendInformation()) && article.getDelFlag().equals(Global.YES)){
+				Article article1 = articleService.get(article.getId());
+				String[] split = Global.getConfig("sys.content").split("&");
+				String format = MessageFormat.format("{0}:{1}{2}", split[0], article.getUser().getEmail(), split[1]);
+				SysSendInformation sysSendInformation = sysSendInformationService.setDataObject(article1.getUser(), Global.getConfig("sys.title"), format, Global.getConfig("sys.timeOut"));
+				sysSendInformationService.save(sysSendInformation);
+			}*/
 		}
 		adInfomationService.delete(adInfomation);
 		addMessage(redirectAttributes, "删除广告信息成功");

@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.cms.web;
 import java.io.File;
 import java.net.URLDecoder;
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -39,6 +40,8 @@ import com.thinkgem.jeesite.modules.posts.entity.CmsPosts;
 import com.thinkgem.jeesite.modules.posts.service.CmsPostsService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
+import com.thinkgem.jeesite.modules.sysinfo.entity.SysSendInformation;
+import com.thinkgem.jeesite.modules.sysinfo.service.SysSendInformationService;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -97,6 +100,8 @@ public class ArticleController extends BaseController {
     private CmsArticleClassifyService cmsArticleClassifyService;
     @Autowired
     private AdInfomationService adInfomationService;
+    @Autowired
+    private SysSendInformationService sysSendInformationService;
 
     @ModelAttribute
     public Article get(@RequestParam(required = false) String id) {
@@ -204,6 +209,14 @@ public class ArticleController extends BaseController {
             return form(article, model, redirectAttributes, all,parentCategoryId);
         }
         articleService.save(article);
+        //发送给用户系统消息
+        if(StringUtils.isNotBlank(article.getIsSendInformation()) && article.getDelFlag().equals(Global.YES)){
+            Article article1 = articleService.get(article.getId());
+            String[] split = Global.getConfig("sys.content").split("&");
+            String format = MessageFormat.format("{0}:{1}{2}", split[0], article.getUser().getEmail(), split[1]);
+            SysSendInformation sysSendInformation = sysSendInformationService.setDataObject(article1.getUser(), Global.getConfig("sys.title"), format, Global.getConfig("sys.timeOut"));
+            sysSendInformationService.save(sysSendInformation);
+        }
         AdInfomation adInfomation = new AdInfomation(article.getId());
         List<AdInfomation> AdInfomations = adInfomationService.findByArticleId(adInfomation);
         if(!AdInfomations.isEmpty()){

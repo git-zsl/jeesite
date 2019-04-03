@@ -72,6 +72,7 @@ public class Article extends DataEntity<Article> {
 	private String district;    // 区
 	private String city;    // 市
 	private String createTimeSort;    // 市
+	private String isSendInformation;    // 市
 
 
 
@@ -496,6 +497,14 @@ public class Article extends DataEntity<Article> {
 
 	public void setCreateTimeSort(String createTimeSort) {
 		this.createTimeSort = createTimeSort;
+	}
+
+	public String getIsSendInformation() {
+		return isSendInformation;
+	}
+
+	public void setIsSendInformation(String isSendInformation) {
+		this.isSendInformation = isSendInformation;
 	}
 }
 
