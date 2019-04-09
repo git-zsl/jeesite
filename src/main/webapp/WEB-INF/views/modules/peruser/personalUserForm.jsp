@@ -40,7 +40,7 @@
 	<form:hidden path="id"/>
 	<sys:message content="${message}"/>
 	<div class="control-group">
-		<label class="control-label">头像:</label>
+		<label class="control-label">头像11:</label>
 		<div class="controls">
 			<form:hidden id="nameImage" path="photo" htmlEscape="false" maxlength="255" class="input-xlarge"/>
 			<sys:ckfinder input="nameImage" type="images" uploadPath="/photo" selectMultiple="false" maxWidth="100" maxHeight="100"/>

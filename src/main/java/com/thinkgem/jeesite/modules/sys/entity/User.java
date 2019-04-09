@@ -47,7 +47,7 @@ public class User extends DataEntity<User> {
 	private String provence;  // 省
 	private String city;    // 市
 	private String district;      // 区
-	private String subscription;   //订阅
+	private boolean subscription;   //订阅
 	private String information;   //个人签名
 	private String douBan;    //豆瓣链接
 	private String zhiHu;     // 短乎链接
@@ -66,7 +66,11 @@ public class User extends DataEntity<User> {
 	private String attentionNum;  //关注数
 	private String attention2Num;  //被关注数
 	private String isCreateByMySelf;  // 是否自己创建办理人和修改人
-	
+	//企业字段，在user处过度
+	private String teamSize;
+	private String officeImage;
+	private String officeLink;
+
 	private Role role;	// 根据角色查询用户条件
 	
 	private List<Role> roleList = Lists.newArrayList(); // 拥有角色列表
@@ -416,11 +420,11 @@ public class User extends DataEntity<User> {
 		this.district = district;
 	}
 
-	public String getSubscription() {
+	public boolean isSubscription() {
 		return subscription;
 	}
 
-	public void setSubscription(String subscription) {
+	public void setSubscription(boolean subscription) {
 		this.subscription = subscription;
 	}
 
@@ -470,6 +474,30 @@ public class User extends DataEntity<User> {
 
 	public void setBackground(String background) {
 		this.background = background;
+	}
+
+	public String getTeamSize() {
+		return teamSize;
+	}
+
+	public void setTeamSize(String teamSize) {
+		this.teamSize = teamSize;
+	}
+
+	public String getOfficeImage() {
+		return officeImage;
+	}
+
+	public void setOfficeImage(String officeImage) {
+		this.officeImage = officeImage;
+	}
+
+	public String getOfficeLink() {
+		return officeLink;
+	}
+
+	public void setOfficeLink(String officeLink) {
+		this.officeLink = officeLink;
 	}
 
 	@Override

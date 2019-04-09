@@ -27,7 +27,7 @@
 </head>
 <body>
 	<ul class="nav nav-tabs">
-		<li><a href="${ctx}/sys/sysOfficeInformation/">信息列表</a></li>
+		<li><a href="${ctx}/sys/sysOfficeInformation/">信息列表${message}</a></li>
 		<li class="active"><a href="${ctx}/sys/sysOfficeInformation/form?id=${sysOfficeInformation.id}">信息<shiro:hasPermission name="sys:sysOfficeInformation:edit">${not empty sysOfficeInformation.id?'修改':'添加'}</shiro:hasPermission><shiro:lacksPermission name="sys:sysOfficeInformation:edit">查看</shiro:lacksPermission></a></li>
 	</ul><br/>
 	<form:form id="inputForm" modelAttribute="sysOfficeInformation" action="${ctx}/sys/sysOfficeInformation/save" method="post" class="form-horizontal">

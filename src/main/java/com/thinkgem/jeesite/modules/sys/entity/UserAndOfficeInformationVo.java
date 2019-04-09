@@ -32,7 +32,7 @@ public class UserAndOfficeInformationVo {
 	private String email;	// 邮箱
 	private String mobile;	// 手机
 	private String photo;	// 头像
-	private String subscription;   //订阅
+	private boolean subscription;   //订阅
 	private String douBan;    //豆瓣链接
 	private String zhiHu;     // 短乎链接
 	private String weiBo;     //微薄链接
@@ -87,11 +87,11 @@ public class UserAndOfficeInformationVo {
 		this.photo = photo;
 	}
 
-	public String getSubscription() {
+	public boolean isSubscription() {
 		return subscription;
 	}
 
-	public void setSubscription(String subscription) {
+	public void setSubscription(boolean subscription) {
 		this.subscription = subscription;
 	}
 

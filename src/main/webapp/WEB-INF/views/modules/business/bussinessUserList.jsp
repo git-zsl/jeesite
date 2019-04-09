@@ -49,6 +49,8 @@
 				<a href="${ctx}/sys/user/bussinessDelete?id=${user.id}&delFlag=${user.delFlag eq 0?'1': user.delFlag eq 1?'2':'0'}" onclick="return confirmx('确认要${user.delFlag eq 0?'删除吗？': user.delFlag eq 1?'设置为待审核吗？':'设置为审核通过吗？'}', this.href)">${user.delFlag eq 0?'删除': user.delFlag eq 1?'待审核':'审核通过'}</a>
 				<a href="${ctx}/sys/user/bussinessDelete?id=${user.id}&isSendEmail=true&delFlag=${user.delFlag eq 0?'1': user.delFlag eq 1?'2':'1'}" onclick="return confirmx('确认要${user.delFlag eq 0?'删除吗？': user.delFlag eq 1?'设置为待审核吗？':'设置为审核失败吗？'}', this.href)">${user.delFlag eq 0?'': user.delFlag eq 1?'':'审核失败'}</a>
 				<a href="${ctx}/sys/user/bussinessForm?id=${user.id}">修改信息</a>
+				<a href="${ctx}/sys/sysOfficeInformation/form?userId=${user.id}">企业用户信息详情</a>
+				<a href="${ctx}/sys/user/changeLoginFlag?userId=${user.id}&loginFlag=${user.loginFlag eq 0?'1':'0'}" onclick="return confirmx('确认要${user.loginFlag eq 0?'授权当前用户登录权限吗？': '取消当前用户登录权限吗？'}', this.href)">${user.loginFlag eq 0 ?"授权":"已授权"}</a>
 			</td></shiro:hasPermission>
 		</tr>
 	</c:forEach>

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -128,5 +129,29 @@ public class AreaController extends BaseController {
 			}
 		}
 		return mapList;
+	}
+
+	@RequestMapping(value = "city")
+	@ResponseBody
+	public ReturnEntity city(String name) {
+		List<Area> byName = areaService.findByName(name);
+		if(!byName.isEmpty()){
+			Area area = byName.get(0);
+			List<Area> byParentId = areaService.getByParentId(area.getId());
+			return ReturnEntity.success(byParentId,"查询成功");
+		}
+		return ReturnEntity.success(null,"传入的parentId为空");
+	}
+
+	@RequestMapping(value = "district")
+	@ResponseBody
+	public ReturnEntity district(String name) {
+		List<Area> byName = areaService.findByName(name);
+		if(!byName.isEmpty()){
+			Area area = byName.get(0);
+			List<Area> byParentId = areaService.getByParentId(area.getId());
+			return ReturnEntity.success(byParentId,"查询成功");
+		}
+		return ReturnEntity.success(null,"传入的parentId为空");
 	}
 }

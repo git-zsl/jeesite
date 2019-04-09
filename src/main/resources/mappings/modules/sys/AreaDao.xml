@@ -69,6 +69,54 @@
 				ORDER BY a.sort ASC
 	</select>
 
+	<select id="findByParentId" resultType="Area">
+		SELECT
+		<include refid="areaColumns"/>
+		FROM sys_area a
+		<include refid="areaJoins"/>
+		<where>
+			 a.del_flag = '0'
+		AND  a.parent_id = '1'
+		</where>
+				ORDER BY a.sort ASC
+	</select>
+
+	<select id="findCityList" resultType="Area">
+		SELECT
+		<include refid="areaColumns"/>
+		FROM sys_area a
+		<include refid="areaJoins"/>
+		<where>
+			 a.del_flag = '0'
+		AND  a.type = #{type}
+		</where>
+				ORDER BY a.sort ASC
+	</select>
+
+	<select id="findByName" resultType="Area">
+		SELECT
+		<include refid="areaColumns"/>
+		FROM sys_area a
+		<include refid="areaJoins"/>
+		<where>
+			 a.del_flag = '0'
+		AND  a.name = #{name}
+		</where>
+				ORDER BY a.sort ASC
+	</select>
+
+	<select id="getByParentId" resultType="Area">
+		SELECT
+		<include refid="areaColumns"/>
+		FROM sys_area a
+		<include refid="areaJoins"/>
+		<where>
+			 a.del_flag = '0'
+		AND  a.parent_id = #{parentId}
+		</where>
+				ORDER BY a.sort ASC
+	</select>
+
 	<select id="findAllList" resultType="Area">
 		SELECT
 			<include refid="areaColumns"/>

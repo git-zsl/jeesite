@@ -25,7 +25,7 @@ public class BussinessUserService extends CrudService<BussinessUserDao, Bussines
 	public BussinessUser get(String id) {
 		return super.get(id);
 	}
-	
+
 	public List<BussinessUser> findList(BussinessUser bussinessUser) {
 		return super.findList(bussinessUser);
 	}

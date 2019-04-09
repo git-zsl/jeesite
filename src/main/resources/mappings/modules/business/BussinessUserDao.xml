@@ -25,7 +25,15 @@
 		<include refid="bussinessUserJoins"/>
 		WHERE a.id = #{id}
 	</select>
-	
+
+	<select id="findByUserId" resultType="BussinessUser">
+		SELECT
+			<include refid="bussinessUserColumns"/>
+		FROM bussiness_user a
+		<include refid="bussinessUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
 	<select id="findList" resultType="BussinessUser">
 		SELECT 
 			<include refid="bussinessUserColumns"/>

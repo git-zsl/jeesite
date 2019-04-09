@@ -6,6 +6,8 @@ package com.thinkgem.jeesite.modules.business.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.thinkgem.jeesite.modules.sys.entity.SysOfficeInformation;
+import com.thinkgem.jeesite.modules.sys.service.SysOfficeInformationService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,7 +35,9 @@ public class BussinessUserController extends BaseController {
 
 	@Autowired
 	private BussinessUserService bussinessUserService;
-	
+	@Autowired
+	private SysOfficeInformationService sysOfficeInformationService;
+
 	@ModelAttribute
 	public BussinessUser get(@RequestParam(required=false) String id) {
 		BussinessUser entity = null;
@@ -65,7 +69,7 @@ public class BussinessUserController extends BaseController {
 	@RequestMapping(value = "save")
 	public String save(BussinessUser bussinessUser, Model model, RedirectAttributes redirectAttributes) {
 		if (!beanValidator(model, bussinessUser)){
-			return form(bussinessUser, model);
+			return form(bussinessUser,model);
 		}
 		bussinessUserService.save(bussinessUser);
 		addMessage(redirectAttributes, "保存企业用户成功");

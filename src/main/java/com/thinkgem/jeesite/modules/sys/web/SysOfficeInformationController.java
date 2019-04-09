@@ -29,6 +29,7 @@ import com.thinkgem.jeesite.modules.sys.entity.SysOfficeInformation;
 import com.thinkgem.jeesite.modules.sys.service.SysOfficeInformationService;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 机构详细信息Controller
@@ -64,7 +65,12 @@ public class SysOfficeInformationController extends BaseController {
 
 	@RequiresPermissions("sys:sysOfficeInformation:view")
 	@RequestMapping(value = "form")
-	public String form(SysOfficeInformation sysOfficeInformation, Model model) {
+	public String form(SysOfficeInformation sysOfficeInformation, String userId ,Model model) {
+		if(StringUtils.isNotBlank(userId)){
+			SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(userId);
+			model.addAttribute("sysOfficeInformation", byUserId);
+			return "modules/sys/sysOfficeInformationForm";
+		}
 		model.addAttribute("sysOfficeInformation", sysOfficeInformation);
 		return "modules/sys/sysOfficeInformationForm";
 	}
@@ -73,7 +79,14 @@ public class SysOfficeInformationController extends BaseController {
 	@RequestMapping(value = "save")
 	public String save(SysOfficeInformation sysOfficeInformation, Model model, RedirectAttributes redirectAttributes) {
 		if (!beanValidator(model, sysOfficeInformation)){
-			return form(sysOfficeInformation, model);
+			return form(sysOfficeInformation,"", model);
+		}
+		if(Objects.nonNull(sysOfficeInformation.getUser()) && StringUtils.isNotBlank(sysOfficeInformation.getUser().getId())){
+			SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(sysOfficeInformation.getUser().getId());
+			if(Objects.nonNull(byUserId)){
+				//参数转封装
+				sysOfficeInformationService.changObject(byUserId,sysOfficeInformation);
+			}
 		}
 		sysOfficeInformationService.save(sysOfficeInformation);
 		addMessage(redirectAttributes, "保存信息成功");

@@ -108,4 +108,9 @@ public class SysOfficeInformationService extends CrudService<SysOfficeInformatio
 		user.setLoginFlag(Global.NO);
 		return user;
 	}
+
+	public SysOfficeInformation changObject(SysOfficeInformation oldObj,SysOfficeInformation newObj){
+		newObj.setUser(oldObj.getUser());
+		return newObj;
+	}
 }

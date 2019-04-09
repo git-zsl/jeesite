@@ -18,6 +18,7 @@ import javax.validation.ConstraintViolationException;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.utils.Encodes;
 import com.thinkgem.jeesite.modules.sys.entity.*;
+import com.thinkgem.jeesite.modules.sys.service.AreaService;
 import com.thinkgem.jeesite.modules.sys.service.OfficeService;
 import com.thinkgem.jeesite.modules.sys.service.SysOfficeInformationService;
 import com.thinkgem.jeesite.modules.sys.utils.EmailUtils;
@@ -68,6 +69,8 @@ public class UserController extends BaseController {
     @Autowired
     private OfficeService officeService;
     @Autowired
+    private AreaService areaService;
+    @Autowired
     private SysOfficeInformationService sysOfficeInformationService;
 
     private static final String OFFICE_TYPE_1 = "企业用户";
@@ -114,6 +117,16 @@ public class UserController extends BaseController {
         if (user.getOffice() == null || user.getOffice().getId() == null) {
             user.setOffice(UserUtils.getUser().getOffice());
         }
+        //省
+        List<Area> provence = areaService.findByParentId();
+        Area area = new Area();
+        area.setType("3");
+        List<Area> city = areaService.findCityList(area);
+        area.setType("4");
+        List<Area> district = areaService.findCityList(area);
+        model.addAttribute("provence", provence);
+        model.addAttribute("city", city);
+        model.addAttribute("district", district);
         model.addAttribute("user", user);
         model.addAttribute("allRoles", systemService.findAllRole());
         return "modules/sys/userForm";
@@ -151,6 +164,15 @@ public class UserController extends BaseController {
         user.setRoleList(roleList);
         // 保存用户信息
         systemService.saveUser(user);
+        //保存企业详细信息
+        SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(user.getId());
+        if(Objects.isNull(byUserId)){
+            byUserId = new SysOfficeInformation();
+        }
+        byUserId.setUser(new User(user.getId()));
+        byUserId.setTeamSize(user.getTeamSize());
+        byUserId.setOfficeLink(user.getOfficeLink());
+        sysOfficeInformationService.save(byUserId);
         // 清除当前用户缓存
         if (user.getLoginName().equals(UserUtils.getUser().getLoginName())) {
             UserUtils.clearCache();
@@ -509,6 +531,15 @@ public class UserController extends BaseController {
         }
         return "redirect:" + Global.getAdminPath() + "/sys/user/businessList/?repage";
     }
+    @RequiresPermissions("sys:user:edit")
+    @RequestMapping(value = "changeLoginFlag")
+    public String changeLoginFlag(String userId, RedirectAttributes redirectAttributes,String loginFlag) {
+        User user = systemService.getUser(userId);
+        user.setLoginFlag(loginFlag);
+        systemService.saveUser(user);
+        addMessage(redirectAttributes, "操作成功");
+        return "redirect:" + Global.getAdminPath() + "/sys/user/businessList/?repage";
+    }
 
 /*	@RequiresPermissions("sys:user:edit")
     @RequestMapping(value = "bussinessDelete")
@@ -577,6 +608,12 @@ public class UserController extends BaseController {
         }
         if (user.getOffice() == null || user.getOffice().getId() == null) {
             user.setOffice(UserUtils.getUser().getOffice());
+        }
+        SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(user.getId());
+        if(Objects.nonNull(byUserId)){
+            user.setOfficeImage(byUserId.getOfficeImage());
+            user.setTeamSize(byUserId.getTeamSize());
+            user.setOfficeLink(byUserId.getOfficeLink());
         }
         model.addAttribute("user", user);
         model.addAttribute("allRoles", systemService.findAllRole());

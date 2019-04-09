@@ -620,7 +620,7 @@ public class SystemService extends BaseService implements InitializingBean {
 		user1.setDistrict(district);
 		user1.setPassword(LoginUtils.entryptPassword(user.getNewPassword()));
 		user1.setMobile(user.getMobile());
-		user1.setSubscription(user.getSubscription());
+		user1.setSubscription(user.isSubscription());
 		user1.setZhiHu(user.getZhiHu());
 		user1.setWeiBo(user.getWeiBo());
 		user1.setDouBan(user.getDouBan());
@@ -730,7 +730,7 @@ public class SystemService extends BaseService implements InitializingBean {
 		vo.setEmail(user.getEmail());
 		vo.setMobile(user.getMobile());
 		vo.setPhoto(user.getPhoto());
-		vo.setSubscription(user.getSubscription());
+		vo.setSubscription(user.isSubscription());
 		vo.setDouBan(user.getDouBan());
 		vo.setWeiXinCode(user.getWeiXinCode());
 		vo.setWeiBo(user.getWeiBo());

@@ -332,7 +332,16 @@
 			isCompany = #{isCompany},
 			attentionNum = #{attentionNum},
 			attention2Num = #{attention2Num},
-			background = #{background}
+			background = #{background},
+			sex = #{sex},
+			provence = #{provence},
+			city = #{city},
+			district = #{district},
+			district = #{district},
+			district = #{district},
+			district = #{district},
+			subscription = #{subscription},
+			information = #{information}
 		WHERE id = #{id}
 	</update>
 	

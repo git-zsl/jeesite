@@ -32,7 +32,6 @@
 			<li class="clearfix"></li>
 		</ul>
 	</form:form>
-	<sys:message content="${message}"/>
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead>
 			<tr>
@@ -46,6 +45,7 @@
 			</tr>
 		</thead>
 		<tbody>
+
 		<c:forEach items="${page.list}" var="sysOfficeInformation">
 			<tr>
 				<td><a href="${ctx}/sys/sysOfficeInformation/form?id=${sysOfficeInformation.id}">

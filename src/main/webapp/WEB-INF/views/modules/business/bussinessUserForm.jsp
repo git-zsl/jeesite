@@ -60,13 +60,13 @@
 							title="部门" url="/sys/office/treeData?type=2" cssClass="required" notAllowSelectParent="true"/>
 		</div>
 	</div>
-	<div class="control-group">
+	<%--<div class="control-group">
 		<label class="control-label">工号:</label>
 		<div class="controls">
 			<form:input path="no" htmlEscape="false" maxlength="50" class="required"/>
 			<span class="help-inline"><font color="red">*</font> </span>
 		</div>
-	</div>
+	</div>--%>
 	<div class="control-group">
 		<label class="control-label">姓名:</label>
 		<div class="controls">
@@ -74,6 +74,33 @@
 			<span class="help-inline"><font color="red">*</font> </span>
 		</div>
 	</div>
+	<div class="control-group">
+		<label class="control-label">姓别:</label>
+		<div class="controls">
+			<form:select path="sex">
+				<form:option value="" label="请选择"/>
+				<form:options items="${fns:getDictList('sex')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+			</form:select>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">工作地:</label>
+		<div class="controls">
+			<form:select path="provence">
+				<form:option value="" label="请选择"/>
+				<form:options items="${provence}" itemLabel="name" itemValue="name" htmlEscape="false"/>
+			</form:select>
+			<form:select  path="city">
+				<form:option value="" label="请选择"/>
+				<form:options items="${city}" itemLabel="name" itemValue="name" htmlEscape="false"/>
+			</form:select>
+			<form:select path="district">
+				<form:option value="" label="请选择"/>
+				<form:options items="${district}" itemLabel="name" itemValue="name" htmlEscape="false"/>
+			</form:select>
+		</div>
+	</div>
+
 	<div class="control-group">
 		<label class="control-label">登录名:</label>
 		<div class="controls">
@@ -102,6 +129,10 @@
 		<div class="controls">
 			<form:input path="email" htmlEscape="false" maxlength="100" class="email"/>
 		</div>
+		<label class="control-label">是否订阅每周精选:</label>
+		<div class="controls">
+			<form:checkbox  path="subscription"/>
+		</div>
 	</div>
 	<div class="control-group">
 		<label class="control-label">电话:</label>
@@ -113,6 +144,53 @@
 		<label class="control-label">手机:</label>
 		<div class="controls">
 			<form:input path="mobile" htmlEscape="false" maxlength="100"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">官网:</label>
+		<div class="controls">
+			<form:input path="officeLink" htmlEscape="false" maxlength="100"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="control-group">
+			<label class="control-label">宣传绑定:</label>
+		</div>
+		<label class="control-label">微信二维码:</label>
+		<div class="controls">
+			<form:input path="weiXinCode" htmlEscape="false" maxlength="1000"/>
+		</div>
+
+		<label class="control-label">微薄:</label>
+		<div class="controls">
+			<form:input path="weiBo" htmlEscape="false" maxlength="1000"/>
+		</div>
+		<label class="control-label">知乎:</label>
+		<div class="controls">
+			<form:input path="zhiHu" htmlEscape="false" maxlength="1000"/>
+		</div>
+		<label class="control-label">豆瓣:</label>
+		<div class="controls">
+			<form:input path="douBan" htmlEscape="false" maxlength="1000"/>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">团队人数:</label>
+		<div class="controls">
+			<form:select  path="teamSize">
+				<form:option value="" label="请选择"/>
+				<form:option value="1-10人" label="1-10人"/>
+				<form:option value="10-20人" label="10-20人"/>
+				<form:option value="20-30人" label="20-30人"/>
+				<form:option value="30-50人" label="30-50人"/>
+				<form:option value="50-70人" label="50-70人"/>
+			</form:select>
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label">创作环境:</label>
+		<div class="controls">
+			<form:textarea path="officeImage" htmlEscape="false" rows="3" maxlength="200" class="input-xlarge"/>
 		</div>
 	</div>
 	<div class="control-group">
