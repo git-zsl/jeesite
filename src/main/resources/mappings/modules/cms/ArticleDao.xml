@@ -678,6 +678,12 @@
 		WHERE id = #{id}
 	</update>
 
+    <update id="updateArticleHits">
+		UPDATE cms_article SET
+			hits = #{hits}
+		WHERE id = #{id}
+	</update>
+
     <select id="findByIdIn" resultType="Article">
         SELECT
         <include refid="cmsArticleColumns"/>

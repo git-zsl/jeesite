@@ -342,4 +342,9 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
     public void updataArticleCommentNum(Article article){
         dao.updataArticleCommentNum(article);
     }
+
+    @Transactional(readOnly = false)
+    public void updateArticleHits(Article article){
+        dao.updateArticleHits(article);
+    }
 }

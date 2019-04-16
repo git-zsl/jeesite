@@ -24,7 +24,7 @@ public class SysSendInformation extends DataEntity<SysSendInformation> {
 	private String title;		// 标题
 	private String userName;		// 用户名称
 	private Date timeOut;		// 到期时间
-	
+
 	public SysSendInformation() {
 		super();
 	}
@@ -85,5 +85,5 @@ public class SysSendInformation extends DataEntity<SysSendInformation> {
 	public void setTimeOut(Date timeOut) {
 		this.timeOut = timeOut;
 	}
-	
+
 }

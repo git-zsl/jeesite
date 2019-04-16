@@ -147,7 +147,7 @@
         <label class="control-label">登录名:</label>
         <div class="controls">
             <input id="oldLoginName" name="oldLoginName" type="hidden" value="${user.loginName}">
-            <form:input path="loginName" htmlEscape="false" maxlength="50" class="required userName"/>
+            <form:input path="loginName" htmlEscape="false" maxlength="50" class="required"/>
             <span class="help-inline"><font color="red">*</font> </span>
         </div>
     </div>

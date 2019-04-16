@@ -12,7 +12,10 @@ import java.util.List;
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
+import com.thinkgem.jeesite.modules.cms.entity.Category;
+import com.thinkgem.jeesite.modules.cms.service.CategoryService;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +32,9 @@ import com.thinkgem.jeesite.modules.ad.dao.AdInfomationDao;
 @Service
 @Transactional(readOnly = true)
 public class AdInfomationService extends TreeService<AdInfomationDao, AdInfomation> {
+
+	@Autowired
+	private CategoryService categoryservice;
 
 	public AdInfomation get(String id) {
 		return super.get(id);
@@ -104,7 +110,12 @@ public class AdInfomationService extends TreeService<AdInfomationDao, AdInfomati
 		Date date = new Date();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		adInfomation.setNowDate(simpleDateFormat.format(date));
-		return dao.findByCategoryAndWinId(adInfomation);
+		List<AdInfomation> byCategoryAndWinId = dao.findByCategoryAndWinId(adInfomation);
+		for (AdInfomation ad :byCategoryAndWinId) {
+			Category category = categoryservice.get(ad.getCategory().getId());
+			ad.setCategory(category);
+		}
+		return byCategoryAndWinId;
 	}
 
 	@Transactional(readOnly = false)
@@ -115,6 +126,7 @@ public class AdInfomationService extends TreeService<AdInfomationDao, AdInfomati
 	public AdInfomation setAdInfomationData(Article article){
 		AdInfomation adInfomation = new AdInfomation();
 		adInfomation.setArticleId(article.getId());
+		adInfomation.setDescription(article.getDescription());
 		adInfomation.setName(article.getTitle());
 		adInfomation.setLink(article.getLink());
 		adInfomation.setImage(article.getImage());

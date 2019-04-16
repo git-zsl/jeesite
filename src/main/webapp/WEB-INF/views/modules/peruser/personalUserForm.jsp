@@ -40,7 +40,7 @@
 	<form:hidden path="id"/>
 	<sys:message content="${message}"/>
 	<div class="control-group">
-		<label class="control-label">头像11:</label>
+		<label class="control-label">头像:</label>
 		<div class="controls">
 			<form:hidden id="nameImage" path="photo" htmlEscape="false" maxlength="255" class="input-xlarge"/>
 			<sys:ckfinder input="nameImage" type="images" uploadPath="/photo" selectMultiple="false" maxWidth="100" maxHeight="100"/>
@@ -78,7 +78,7 @@
 		<label class="control-label">登录名:</label>
 		<div class="controls">
 			<input id="oldLoginName" name="oldLoginName" type="hidden" value="${user.loginName}">
-			<form:input path="loginName" htmlEscape="false" maxlength="50" class="required userName"/>
+			<form:input path="loginName" htmlEscape="false" maxlength="50" class="required"/>
 			<span class="help-inline"><font color="red">*</font> </span>
 		</div>
 	</div>

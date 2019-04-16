@@ -425,6 +425,8 @@ public class ArticleController extends BaseController {
             if (!StringUtils.isBlank(article.getId())) {
                 ArticleData articleData = articleDataService.get(article.getId());
                 Article article1 = articleService.findList(article).get(0);
+                article1.setHits(article1.getHits() + 1);
+                articleService.updateArticleHits(article1);
                 article1.setArticleData(articleData);
                 return ReturnEntity.success(article1, "获取列表成功");
             }

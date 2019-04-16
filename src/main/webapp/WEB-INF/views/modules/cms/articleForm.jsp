@@ -92,7 +92,7 @@
 			<div class="controls">
 				<form:select  path="classifying.id" class="input-medium">
 					<form:option value="" label="请选择"/>
-					<form:options items="${cmsClassifying}" htmlEscape="false" itemLabel="classifying" itemValue="id"/>
+					<form:options items="${articleClassifys}" htmlEscape="false" itemLabel="classifying" itemValue="id"/>
 				</form:select>
 			</div>
 		</div>

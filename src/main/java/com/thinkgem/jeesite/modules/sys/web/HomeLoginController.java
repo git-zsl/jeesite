@@ -289,4 +289,21 @@ public class HomeLoginController extends BaseController {
         file.transferTo(file1);
         return ReturnEntity.success("上传成功");
     }
+
+
+    /**
+     * 密码找回接口
+     */
+    @RequestMapping("findPassword")
+    @ResponseBody
+    public ReturnEntity findPassword(){
+        try{
+
+        }catch (Exception e){
+            LogUtils.getLogInfo(clazz).info("程序出错", e);
+            e.printStackTrace();
+            return ReturnEntity.fail("程序出错");
+        }
+        return ReturnEntity.success(null,"程序出错");
+    }
 }
