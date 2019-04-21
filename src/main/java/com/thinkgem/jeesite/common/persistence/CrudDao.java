@@ -3,8 +3,6 @@
  */
 package com.thinkgem.jeesite.common.persistence;
 
-import com.thinkgem.jeesite.modules.cms.entity.Comment;
-
 import java.util.List;
 
 /**

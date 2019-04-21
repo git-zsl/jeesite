@@ -114,7 +114,7 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = {"list", ""})
-    public String list(Article article, HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "ad",required = false) String ad) {
+    public String list(Article article, HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "ad",required = false) String ad,@RequestParam(value = "formFlag",required = false) String formFlag) {
         User user = UserUtils.getUser();
         Page<Article> page = null;
         if (!user.isAdmin()) {
@@ -132,6 +132,9 @@ public class ArticleController extends BaseController {
             model.addAttribute("parentCategoryId", article.getCategory().getId());
             returnPage = "modules/cms/articleADList";
         }else{
+            if(Global.NO.equals(formFlag)){
+                return  "modules/cms/articleLearnList";
+            }
             returnPage = "modules/cms/articleList";
         }
         return returnPage;
@@ -139,7 +142,7 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = "form")
-    public String form(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId , @RequestParam(value = "all", required = false) String all) {
+    public String form(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId , @RequestParam(value = "all", required = false) String all,@RequestParam(value = "formFlag",required = false) String formFlag) {
         try {
             model.addAttribute("postsList", cmsPostsService.findPosts(new CmsPosts()));
             model.addAttribute("cityList", jobCityService.findList(new JobCity()));
@@ -162,11 +165,16 @@ public class ArticleController extends BaseController {
                         if(StringUtils.isNotBlank(parentCategoryId)){
                             model.addAttribute("parentCategoryId",parentCategoryId);
                         }
+                        if(Global.NO.equals(formFlag)){
+                            return formContent != null ? formContent : "modules/cms/articleLearnForm";
+                        }
                         return formContent != null ? formContent : "modules/cms/articleForm";
                     }
-                    return "modules/cms/articleForm";
-
-
+                    if(Global.NO.equals(formFlag)){
+                        return "modules/cms/articleLearnForm";
+                    }else{
+                        return "modules/cms/articleForm";
+                    }
                 } else {
                     article.setCategory(categoryService.get(article.getCategory().getId()));
                 }
@@ -183,18 +191,25 @@ public class ArticleController extends BaseController {
                 if(StringUtils.isNotBlank(parentCategoryId)){
                     model.addAttribute("parentCategoryId",parentCategoryId);
                 }
+                if(Global.NO.equals(formFlag)){
+                    return formContent != null ? formContent : "modules/cms/articleLearnForm";
+                }
                 return formContent != null ? formContent : "modules/cms/articleForm";
             }
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info(e.getMessage());
             e.printStackTrace();
         }
-        return "modules/cms/articleForm";
+        if(Global.NO.equals(formFlag)){
+            return "modules/cms/articleLearnForm";
+        }else{
+            return "modules/cms/articleForm";
+        }
     }
 
     @RequiresPermissions("cms:article:edit")
     @RequestMapping(value = "save")
-    public String save(Article article, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "ad", required = false) String ad) {
+    public String save(Article article, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "ad", required = false) String ad,@RequestParam(value = "formFlag", required = false) String formFlag) {
         String path = "";
         if (!StringUtils.isBlank(all)) {
             path = "allList";
@@ -206,7 +221,7 @@ public class ArticleController extends BaseController {
             article.setIsRecommend(Global.NO);
         }
         if (!beanValidator(model, article)) {
-            return form(article, model, redirectAttributes, all,parentCategoryId);
+            return form(article, model, redirectAttributes, all,parentCategoryId,"1");
         }
         articleService.save(article);
         //发送给用户系统消息
@@ -235,6 +250,9 @@ public class ArticleController extends BaseController {
                 return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&category.id=" + (categoryId != null ? parentCategoryId : "");
             }
             return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&category.id=" + (categoryId != null ? categoryId : "");
+        }
+        if(Global.NO.equals(formFlag)){
+            return "redirect:" + adminPath + "/cms/article/" + path + "?repage&delFlag=2&formFlag=0&category.id=" ;
         }
         return "redirect:" + adminPath + "/cms/article/" + path + "?repage&delFlag=2&category.id=" /*+ (categoryId != null ? categoryId : "")*/;
     }
@@ -279,7 +297,7 @@ public class ArticleController extends BaseController {
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = "selectList")
     public String selectList(Article article, HttpServletRequest request, HttpServletResponse response, Model model) {
-        list(article, request, response, model,"");
+        list(article, request, response, model,"","");
         return "modules/cms/articleSelectList";
     }
 

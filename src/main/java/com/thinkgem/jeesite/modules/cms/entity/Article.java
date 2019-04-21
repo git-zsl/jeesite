@@ -506,6 +506,7 @@ public class Article extends DataEntity<Article> {
 	public void setIsSendInformation(String isSendInformation) {
 		this.isSendInformation = isSendInformation;
 	}
+
 }
 
 

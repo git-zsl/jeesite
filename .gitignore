@@ -10,7 +10,7 @@
 *.iml
 .settings/*
 /indexes/*
-/target/*
 /src/main/webapp/WEB-INF/classes/*
 /src/main/webapp/userfiles/*
 /target/
+/classes/

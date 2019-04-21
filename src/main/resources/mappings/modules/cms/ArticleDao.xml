@@ -3,39 +3,39 @@
 <mapper namespace="com.thinkgem.jeesite.modules.cms.dao.ArticleDao">
 
     <sql id="cmsArticleColumns">
-		a.id AS "id",
-		a.category_id AS "category.id",
-		a.title AS "title",
-		a.link AS "link",
-		a.color AS "color",
-		a.image AS "image",
-		a.keywords AS "keywords",
-		a.description AS "description",
-		a.weight AS "weight",
-		a.weight_date AS "weightDate",
-		a.hits AS "hits",
-		a.posid AS "posid",
-		a.custom_content_view AS "customContentView",
-		a.view_config AS "viewConfig",
-		a.create_by AS "createBy.id",
-		a.create_date AS "createDate",
-		a.update_by AS "updateBy.id",
-		a.update_date AS "updateDate",
-		a.remarks AS "remarks",
-		a.del_flag AS "delFlag",
-		c.name AS "category.name",
+        a.id AS "id",
+        a.category_id AS "category.id",
+        a.title AS "title",
+        a.link AS "link",
+        a.color AS "color",
+        a.image AS "image",
+        a.keywords AS "keywords",
+        a.description AS "description",
+        a.weight AS "weight",
+        a.weight_date AS "weightDate",
+        a.hits AS "hits",
+        a.posid AS "posid",
+        a.custom_content_view AS "customContentView",
+        a.view_config AS "viewConfig",
+        a.create_by AS "createBy.id",
+        a.create_date AS "createDate",
+        a.update_by AS "updateBy.id",
+        a.update_date AS "updateDate",
+        a.remarks AS "remarks",
+        a.del_flag AS "delFlag",
+        c.name AS "category.name",
         u.id AS "user.id",
-		u.name AS "user.name",
+        u.name AS "user.name",
         u.photo AS "user.photo",
-		a.is_top AS "isTop",
-		a.is_recommend AS "isRecommend",
-		a.author AS "author",
+        a.is_top AS "isTop",
+        a.is_recommend AS "isRecommend",
+        a.author AS "author",
         a.brand AS "brand",
         a.collect_num AS "collectNum",
         a.like_num AS "likeNum",
         a.page_num AS "pageNum",
         <include refid="cmsArticleJobColumns"/>
-	</sql>
+    </sql>
 
     <sql id="cmsArticleAuthorColumns">
         DISTINCT a.author AS "author",
@@ -71,7 +71,7 @@
         <include refid="cmsArticleJobColumns"/>
     </sql>
     <sql id="cmsArticleJobPostColumns">
-        DISTINCT  a.category_id AS "category.id",
+        DISTINCT a.category_id AS "category.id",
         a.id AS "id",
         a.title AS "title",
         a.link AS "link",
@@ -105,7 +105,7 @@
         <include refid="cmsArticleJobColumns"/>
     </sql>
     <sql id="cmsArticleKeywordsColumns">
-        DISTINCT  a.keywords AS "keywords",
+        DISTINCT a.keywords AS "keywords",
         a.id AS "id",
         a.category_id AS "category.id",
         a.title AS "title",
@@ -149,6 +149,7 @@
 		p.posts AS "cPosts",
 		jc.city AS "jcity",
 		a.classifying_id AS "classifying.id",
+		cc.classifying AS "classifying.classifying",
 		a.article_classify_id AS "cmsArticleClassify.id",
 		a.is_putaway AS "isPutaway",
 		a.is_read AS "isRead",
@@ -157,9 +158,10 @@
 		a.comment_num AS "commentNum",
 		u.isCompany AS "user.isCompany",
 		a.email,
-		a.Job_description AS "jobDescription",
+		a.job_description AS "jobDescription",
 		a.job_num AS "jobNum",
 		a.district AS "district",
+		dd.article_classify AS "cmsArticleClassify.articleClassify",
 		a.city AS "city"
 	</sql>
 
@@ -170,7 +172,7 @@
 		Left JOIN cms_posts p ON p.id = a.posts
 		Left JOIN job_city jc ON jc.id = a.area
 		Left JOIN cms_classifying cc ON cc.id = a.classifying_id
-
+        Left JOIN cms_article_classify dd ON dd.id = a.article_classify_id
 	</sql>
 
     <sql id="cmsArticleJoins">
@@ -180,6 +182,7 @@
 		Left JOIN cms_posts p ON p.id = a.posts
 		Left JOIN job_city jc ON jc.id = a.area
 		Left JOIN cms_classifying cc ON cc.id = a.classifying_id
+		Left JOIN cms_article_classify dd ON dd.id = a.article_classify_id
 	</sql>
 
     <select id="get" resultType="Article">
@@ -242,7 +245,7 @@
                 <if test="dbName == 'mysql'">CONCAT('%', #{company}, '%')</if>
                 )
             </if>
-           <if test="createBy != null and createBy.id != null and createBy.id != ''">
+            <if test="createBy != null and createBy.id != null and createBy.id != ''">
                 AND a.create_by = #{createBy.id}
             </if>
             <if test="isRecommend != null and isRecommend != ''">
@@ -328,7 +331,7 @@
             a.del_flag = #{delFlag}
             AND a.category_id in (select categoryId from cms_is_article)
             <if test="title != null and title !=''">
-            AND a.title like
+                AND a.title like
                 <if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
                 <if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
                 <if test="dbName == 'mysql'">CONCAT('%', #{title}, '%')</if>
@@ -382,7 +385,7 @@
         FROM cms_article a
         <include refid="cmsJobArticleJoins"/>
         <where>
-                a.del_flag = #{DEL_FLAG_NORMAL}
+            a.del_flag = #{DEL_FLAG_NORMAL}
             <if test="pay != null and pay != ''">
                 AND a.pay = #{pay}
             </if>
@@ -448,12 +451,12 @@
         <include refid="cmsArticleJoins"/>
         <where>
             a.del_flag = #{DEL_FLAG_NORMAL}
-           <if test="category != null and category.id != null and category.id != ''">
-               AND c.parent_ids LIKE
-               <if test="dbName == 'oracle'">'%,'||#{category.id}||',%'</if>
-               <if test="dbName == 'mssql'">'%,'+#{category.id}+',%'</if>
-               <if test="dbName == 'mysql'">CONCAT('%,', #{category.id}, ',%')</if>
-           </if>
+            <if test="category != null and category.id != null and category.id != ''">
+                AND c.parent_ids LIKE
+                <if test="dbName == 'oracle'">'%,'||#{category.id}||',%'</if>
+                <if test="dbName == 'mssql'">'%,'+#{category.id}+',%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%,', #{category.id}, ',%')</if>
+            </if>
         </where>
         GROUP BY a.category_id
         ORDER BY a.hits desc

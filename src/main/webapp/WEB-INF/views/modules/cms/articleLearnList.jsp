@@ -27,11 +27,12 @@
 <body>
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/cms/article/?category.id=${article.category.id}">列表</a></li>
-		<shiro:hasPermission name="cms:article:edit"><li><a href="<c:url value='${fns:getAdminPath()}/cms/article/form?formFlag=1&id=${article.id}&category.id=${article.category.id}'><c:param name='category.name' value='${article.category.name}'/></c:url>">添加</a></li></shiro:hasPermission>
+		<shiro:hasPermission name="cms:article:edit"><li><a href="<c:url value='${fns:getAdminPath()}/cms/article/form?formFlag=0&id=${article.id}&category.id=${article.category.id}'><c:param name='category.name' value='${article.category.name}'/></c:url>">添加</a></li></shiro:hasPermission>
 	</ul>
-	<form:form id="searchForm" modelAttribute="article" action="${ctx}/cms/article/" method="post" class="breadcrumb form-search">
+	<form:form id="searchForm" modelAttribute="article" action="${ctx}/cms/article" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
+		<input id="formFlag" name="formFlag" type="hidden" value="0"/>
 		<label>栏目：</label>
 		<sys:treeselect id="category" name="category.id" value="${article.category.id}" labelName="category.name" labelValue="${article.category.name}"
 					title="栏目" url="/cms/category/treeData" module="article" notAllowSelectRoot="false" cssClass="input-small"/>
@@ -53,7 +54,7 @@
 		<c:forEach items="${page.list}" var="article">
 			<tr>
 				<td><a href="javascript:" onclick="$('#categoryId').val('${article.category.id}');$('#categoryName').val('${article.category.name}');$('#searchForm').submit();return false;">${article.category.name}</a></td>
-				<td><a href="${ctx}/cms/article/form?formFlag=1&id=${article.id}" title="${article.title}">${fns:abbr(article.title,40)}</a></td>
+				<td><a href="${ctx}/cms/article/form?formFlag=0&id=${article.id}" title="${article.title}">${fns:abbr(article.title,40)}</a></td>
 				<td>${article.weight}</td>
 				<td>${article.hits}</td>
 				<td>${article.user.name}</td>

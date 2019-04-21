@@ -363,8 +363,15 @@
 		FROM cms_category a
 		<where>
 			a.del_flag = '0' and a.is_show_home_classify = '1'
-
 		</where>
+		<choose>
+			<when test="subscriber != null and subscriber != '' and subscriber ='0'">
+				ORDER BY a.subscriber DESC,a.sort ASC
+			</when>
+			<otherwise>
+				ORDER BY a.sort ASC
+			</otherwise>
+		</choose>
 	</select>
 
 	<select id="findNavigationBar" resultType="Category">
