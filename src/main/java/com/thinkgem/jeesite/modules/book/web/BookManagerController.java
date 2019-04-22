@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.modules.classificationtree.entity.Classificationtree;
 import com.thinkgem.jeesite.modules.classificationtree.service.ClassificationtreeService;
+import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -177,5 +178,19 @@ public class BookManagerController extends BaseController {
 		}
 		Page<BookManager> page = bookManagerService.findPage(page1, bookManager);
 		return ReturnEntity.success(page,"查询书籍列表成功");
+	}
+
+	/**
+	 * 同类好书接口
+	 */
+	@RequestMapping("filter/sameBookType")
+	@ResponseBody
+	public ReturnEntity findSameBookType(BookManager bookManager){
+		try{
+			return ReturnEntity.success(bookManagerService.findByBookType(bookManager),"获取数据成功");
+		}catch (Exception e){
+			LogUtils.getLogInfo(BookManagerController.class).info("程序出错",e);
+			return ReturnEntity.fail("程序出错");
+		}
 	}
 }

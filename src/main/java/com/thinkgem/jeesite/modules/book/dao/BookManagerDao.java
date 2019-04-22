@@ -17,4 +17,5 @@ import java.util.List;
 @MyBatisDao
 public interface BookManagerDao extends CrudDao<BookManager> {
 
+    public List<BookManager> findByBookType(BookManager bookManager);
 }

@@ -29,7 +29,11 @@ public class BookManagerService extends CrudService<BookManagerDao, BookManager>
 	public List<BookManager> findList(BookManager bookManager) {
 		return super.findList(bookManager);
 	}
-	
+
+	public List<BookManager> findByBookType(BookManager bookManager) {
+		return dao.findByBookType(bookManager);
+	}
+
 	public Page<BookManager> findPage(Page<BookManager> page, BookManager bookManager) {
 		return super.findPage(page, bookManager);
 	}

@@ -36,13 +36,13 @@
 		<div class="control-group">
 			<label class="control-label">拼音简称：</label>
 			<div class="controls">
-				<form:input path="code" htmlEscape="false" maxlength="255" class="required digits"/>
+				<form:input path="code" htmlEscape="false" maxlength="255" class="required"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">城市名称：</label>
 			<div class="controls">
-				<form:input path="city" htmlEscape="false" maxlength="255" class="required digits"/>
+				<form:input path="city" htmlEscape="false" maxlength="255" class="required"/>
 			</div>
 		</div>
 		<div class="form-actions">
