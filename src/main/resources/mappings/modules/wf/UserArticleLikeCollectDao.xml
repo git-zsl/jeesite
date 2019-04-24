@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.wf.dao.UserArticleLikeCollectDao">
+    
+	<sql id="userArticleLikeCollectColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.article_id AS "articleId",
+		a.good AS "good",
+		a.collect AS "collect",
+		u2.name AS "user.name"
+	</sql>
+	
+	<sql id="userArticleLikeCollectJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="UserArticleLikeCollect">
+		SELECT 
+			<include refid="userArticleLikeCollectColumns"/>
+		FROM user_article_like_collect a
+		<include refid="userArticleLikeCollectJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<select id="findByUserIdAndArticleId" resultType="UserArticleLikeCollect">
+		SELECT
+			<include refid="userArticleLikeCollectColumns"/>
+		FROM user_article_like_collect a
+		<include refid="userArticleLikeCollectJoins"/>
+		WHERE a.user_id = #{user.id} AND a.article_id = #{articleId}
+	</select>
+
+	<select id="findList" resultType="UserArticleLikeCollect">
+		SELECT 
+			<include refid="userArticleLikeCollectColumns"/>
+		FROM user_article_like_collect a
+		<include refid="userArticleLikeCollectJoins"/>
+		<where>
+			
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user_id = #{user.id}
+			</if>
+			<if test="articleId != null and articleId != ''">
+				AND a.article_id = #{articleId}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UserArticleLikeCollect">
+		SELECT 
+			<include refid="userArticleLikeCollectColumns"/>
+		FROM user_article_like_collect a
+		<include refid="userArticleLikeCollectJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO user_article_like_collect(
+			id,
+			user_id,
+			article_id,
+			good,
+			collect
+		) VALUES (
+			#{id},
+			#{user.id},
+			#{articleId},
+			#{good},
+			#{collect}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE user_article_like_collect SET 	
+			user_id = #{user.id},
+			article_id = #{articleId},
+			good = #{good},
+			collect = #{collect}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM user_article_like_collect
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

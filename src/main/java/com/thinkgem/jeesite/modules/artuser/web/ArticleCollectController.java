@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.persistence.ReturnStatus;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.cms.service.ArticleService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -104,7 +105,7 @@ public class ArticleCollectController extends BaseController {
 				LogUtils.getLogInfo(clazz).info("参数缺失：userId = "+ userId + " articleId = " + articleId);
 				return ReturnEntity.fail("参数缺失");
 			}
-			articleCollectService.updateCollectNum(userId,articleId);
+			return articleCollectService.updateCollectNum(userId, articleId);
 		}catch (RuntimeException ru){
 			LogUtils.getLogInfo(clazz).info(ru.getMessage());
 			return ReturnEntity.fail(ru.getMessage());
@@ -113,7 +114,6 @@ public class ArticleCollectController extends BaseController {
 			e.printStackTrace();
 			return ReturnEntity.fail("收藏出错");
 		}
-		return ReturnEntity.success("收藏成功");
 	}
 
 	/**

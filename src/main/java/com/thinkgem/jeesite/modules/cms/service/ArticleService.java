@@ -282,11 +282,20 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
     }
 
     /**
-     * 修改点赞数
+     * 增加点赞数
      */
     @Transactional(readOnly = false)
     public void updateLikeNum(Article article) {
         String likeNum = Integer.parseInt(article.getLikeNum()) + 1 + "";
+        article.setLikeNum(likeNum);
+        dao.updateLikeNum(article);
+    }
+    /**
+     * 减少点赞数
+     */
+    @Transactional(readOnly = false)
+    public void deleteLikeNum(Article article) {
+        String likeNum = Integer.parseInt(article.getLikeNum()) - 1 + "";
         article.setLikeNum(likeNum);
         dao.updateLikeNum(article);
     }

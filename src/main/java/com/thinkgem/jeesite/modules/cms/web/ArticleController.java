@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.persistence.ReturnStatus;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.MyPageUtil;
 import com.thinkgem.jeesite.modules.ad.entity.AdInfomation;
@@ -42,6 +43,8 @@ import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sysinfo.entity.SysSendInformation;
 import com.thinkgem.jeesite.modules.sysinfo.service.SysSendInformationService;
+import com.thinkgem.jeesite.modules.wf.entity.UserArticleLikeCollect;
+import com.thinkgem.jeesite.modules.wf.service.UserArticleLikeCollectService;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -102,6 +105,8 @@ public class ArticleController extends BaseController {
     private AdInfomationService adInfomationService;
     @Autowired
     private SysSendInformationService sysSendInformationService;
+    @Autowired
+    private UserArticleLikeCollectService userArticleLikeCollectService;
 
     @ModelAttribute
     public Article get(@RequestParam(required = false) String id) {
@@ -760,15 +765,35 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping(value = "filter/like")
     @ResponseBody
-    public ReturnEntity updateLikeNum(@ModelAttribute Article article) {
+    public ReturnEntity updateLikeNum(@ModelAttribute Article article,String userId) {
         try {
-            articleService.updateLikeNum(article);
+            User user = new User(userId);
+            UserArticleLikeCollect byUserIdAndArticleId = userArticleLikeCollectService.findByUserIdAndArticleId(new UserArticleLikeCollect(user, article.getId()));
+            if(Objects.nonNull(byUserIdAndArticleId) && Global.YES.equals(byUserIdAndArticleId.getGood())){
+                articleService.deleteLikeNum(article);
+                byUserIdAndArticleId.setGood(Global.NO);
+                userArticleLikeCollectService.save(byUserIdAndArticleId);
+                return new ReturnEntity(ReturnStatus.UNAUTHORIZED, "取消点赞");
+            }else{
+                articleService.updateLikeNum(article);
+                if(Objects.nonNull(byUserIdAndArticleId)){
+                    byUserIdAndArticleId.setGood(Global.YES);
+                }else{
+                    byUserIdAndArticleId = new UserArticleLikeCollect();
+                    byUserIdAndArticleId.setGood(Global.YES);
+                    byUserIdAndArticleId.setArticleId(article.getId());
+                    byUserIdAndArticleId.setUser(new User(userId));
+                    byUserIdAndArticleId.setCollect(Global.NO);
+                }
+                userArticleLikeCollectService.save(byUserIdAndArticleId);
+                return new ReturnEntity(ReturnStatus.OPTSUCCESS, "点赞成功");
+            }
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("点赞出错", e);
             e.printStackTrace();
             return ReturnEntity.fail("点赞出错");
         }
-        return ReturnEntity.success("点赞成功");
+
     }
 
     /**

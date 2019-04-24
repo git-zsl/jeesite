@@ -148,10 +148,9 @@
 		WHERE id = #{id}
 	</update>
 	
-	<update id="delete">
-		UPDATE article_collect SET 
-			del_flag = #{DEL_FLAG_DELETE}
+	<delete id="delete">
+		DELETE from article_collect
 		WHERE id = #{id}
-	</update>
+	</delete>
 	
 </mapper>

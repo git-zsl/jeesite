@@ -6,6 +6,8 @@ package com.thinkgem.jeesite.modules.artuser.service;
 import java.util.List;
 import java.util.Objects;
 
+import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.persistence.ReturnStatus;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.cms.service.ArticleService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -63,7 +65,7 @@ public class ArticleCollectService extends CrudService<ArticleCollectDao, Articl
 	}
 
 	@Transactional(readOnly = false,rollbackFor = Exception.class)
-	public void updateCollectNum(String userId ,String articleId) throws Exception {
+	public ReturnEntity updateCollectNum(String userId , String articleId) throws Exception {
 		User user = UserUtils.get(userId);
 		Article article = articleService.get(articleId);
 		if(Objects.isNull(user)){
@@ -74,13 +76,14 @@ public class ArticleCollectService extends CrudService<ArticleCollectDao, Articl
 		}
 		List<ArticleCollect> sameDatas = dao.findSameDatas(userId, articleId);
 		if(!sameDatas.isEmpty()){
-			throw new RuntimeException("当前文章已经收藏");
+			dao.delete(sameDatas.get(0));
+			return new ReturnEntity(ReturnStatus.UNAUTHORIZED,"取消收藏");
 		}
 		articleService.updateCollectNum(article);
 		ArticleCollect articleCollect = new ArticleCollect();
 		articleCollect.setUser(user);
 		articleCollect.setArticleId(articleId);
 		save(articleCollect);
+		return new ReturnEntity(ReturnStatus.OPTSUCCESS,"收藏成功");
 	}
-
 }
