@@ -73,6 +73,7 @@ public class Article extends DataEntity<Article> {
 	private String city;    // 市
 	private String createTimeSort;    // 市
 	private String isSendInformation;    // 市
+	private String isShowHomeAuthor;    //  否页主页显示
 
 
 
@@ -86,6 +87,7 @@ public class Article extends DataEntity<Article> {
 		this.likeNum = "0";
 		this.collectNum = "0";
 		this.isPutaway = "0";
+		this.isShowHomeAuthor = "1";
 	}
 
 	public Article(String id){
@@ -507,6 +509,13 @@ public class Article extends DataEntity<Article> {
 		this.isSendInformation = isSendInformation;
 	}
 
+	public String getIsShowHomeAuthor() {
+		return isShowHomeAuthor;
+	}
+
+	public void setIsShowHomeAuthor(String isShowHomeAuthor) {
+		this.isShowHomeAuthor = isShowHomeAuthor;
+	}
 }
 
 

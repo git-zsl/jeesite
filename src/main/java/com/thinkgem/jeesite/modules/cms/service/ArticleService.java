@@ -317,11 +317,20 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
     }
 
     /**
-     * 修改收藏数
+     * 增加收藏数
      */
     @Transactional(readOnly = false)
     public void updateCollectNum(Article article) {
         String collectNum = Integer.parseInt(article.getCollectNum()) + 1 + "";
+        article.setCollectNum(collectNum);
+        dao.updateCollectNum(article);
+    }
+    /**
+     * 减少收藏数
+     */
+    @Transactional(readOnly = false)
+    public void deleteCollectNum(Article article) {
+        String collectNum = Integer.parseInt(article.getCollectNum()) - 1 + "";
         article.setCollectNum(collectNum);
         dao.updateCollectNum(article);
     }

@@ -77,6 +77,7 @@ public class ArticleCollectService extends CrudService<ArticleCollectDao, Articl
 		List<ArticleCollect> sameDatas = dao.findSameDatas(userId, articleId);
 		if(!sameDatas.isEmpty()){
 			dao.delete(sameDatas.get(0));
+			articleService.deleteCollectNum(article);
 			return new ReturnEntity(ReturnStatus.UNAUTHORIZED,"取消收藏");
 		}
 		articleService.updateCollectNum(article);

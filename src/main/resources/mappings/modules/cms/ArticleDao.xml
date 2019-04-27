@@ -139,6 +139,7 @@
     </sql>
 
     <sql id="cmsArticleJobColumns">
+		a.is_showHomeAuthor AS "isShowHomeAuthor",
 		a.company AS "company",
 		a.phone AS "phone",
 		a.area AS "area",
@@ -439,6 +440,7 @@
         <where>
             a.del_flag = #{DEL_FLAG_NORMAL}
             AND a.author is not null
+            AND a.is_showHomeAuthor = '1'
         </where>
         GROUP BY a.author
         ORDER BY a.hits desc
@@ -539,7 +541,8 @@
             job_description,
             job_num,
             district,
-            city
+            city,
+            is_showHomeAuthor
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -586,7 +589,8 @@
 		    #{jobDescription},
 		    #{jobNum},
 		    #{district},
-		    #{city}
+		    #{city},
+		    #{	isShowHomeAuthor}
 		)
 	</insert>
 
@@ -635,7 +639,8 @@
 		    job_description = #{jobDescription},
 		    job_num = #{jobNum},
 		    district = #{district},
-		    city   = #{city}
+		    city   = #{city},
+		    is_showHomeAuthor = #{isShowHomeAuthor}
 		WHERE id = #{id}
 	</update>
 
