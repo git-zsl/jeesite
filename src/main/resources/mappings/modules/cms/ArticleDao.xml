@@ -713,6 +713,26 @@
         limit 0,8
     </select>
 
+   <!--主页查询所有文章接口-->
+
+    <select id="searchArticlePage" resultType="Article">
+        SELECT
+        <include refid="cmsArticleColumns"/>
+        from cms_article a
+        <include refid="cmsArticleJoins"/>
+        right join cms_is_article ee on ee.categoryId = a.category_id
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            <if test="title != null and title != '' ">
+            AND a.title LIKE CONCAT('%', #{title}, '%')
+            </if>
+            <if test="author != null and author != '' ">
+            AND a.author LIKE CONCAT('%', #{author}, '%')
+            </if>
+        </where>
+        ORDER BY a.create_date DESC
+    </select>
+
     <select id="findByCategoryIdIn" resultType="Article">
         SELECT
         <include refid="cmsArticleColumns"/>

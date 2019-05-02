@@ -66,6 +66,11 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
     }
 
     @Transactional(readOnly = false)
+    public Page<Article> searchArticle(Page<Article> page, Article article) {
+        return super.searchArticlePage(page, article);
+    }
+
+    @Transactional(readOnly = false)
     public Page<Article> findArticlePage(Page<Article> page, Article article, boolean isDataScopeFilter) {
         // 更新过期的权重，间隔为“6”个小时
         Date updateExpiredWeightDate = (Date) CacheUtils.get("updateExpiredWeightDateByArticle");
@@ -364,5 +369,9 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
     @Transactional(readOnly = false)
     public void updateArticleHits(Article article){
         dao.updateArticleHits(article);
+    }
+
+    public List<Article> searchArticle(Article article){
+        return dao.searchArticle(article);
     }
 }

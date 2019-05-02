@@ -931,4 +931,19 @@ public class ArticleController extends BaseController {
         }
         return ReturnEntity.success(article,"发布成功");
     }
+
+    /**
+     * 主页查询所有文章接口
+     *参数：author/title
+     */
+    @RequestMapping("filter/searchArticle")
+    @ResponseBody
+    public ReturnEntity searchArticle(Article article, HttpServletRequest request, HttpServletResponse response){
+        try{
+            return ReturnEntity.success(articleService.searchArticle(new Page<Article>(request, response), article),"查询成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ReturnEntity.fail("查询失败");
+        }
+    }
 }
