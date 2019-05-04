@@ -744,4 +744,14 @@ public class SystemService extends BaseService implements InitializingBean {
 		vo.setOfficeImage(sysOfficeInformation.getOfficeImage());
 		return vo;
 	}
+
+	/**
+	 * 查询是否存在当前邮箱
+	 * @param email
+	 * @return
+	 */
+	public boolean findUserEmail(String email){
+		List<String> userEmail = userDao.findUserEmail(email);
+		return userEmail.isEmpty()?false:true;
+	}
 }

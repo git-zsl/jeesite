@@ -58,7 +58,13 @@ public interface UserDao extends CrudDao<User> {
 	 * @return
 	 */
 	public int deleteUserRole(User user);
-	
+
+	/**
+	 * 查找是否存在此email
+	 * @return boolean
+	 */
+	public List<String> findUserEmail(String email);
+
 	/**
 	 * 插入用户角色关联数据
 	 * @param user

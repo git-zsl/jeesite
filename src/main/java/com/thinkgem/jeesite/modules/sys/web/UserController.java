@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.Encodes;
 import com.thinkgem.jeesite.modules.sys.entity.*;
 import com.thinkgem.jeesite.modules.sys.service.AreaService;
@@ -823,11 +824,12 @@ public class UserController extends BaseController {
      */
     @RequestMapping("filter/clearCache")
     @ResponseBody
-    public ReturnEntity clearCache(String userId){
+    public ReturnEntity clearCache(String userId,HttpServletRequest request){
         try{
             // 清除用户缓存
             User user = UserUtils.get(userId);
             user.setLoginName(user.getLoginName());
+           CacheUtils.remove("homeLoginSession_"+userId);
             UserUtils.clearCache(user);
         }catch (Exception e){
             e.printStackTrace();

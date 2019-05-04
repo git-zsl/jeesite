@@ -15,8 +15,7 @@ import com.thinkgem.jeesite.modules.sys.entity.Email;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.service.AreaService;
 import com.thinkgem.jeesite.modules.sys.service.HomeLoginService;
-import com.thinkgem.jeesite.modules.sys.service.OfficeService;
-import com.thinkgem.jeesite.modules.sys.service.SysOfficeInformationService;
+import com.thinkgem.jeesite.modules.sys.service.SystemService;
 import com.thinkgem.jeesite.modules.sys.utils.EmailUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LoginUtils;
@@ -39,7 +38,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.net.URLDecoder;
-import java.text.MessageFormat;
 import java.util.*;
 
 /**
@@ -53,6 +51,8 @@ public class HomeLoginController extends BaseController {
 
     @Autowired
     private HomeLoginService homeLoginService;
+    @Autowired
+    private SystemService systemService;
     @Autowired
     private AreaService areaService;
     @Autowired
@@ -215,7 +215,7 @@ public class HomeLoginController extends BaseController {
      */
     @RequestMapping(value = "/loginSuccess", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<String> loginSuccess(@RequestParam Map<String, String> map) {
+    public ReturnEntity<String> loginSuccess(@RequestParam Map<String, String> map,HttpServletRequest request) {
         User byLoginName = null;
         try {
             String token = "";
@@ -246,6 +246,7 @@ public class HomeLoginController extends BaseController {
                 token = LoginUtils.entryptPassword(format);
                 byLoginName.setToken(token);
                 byLoginName.setIsCompany(isCompany);
+                CacheUtils.put("homeLoginSession_"+byLoginName.getId(),byLoginName.getId());
                 return ReturnEntity.success(byLoginName, "登录成功");
             }
         } catch (Exception e) {
@@ -294,16 +295,40 @@ public class HomeLoginController extends BaseController {
     /**
      * 密码找回接口
      */
-    @RequestMapping("findPassword")
+    @RequestMapping("/findPassword")
     @ResponseBody
-    public ReturnEntity findPassword(){
+    public ReturnEntity findPassword(@RequestParam("email") String email,HttpServletRequest request){
         try{
-
+            boolean userEmail = systemService.findUserEmail(email);
+            if(userEmail){
+                String content = "<a href=http://www.baidu.com>点击完成密码找回</a><br/>";
+                EmailUtils.sendHtmlMail(new Email(email, "注册验证", content));
+                request.getSession().setAttribute("findPasswordUserId","此处用用户名查询出来用户id");
+            }else{
+                return ReturnEntity.success("邮箱不正确，请重新输入");
+            }
         }catch (Exception e){
             LogUtils.getLogInfo(clazz).info("程序出错", e);
             e.printStackTrace();
             return ReturnEntity.fail("程序出错");
         }
-        return ReturnEntity.success(null,"程序出错");
+        return ReturnEntity.success("邮件发送成功");
     }
+
+   @RequestMapping("updatePassword")
+    public ReturnEntity updatePassword(String newPassword,HttpServletRequest request){
+        try{
+            String userid = (String)request.getSession().getAttribute("findPasswordUserId");
+            request.getSession().removeAttribute("findPasswordUserId");
+            if(StringUtils.isBlank(userid)){
+                return ReturnEntity.fail("邮箱验证失效，请重新申请验证");
+            }
+            User user = UserUtils.get(userid);
+            systemService.updatePasswordById(userid,user.getLoginName(),newPassword);
+            return ReturnEntity.success(true,"修改成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ReturnEntity.success(false,"修改失败");
+        }
+   }
 }
