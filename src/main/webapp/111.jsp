@@ -24,5 +24,11 @@
     <input type="submit" value="提交" />
 </form>
 
+<form action="http://localhost:8080/zsl/a/sys/user/filter/clearCache" method="post">
+    userId : <input name = "userId"/>
+    <input type="submit" value="提交" />
+</form>
+
+
 </body>
 </html>
