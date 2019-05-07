@@ -72,7 +72,7 @@
 	<select id="findCurrentArea" resultType="Area">
 		SELECT
 		<include refid="areaColumns"/>
-		FROM sys_area a
+		FROM sys_china a
 		<include refid="areaJoins"/>
 		<where>
 			a.del_flag = #{DEL_FLAG_NORMAL}
