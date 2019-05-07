@@ -69,6 +69,23 @@
 				ORDER BY a.sort ASC
 	</select>
 
+	<select id="findCurrentArea" resultType="Area">
+		SELECT
+		<include refid="areaColumns"/>
+		FROM sys_area a
+		<include refid="areaJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test=" id != '' and id != null">
+				AND  a.parent_id = #{id}
+			</if>
+			<if test=" type != '' and type != null">
+				AND  a.parent_id = '0'
+			</if>
+		</where>
+				ORDER BY a.sort ASC
+	</select>
+
 	<select id="findByParentId" resultType="Area">
 		SELECT
 		<include refid="areaColumns"/>

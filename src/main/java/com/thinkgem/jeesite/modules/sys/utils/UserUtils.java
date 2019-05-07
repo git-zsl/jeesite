@@ -90,6 +90,15 @@ public class UserUtils {
 	}
 
 	/**
+	 * 查询name是否存在
+	 * @param name
+	 * @return
+	 */
+	public static User getByName(String name){
+		return userDao.getByName(name);
+	}
+
+	/**
 	 * 判断邮箱是否存在
 	 * @param email
 	 * @return 取不到返回null

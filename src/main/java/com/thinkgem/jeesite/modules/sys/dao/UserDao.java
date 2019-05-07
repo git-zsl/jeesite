@@ -24,6 +24,12 @@ public interface UserDao extends CrudDao<User> {
 	 * @return
 	 */
 	public User getByLoginName(User user);
+	/**
+	 * 根据名称查询用户
+	 * @param name
+	 * @return
+	 */
+	public User getByName(String name);
 
 
 	public List<User> getByEmail(String email);

@@ -214,6 +214,29 @@ public class HomeLoginController extends BaseController {
     }
 
     /**
+     * 名称验证
+     */
+    @RequestMapping(value = "/ValidateName")
+    @ResponseBody
+    public ReturnEntity<String> ValidateName(@RequestParam Map<String, String> map) {
+        try {
+            String name = map.get("name");
+            if(StringUtils.isBlank(name)){
+                return ReturnEntity.fail("请输入名称");
+            }
+            User byName = UserUtils.getByLoginName(name);
+            if (Objects.isNull(byName)) {
+                return ReturnEntity.success("当前用户名可以使用");
+            }
+        } catch (Exception e) {
+            LogUtils.getLogInfo(clazz).info("查询出错", e);
+            e.printStackTrace();
+            return ReturnEntity.fail("系统内部出错");
+        }
+        return ReturnEntity.fail("当前用户名已存在");
+    }
+
+    /**
      * 用户登录
      */
     @RequestMapping(value = "/loginSuccess", method = RequestMethod.POST)
@@ -261,10 +284,11 @@ public class HomeLoginController extends BaseController {
 
     /**
      * 省市区接口
+     * 一次性封闭
      */
-    @RequestMapping("/getArea")
+    @RequestMapping("/getArea1")
     @ResponseBody
-    public ReturnEntity<Area> getAreaData() {
+    public ReturnEntity<Area> getAreaData1() {
         List<Area> areas = Lists.newArrayList();
         try {
             List<Area> list = areaService.findTopArea();
@@ -278,6 +302,23 @@ public class HomeLoginController extends BaseController {
             return ReturnEntity.fail("获取省市区失败");
         }
         return ReturnEntity.success(areas, "获取省市区成功");
+    }
+
+    /**
+     * 省市区接口
+     * 封装对应name的数据
+     */
+    @RequestMapping("/getArea")
+    @ResponseBody
+    public ReturnEntity<Area> getAreaData(Area area) {
+        try {
+            List<Area> list = areaService.findCurrentArea(area);
+            return ReturnEntity.success(list, "获取省市区成功");
+        } catch (Exception e) {
+            LogUtils.getLogInfo(clazz).info("获取省市区失败", e);
+            e.printStackTrace();
+            return ReturnEntity.fail("获取省市区失败");
+        }
     }
 
     /**

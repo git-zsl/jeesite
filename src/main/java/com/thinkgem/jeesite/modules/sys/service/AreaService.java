@@ -42,6 +42,10 @@ public class AreaService extends TreeService<AreaDao, Area> {
 	public List<Area> findTopArea(){
 		return dao.findTopArea();
 	}
+
+	public List<Area> findCurrentArea(Area area){
+		return dao.findCurrentArea(area);
+	}
 	public List<Area> getByParentId(String parentId){
 		return dao.getByParentId(parentId);
 	}
