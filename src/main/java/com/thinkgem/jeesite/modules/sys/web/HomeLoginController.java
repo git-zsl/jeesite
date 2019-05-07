@@ -82,7 +82,7 @@ public class HomeLoginController extends BaseController {
             Set<String> keys = cache.keys();
             if (StringUtils.isBlank(loginName) || keys.size() == 0) {
                 LogUtils.getLogInfo(clazz).info("邮箱验证失败,loginName为空");
-                return "redirect:http://www.baidu.com";
+                return "redirect:/failPage.jsp";
             }
             for (Iterator<String> it = keys.iterator(); it.hasNext(); ) {
                 String key = it.next();
@@ -97,9 +97,9 @@ public class HomeLoginController extends BaseController {
             //清除缓存map
             CacheUtils.removeAll(loginName);
             LogUtils.getLogInfo(clazz).info("邮注册失败", e);
-            return "redirect:http://www.baidu.com";
+            return "redirect:/failPage.jsp";
         }
-        return "redirect:http://139.159.200.137:8081/";
+        return "redirect:http://www.useidea.com";
     }
 
     /**
@@ -154,6 +154,9 @@ public class HomeLoginController extends BaseController {
             User byLoginName = UserUtils.getByLoginName(loginName);
             if (!Objects.isNull(byLoginName)) {
                 return ReturnEntity.fail("当前用户名已被占用");
+            }
+            if (!UserUtils.getByEmail(email)) {
+                return ReturnEntity.fail("当前邮箱已被占用");
             }
             //企业用户字段
             //清除缓存map
@@ -266,10 +269,8 @@ public class HomeLoginController extends BaseController {
         try {
             List<Area> list = areaService.findTopArea();
             for (Area area : list) {
-                if (Global.YES.equals(area.getParent().getId())) {
                     areas.add(area);
                     areaService.findChildArea(area);
-                }
             }
         } catch (Exception e) {
             LogUtils.getLogInfo(clazz).info("获取省市区失败", e);
@@ -331,4 +332,43 @@ public class HomeLoginController extends BaseController {
             return ReturnEntity.success(false,"修改失败");
         }
    }
+
+    /**
+     * 同步省市区数据
+     */
+    @RequestMapping("copyArea")
+    @ResponseBody
+    public ReturnEntity copyArea(){
+        try{
+            List<Area> all = areaService.findList(new Area());
+            for (Area a : all ) {
+                a.setParentIds("");
+                a.setType("");
+                StringBuffer sb = new StringBuffer();
+                for (Area b : all) {
+                    if(a.getId().equals(b.getParentId())){
+                        sb.append(a.getId()).append(",");
+                    }
+                }
+                if(a.getName().contains("中国")){
+                    a.setType("1");
+                }else  if(a.getName().contains("省")){
+                    a.setType("2");
+                }else  if(a.getName().contains("市")){
+                    a.setType("3");
+                }else if(a.getName().contains("区")){
+                    a.setType("4");
+                }else{
+                    a.setType("4");
+                }
+                a.setParentIds(sb.toString());
+                areaService.save(a);
+            }
+            return ReturnEntity.success("同步成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ReturnEntity.fail("同步失败");
+        }
+
+    }
 }

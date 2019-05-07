@@ -64,7 +64,7 @@
 		<include refid="areaJoins"/>
 		<where>
 			 a.del_flag = '0'
-		/*AND  a.parent_id = '1'*/
+		AND  a.type = '2'
 		</where>
 				ORDER BY a.sort ASC
 	</select>

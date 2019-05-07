@@ -88,6 +88,19 @@ public class UserUtils {
 		}
 		return user;
 	}
+
+	/**
+	 * 判断邮箱是否存在
+	 * @param email
+	 * @return 取不到返回null
+	 */
+	public static boolean getByEmail(String email){
+		return userDao.getByEmail(email).isEmpty()?true:false;
+	}
+
+
+
+
 	
 	/**
 	 * 清除当前用户缓存
