@@ -24,9 +24,9 @@
 	</sql>
 	
 	<sql id="cmsCommentDaoJoins">
-		JOIN cms_category c ON c.id = a.category_id
-		JOIN sys_office o ON o.id = c.office_id
-		JOIN sys_user u ON u.id = a.create_by
+		LEFT JOIN cms_category c ON c.id = a.category_id
+		LEFT JOIN sys_office o ON o.id = c.office_id
+		LEFT JOIN sys_user u ON u.id = a.create_by
 	</sql>
 
 	<sql id="CommentJoins">

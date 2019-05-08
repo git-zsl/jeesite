@@ -813,7 +813,7 @@ public class ArticleController extends BaseController {
                 //文章类创建人
                 Article article = new Article();
                 article.setCreateBy(user);
-                list = articleService.findList(article);
+                list = articleService.findArticleList(article);
                 //收藏类创建人
                 ArticleCollect articleCollect = new ArticleCollect();
                 articleCollect.setUser(user);

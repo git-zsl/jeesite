@@ -343,6 +343,9 @@
             <if test="id != null and id != ''">
                 AND a.id = #{id}
             </if>
+            <if test="createBy != null and createBy.id != null and createBy.id != ''">
+                AND a.create_by = #{createBy.id}
+            </if>
             <if test="company != null and company != ''">
                 AND (a.company like
                 <if test="dbName == 'oracle'">'%'||#{company}||'%'</if>

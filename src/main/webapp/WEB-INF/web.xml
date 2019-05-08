@@ -96,14 +96,15 @@
 		<url-pattern>/a/cms/article/save</url-pattern>
 	</filter-mapping>
 
-	<filter>
+	<!-- 评论自动过滤 -->
+<!--	<filter>
 		<filter-name>commentFilter</filter-name>
 		<filter-class>com.thinkgem.jeesite.common.filter.SaveFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>commentFilter</filter-name>
 		<url-pattern>/a/cms/comment/save</url-pattern>
-	</filter-mapping>
+	</filter-mapping>-->
 
 	<!-- SiteMesh -->
 	<filter>

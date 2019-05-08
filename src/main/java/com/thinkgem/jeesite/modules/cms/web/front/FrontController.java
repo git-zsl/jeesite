@@ -295,7 +295,8 @@ public class FrontController extends BaseController{
 			comment.setCategory(new Category(categoryId));
 		}
 		//过滤敏感词
-		String content = filter.replaceSensitiveWord(comment.getContent(), 1, "*");
+		//String content = filter.replaceSensitiveWord(comment.getContent(), 1, "*");
+		String content = comment.getContent();
 		if (StringUtils.isNotBlank(validateCode) || Global.NO.equals(comment.getIsValidate())){
 			if (ValidateCodeServlet.validate(request, validateCode) || Global.NO.equals(comment.getIsValidate())){
 				if (StringUtils.isNotBlank(replyId)){
@@ -315,7 +316,7 @@ public class FrontController extends BaseController{
 				}
 				comment.setIp(request.getRemoteAddr());
 				comment.setCreateDate(new Date());
-				comment.setDelFlag(Comment.DEL_FLAG_NORMAL);
+				comment.setDelFlag(Comment.DEL_FLAG_AUDIT);
 				commentService.save(comment);
 				return ReturnEntity.success("提交成功");
 

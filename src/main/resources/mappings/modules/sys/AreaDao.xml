@@ -95,7 +95,7 @@
 			 a.del_flag = '0'
 		AND  a.parent_id = '1'
 		</where>
-				ORDER BY a.sort ASC
+			ORDER BY a.sort ASC
 	</select>
 
 	<select id="findCityList" resultType="Area">
