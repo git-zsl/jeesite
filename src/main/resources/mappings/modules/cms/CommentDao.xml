@@ -206,7 +206,7 @@
 	
 	<update id="delete">
 		UPDATE cms_comment SET 
-			del_flag = #{DEL_FLAG_DELETE}
+			del_flag = #{delFlag}
 		WHERE id = #{id}
 	</update>
 	

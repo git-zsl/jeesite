@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 评论Controller
@@ -79,6 +80,13 @@ public class CommentController extends BaseController {
 	@RequiresPermissions("cms:comment:edit")
 	@RequestMapping(value = "delete")
 	public String delete(Comment comment, @RequestParam(required=false) Boolean isRe, RedirectAttributes redirectAttributes) {
+		if(Objects.nonNull(isRe)){
+			if(isRe){
+				comment.setDelFlag(Comment.DEL_FLAG_AUDIT);
+			}else{
+				comment.setDelFlag(Comment.DEL_FLAG_DELETE);
+			}
+		}
 		commentService.delete(comment, isRe);
 		addMessage(redirectAttributes, (isRe!=null&&isRe?"恢复审核":"删除")+"评论成功");
 		return "redirect:" + adminPath + "/cms/comment/?repage&delFlag=2";

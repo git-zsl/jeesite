@@ -27,6 +27,10 @@ public class HomeLinkSessionFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
         String userId = request.getParameter("myUserId");
         if(StringUtils.isNotBlank(userId)){
+            if(userId.equals("tourists")){
+                filterChain.doFilter(request, response);
+                return;
+            }
             String loginFlag = (String)CacheUtils.get("homeLoginSession_" + userId);
             if (StringUtils.isNotBlank(loginFlag)) {
                 filterChain.doFilter(request, response);
