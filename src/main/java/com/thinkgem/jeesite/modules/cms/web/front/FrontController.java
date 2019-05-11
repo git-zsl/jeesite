@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.persistence.ReturnStatus;
 import com.thinkgem.jeesite.modules.cms.utils.SensitivewordFilter;
+import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -290,10 +292,13 @@ public class FrontController extends BaseController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "comment", method=RequestMethod.POST)
-	public ReturnEntity commentSave(Comment comment, String validateCode, @RequestParam(required=false) String categoryId, @RequestParam(required=false) String replyId, HttpServletRequest request) {
+	public ReturnEntity commentSave(Comment comment, String userId,String validateCode, @RequestParam(required=false) String categoryId, @RequestParam(required=false) String replyId, HttpServletRequest request) {
 		if(!StringUtils.isBlank(categoryId)){
 			comment.setCategory(new Category(categoryId));
 		}
+		User user = UserUtils.get(userId);
+		comment.setCreateBy(user);
+		comment.setUpdateBy(user);
 		//过滤敏感词
 		//String content = filter.replaceSensitiveWord(comment.getContent(), 1, "*");
 		String content = comment.getContent();
