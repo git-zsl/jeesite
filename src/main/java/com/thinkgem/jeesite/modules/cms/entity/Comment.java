@@ -41,7 +41,7 @@ public class Comment extends DataEntity<Comment> {
 	private String categoryIdFlag;   //是否文章标志
 	private String isValidate;   //是否需要验证码
 	private User user;
-
+    private List<Comment> childrens = Lists.newArrayList();
 	public Comment() {
 		super();
 		this.delFlag = DEL_FLAG_NORMAL;
@@ -211,5 +211,13 @@ public class Comment extends DataEntity<Comment> {
 
 	public void setCategoryIdFlag(String categoryIdFlag) {
 		this.categoryIdFlag = categoryIdFlag;
+	}
+
+	public List<Comment> getChildrens() {
+		return childrens;
+	}
+
+	public void setChildrens(List<Comment> childrens) {
+		this.childrens = childrens;
 	}
 }

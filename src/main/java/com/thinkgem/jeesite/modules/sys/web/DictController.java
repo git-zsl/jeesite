@@ -123,7 +123,7 @@ public class DictController extends BaseController {
 	/**
 	 * 招聘条件接口
 	 */
-	@RequestMapping(value = "jobSelect",method = RequestMethod.POST)
+	@RequestMapping(value = "filter/jobSelect",method = RequestMethod.POST)
 	@ResponseBody
 	public ReturnEntity<List<Dict>> findJobSelect(@RequestParam(required=false) String type) {
 		List<Dict> list = null;

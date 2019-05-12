@@ -6,8 +6,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+/**
+ * 分页工具
+ */
 public class MyPageUtil {
 
+    /**
+     * 模拟分页
+     * @param t
+     * @param request
+     * @param response
+     * @param <T>
+     * @return
+     */
     public static <T> List<T> getPageList(List<T> t, HttpServletRequest request, HttpServletResponse response){
         Page<T> page = new Page<T>(request, response);
         List<T> lists = Lists.newArrayList();

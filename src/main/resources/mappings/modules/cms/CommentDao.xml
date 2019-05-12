@@ -65,6 +65,19 @@
 		</where>
 	</select>
 
+	<select id="findCommentByArticle" resultType="Comment">
+		SELECT
+		<include refid="cmsCommentDaoColumns"/>
+		FROM cms_comment a
+		<include refid="cmsCommentDaoJoins"/>
+		<where>
+			1=1
+			<if test=" id != null and id != '' ">
+				AND a.content_id = #{id}
+			</if>
+		</where>
+	</select>
+
 	<select id="findList" resultType="Comment">
 		SELECT 
 			<include refid="cmsCommentDaoColumns"/>

@@ -10,6 +10,7 @@ import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.modules.classificationtree.entity.Classificationtree;
 import com.thinkgem.jeesite.modules.classificationtree.service.ClassificationtreeService;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -103,6 +104,8 @@ public class BookManagerController extends BaseController {
 		if (!beanValidator(model, bookManager)){
 			return form(bookManager, model);
 		}
+		String s = StringEscapeUtils.unescapeXml(bookManager.getParticulars());
+		bookManager.setParticulars(s);
 		if(StringUtils.isBlank(bookManager.getFirstClassId().getId())){
 			addMessage(redirectAttributes, "请选择分类");
 			return "redirect:"+Global.getAdminPath()+"/book/bookManager/form";

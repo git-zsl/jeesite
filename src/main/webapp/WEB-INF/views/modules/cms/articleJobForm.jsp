@@ -102,7 +102,7 @@
 		</div>
 		<div class="control-group">
 			&nbsp&nbsp&nbsp&nbsp&nbsp<label class="control-label">岗位:</label>
-			<form:select id="posts" path="posts" class="input-medium">
+			<form:select id="posts" path="posts" class="input-medium required">
 				<form:option value="" label="请选择"/>
 				<form:options items="${postsList}" htmlEscape="false" itemLabel="posts" itemValue="id"/>
 			</form:select>
@@ -156,7 +156,7 @@
 		<div class="control-group">
 			<label class="control-label">招聘人数:</label>
 			<div class="controls">
-				<form:input path="jobNum" htmlEscape="false" maxlength="200" class="input-mini required digits"/>&nbsp;
+				<form:input path="jobNum" htmlEscape="false" maxlength="200" class="input-mini required"/>&nbsp;
 			</div>
 		</div>
 		<div class="control-group">

@@ -417,11 +417,11 @@ public class ArticleController extends BaseController {
             List<String> categoryIds = new ArrayList<>();
             categoryIds.add(gg.getCategoryId());
             articles = articleService.findByCategoryIdIn(categoryIds);
+            return ReturnEntity.success(articles, "查询广告成功");
         } catch (Exception e) {
             LogUtils.saveLog(request, articles, e, "没有找到对应的自定义栏目，请配置");
             return ReturnEntity.fail("系统内部错误，请联系管理员");
         }
-        return ReturnEntity.success(articles, "查询广告成功");
     }
 
     /**
@@ -457,6 +457,11 @@ public class ArticleController extends BaseController {
                 List<Article> list = null;
                 if(Objects.nonNull(article.getCategory()) && StringUtils.isNotBlank(article.getCategory().getId())){
                     list = articleService.findList(article);
+                 /*Page<Article> page = new Page<Article>(request, response);
+                    //模拟分页
+                    List<Article> pageList = MyPageUtil.getPageList(list, request, response);
+                    page.setList(pageList);*/
+                    return ReturnEntity.success(list, "获取列表成功");
                 }else{
                     list = articleService.findArticleList(article);
                 }

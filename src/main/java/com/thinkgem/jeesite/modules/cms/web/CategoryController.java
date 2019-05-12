@@ -180,7 +180,11 @@ public class CategoryController extends BaseController {
 	public ReturnEntity<List<Category>> navigationBar(Category category,@RequestParam(value = "allchildcategory",required = false) String allchildcategory) {
         List<Category> parentList = new ArrayList<>();
 	    try{
-            category.setIsShowHome(Global.YES);
+	    	if(StringUtils.isNotBlank(allchildcategory) && Global.TRUE.equals(allchildcategory)){
+				category.setIsShowHome(null);
+			}else{
+				category.setIsShowHome(Global.YES);
+			}
             List<Category> categorys = categoryService.findNavigationBar(category);
 			if(!StringUtils.isBlank(category.getId()) && StringUtils.isBlank(allchildcategory)){
 				return ReturnEntity.success(categorys,"查询对应栏目成功");

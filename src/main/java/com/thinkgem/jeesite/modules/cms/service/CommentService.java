@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.cms.service;
 
+import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
@@ -98,4 +99,24 @@ public class CommentService extends CrudService<CommentDao, Comment> {
         }
     }
 
+
+    public List<Comment> findCommentByArticle(Article article){
+        //查询，并组装list返回
+        List<Comment> list = dao.findCommentByArticle(article.getId());
+        List<Comment> comments = Lists.newArrayList();
+        //封装子集合
+        if(!list.isEmpty()){
+            for (Comment c : list) {
+                for (Comment cc : list) {
+                    if(c.getId().equals(cc.getParentContentId())){
+                        c.getChildComments().add(cc);
+                    }
+                }
+                if(StringUtils.isBlank(c.getParentContentId())){
+                    comments.add(c);
+                }
+            }
+        }
+        return comments;
+    }
 }

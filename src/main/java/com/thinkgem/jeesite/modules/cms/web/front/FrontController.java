@@ -314,15 +314,18 @@ public class FrontController extends BaseController{
 						commentService.findParentCommentAndSet(replyComment);
 					}else{
 						comment.setContent(content);
-						Article article = articleService.get(comment.getContentId());
+						/*Article article = articleService.get(comment.getContentId());
 						article.setCommentNum(article.getCommentNum() + 1);
-						articleService.updataArticleCommentNum(article);
+						articleService.updataArticleCommentNum(article);*/
 					}
 				}
 				comment.setIp(request.getRemoteAddr());
 				comment.setCreateDate(new Date());
 				comment.setDelFlag(Comment.DEL_FLAG_AUDIT);
 				commentService.save(comment);
+				/*Article article = articleService.get(comment.getContentId());
+				article.setCommentNum(article.getCommentNum() + 1);
+				articleService.updataArticleCommentNum(article);*/
 				return ReturnEntity.success("提交成功");
 
 			}else{

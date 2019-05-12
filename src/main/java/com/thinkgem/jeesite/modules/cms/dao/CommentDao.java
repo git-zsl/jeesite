@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.cms.dao;
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.cms.entity.Comment;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface CommentDao extends CrudDao<Comment> {
     public List<Comment> findParent(Comment comment);
 
     public List<String> findArticleIds(Comment comment);
+
+    public List<Comment> findCommentByArticle(@Param("id") String id);
 }
