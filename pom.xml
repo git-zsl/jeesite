@@ -82,7 +82,12 @@
 	
 	<!-- 依赖项定义 -->
 	<dependencies>
-	
+		<!--tar解压-->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+			<version>1.18</version>
+		</dependency>
 		<!-- SPRING begin -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -253,6 +258,7 @@
 			<version>2.1</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<!-- <dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
