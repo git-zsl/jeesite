@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.persistence.ReturnStatus;
+import com.thinkgem.jeesite.modules.ad.entity.AdInfomation;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.cms.service.ArticleService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -132,19 +133,22 @@ public class ArticleCollectController extends BaseController {
 			articleCollect.setUser(user);
 			articlecollects = articleCollect.getArticles();
 			Page<ArticleCollect> page = articleCollectService.findHomeCollectPage(new Page<ArticleCollect>(request, response), articleCollect);
+			Page<Article> page1 = new Page<Article>(request, response);
 			if(!page.getList().isEmpty()){
 				List<ArticleCollect> list = page.getList();
 				for (ArticleCollect ac : list) {
 					Article article = articleService.get(ac.getArticleId());
 					articlecollects.add(article);
 				}
+				page1.setList(articlecollects);
 			}
+			return ReturnEntity.success(page1,"查询收藏列表成功");
 		}catch (Exception e){
 			LogUtils.getLogInfo(clazz).info("查询收藏列表出错",e);
 			e.printStackTrace();
 			return ReturnEntity.fail("查询收藏列表出错");
 		}
-		return ReturnEntity.success(articlecollects,"查询收藏列表成功");
+
 	}
 
 	/**

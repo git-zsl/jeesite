@@ -692,6 +692,7 @@ public class SystemService extends BaseService implements InitializingBean {
 	/**
 	 * 微信二维码图片保存
 	 */
+	@Transactional(readOnly = false,rollbackFor = Exception.class)
 	public void saveWechatImage(String roolPath,MultipartFile file,User user,String wappPath)throws Exception{
 		if(Objects.nonNull(file)){
 			String originalFilename = Encodes.urlDecode(file.getOriginalFilename());

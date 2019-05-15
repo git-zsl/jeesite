@@ -173,7 +173,6 @@ public class HomeLoginController extends BaseController {
                 map.put("officeId", officeId);
                 map.put("companyId", companyId);
                 map.put("isCompany", "false");
-                map.put("name", loginName);
             }
             if (StringUtils.isBlank(map.get("loginName")) && StringUtils.isBlank(email)) {
                 return ReturnEntity.fail("用户名或者邮箱不能为空");
@@ -257,6 +256,9 @@ public class HomeLoginController extends BaseController {
             byLoginName = UserUtils.getByLoginName(loginName);
             if (Objects.isNull(byLoginName)) {
                 return ReturnEntity.fail("用户名错误，请重新输入");
+            }
+            if(StringUtils.isBlank(byLoginName.getIsCompany())){
+                return ReturnEntity.fail( "此为后台用户，不允许登录主页");
             }
             if (!byLoginName.getIsCompany().equals(isCompany)) {
                 return ReturnEntity.fail(Global.TRUE.equals(isCompany) ? "请选择个人登录入口登录" : "请选择企业登录入口登录");

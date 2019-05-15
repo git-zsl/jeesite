@@ -642,17 +642,21 @@ public class UserController extends BaseController {
                 MultipartHttpServletRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartHttpServletRequest.class);
                 image = multipartRequest.getFile("image");
                 weChatCode = multipartRequest.getFile("weChatCode");
-                String originalFilename = Encodes.urlDecode(image.getOriginalFilename());
                 String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
-                File file1 = new File(configPath + "/" + Global.getConfig("homePhoto") + user.getLoginName() + "/" + originalFilename);
-                if (!file1.getParentFile().exists()) {
-                    file1.getParentFile().mkdirs();
-                }
                 String wappPath = request.getSession().getServletContext().getContextPath();
-                image.transferTo(file1);
-                String s = wappPath + "/" + file1.getPath().substring(configPath.length() + 1);
-                user.setPhoto(s);
-                systemService.saveWechatImage(configPath, weChatCode, user, wappPath);
+                if(Objects.nonNull(image)){
+                    String originalFilename = Encodes.urlDecode(image.getOriginalFilename());
+                    File file1 = new File(configPath + "/" + Global.getConfig("homePhoto") + user.getLoginName() + "/" + originalFilename);
+                    if (!file1.getParentFile().exists()) {
+                        file1.getParentFile().mkdirs();
+                    }
+                    image.transferTo(file1);
+                    String s = wappPath + "/" + file1.getPath().substring(configPath.length() + 1);
+                    user.setPhoto(s);
+                }
+                if(Objects.nonNull(weChatCode)){
+                    systemService.saveWechatImage(configPath, weChatCode, user, wappPath);
+                }
             }
             systemService.updateHomeUserInformation(user);
             // 清除用户缓存
