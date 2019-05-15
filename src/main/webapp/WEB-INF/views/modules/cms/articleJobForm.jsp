@@ -87,7 +87,7 @@
 						<form:options items="${cityList}" htmlEscape="false" itemLabel="city" itemValue="id"/>
 					</form:select>
 			</div>
-			<div class="controls">
+			<%--<div class="controls">
 					<form:select id="city" path="city" class="input-medium">
 						<form:option value="" label="请选择"/>
 						<form:options items="${cityList}" htmlEscape="false" itemLabel="city" itemValue="id"/>
@@ -98,7 +98,7 @@
 						<form:option value="" label="请选择"/>
 						<form:options items="${cityList}" htmlEscape="false" itemLabel="city" itemValue="id"/>
 					</form:select>
-			</div>
+			</div>--%>
 		</div>
 		<div class="control-group">
 			&nbsp&nbsp&nbsp&nbsp&nbsp<label class="control-label">岗位:</label>
