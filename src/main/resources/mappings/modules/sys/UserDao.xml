@@ -108,9 +108,12 @@
     	a.attention2Num,
     	<!--主页的属性-->
     	a.sex,
-		a.district,
-		a.city,
-		a.provence,
+		a.district AS "district.id",
+		di.name AS "district.name"
+		a.city AS "city.id",
+		ci.name AS "city.name",
+		a.provence AS "provence.id",
+		pr.name AS "provence.name",
 		a.subscription,
 		a.information,
 		a.dou_ban AS "douBan",
@@ -129,6 +132,10 @@
 		LEFT JOIN sys_user cu2 ON cu2.id = c.deputy_person
 		LEFT JOIN sys_user ou ON ou.id = o.primary_person
 		LEFT JOIN sys_user ou2 ON ou2.id = o.deputy_person
+		<!--省市区关联-->
+		LEFT JOIN sys_china pr ON pr.id = a.provence
+		LEFT JOIN sys_china ci ON ci.id = a.city
+		LEFT JOIN sys_china di ON di.id = a.district
     </sql>
 	
 	<!-- 根据编号获得用户 -->

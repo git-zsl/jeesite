@@ -8,6 +8,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.thinkgem.jeesite.modules.area.entity.SysChina;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 
@@ -44,9 +45,9 @@ public class User extends DataEntity<User> {
 	private String loginFlag;	// 是否允许登陆
 	private String photo;	// 头像
 	private String sex;     // 性别
-	private String provence;  // 省
-	private String city;    // 市
-	private String district;      // 区
+	private SysChina provence;  // 省
+	private SysChina city;    // 市
+	private SysChina district;      // 区
 	private boolean subscription;   //订阅
 	private String information;   //个人签名
 	private String douBan;    //豆瓣链接
@@ -396,27 +397,27 @@ public class User extends DataEntity<User> {
 		this.sex = sex;
 	}
 
-	public String getProvence() {
+	public SysChina getProvence() {
 		return provence;
 	}
 
-	public void setProvence(String provence) {
+	public void setProvence(SysChina provence) {
 		this.provence = provence;
 	}
 
-	public String getCity() {
+	public SysChina getCity() {
 		return city;
 	}
 
-	public void setCity(String city) {
+	public void setCity(SysChina city) {
 		this.city = city;
 	}
 
-	public String getDistrict() {
+	public SysChina getDistrict() {
 		return district;
 	}
 
-	public void setDistrict(String district) {
+	public void setDistrict(SysChina district) {
 		this.district = district;
 	}
 

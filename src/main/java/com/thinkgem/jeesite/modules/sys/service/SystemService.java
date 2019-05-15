@@ -608,16 +608,16 @@ public class SystemService extends BaseService implements InitializingBean {
 		String email = Encodes.urlDecode(StringUtils.isNotBlank(user.getEmail())?user.getEmail():"");
 		String name = Encodes.urlDecode(StringUtils.isNotBlank(user.getName())?user.getName():"");
 		String information = Encodes.urlDecode(StringUtils.isNotBlank(user.getInformation())?user.getInformation():"");
-		String provence = Encodes.urlDecode(StringUtils.isNotBlank(user.getProvence())?user.getProvence():"");
+		/*String provence = Encodes.urlDecode(StringUtils.isNotBlank(user.getProvence())?user.getProvence():"");
 		String city = Encodes.urlDecode(StringUtils.isNotBlank(user.getCity())?user.getCity():"");
-		String district = Encodes.urlDecode(StringUtils.isNotBlank(user.getDistrict())?user.getDistrict():"");
+		String district = Encodes.urlDecode(StringUtils.isNotBlank(user.getDistrict())?user.getDistrict():"");*/
 		user1.setName(name);
 		user1.setSex(sex);
 		user1.setEmail(email);
-		user1.setProvence(provence);
+		user1.setProvence(user.getProvence());
 		user1.setInformation(information);
-		user1.setCity(city);
-		user1.setDistrict(district);
+		user1.setCity(user.getCity());
+		user1.setDistrict(user.getDistrict());
 		user1.setPassword(LoginUtils.entryptPassword(user.getNewPassword()));
 		user1.setMobile(user.getMobile());
 		user1.setSubscription(user.isSubscription());
@@ -652,16 +652,16 @@ public class SystemService extends BaseService implements InitializingBean {
 	 * @throws Exception
 	 */
 	public SysOfficeInformation officeInformationDecode(SysOfficeInformation sysOfficeInformation) throws Exception{
-		String provence = Encodes.urlDecode(sysOfficeInformation.getProvence());
-		String name = Encodes.urlDecode(sysOfficeInformation.getName());
+		/*String provence = Encodes.urlDecode(sysOfficeInformation.getProvence());
 		String city = Encodes.urlDecode(sysOfficeInformation.getCity());
-		String district = Encodes.urlDecode(sysOfficeInformation.getDistrict());
+		String district = Encodes.urlDecode(sysOfficeInformation.getDistrict());*/
+		String name = Encodes.urlDecode(sysOfficeInformation.getName());
 		String teamSize = Encodes.urlDecode(sysOfficeInformation.getTeamSize());
-		sysOfficeInformation.setProvence(provence);
+		/*sysOfficeInformation.setProvence(provence);
 		sysOfficeInformation.setCity(city);
+		sysOfficeInformation.setDistrict(district);*/
 		sysOfficeInformation.setName(name);
 		sysOfficeInformation.setTeamSize(teamSize);
-		sysOfficeInformation.setDistrict(district);
 		return sysOfficeInformation;
 	}
 

@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.sys.entity;
 
+import com.thinkgem.jeesite.modules.area.entity.SysChina;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import org.hibernate.validator.constraints.Length;
 
@@ -18,9 +19,9 @@ public class SysOfficeInformation extends DataEntity<SysOfficeInformation> {
 	private static final long serialVersionUID = 1L;
 	private Office office;		// 机构Id
 	private User user;  // 企业用户
-	private String provence;  // 省
-	private String city;    // 市
-	private String district;      // 区
+	private SysChina provence;  // 省
+	private SysChina city;    // 市
+	private SysChina district;      // 区
 	private String officeIntroduction;  // 机构简介
 	private String officeLink;     // 公司主页
 	private String name;		// 机构名称
@@ -100,27 +101,27 @@ public class SysOfficeInformation extends DataEntity<SysOfficeInformation> {
 		this.user = user;
 	}
 
-	public String getProvence() {
+	public SysChina getProvence() {
 		return provence;
 	}
 
-	public void setProvence(String provence) {
+	public void setProvence(SysChina provence) {
 		this.provence = provence;
 	}
 
-	public String getCity() {
+	public SysChina getCity() {
 		return city;
 	}
 
-	public void setCity(String city) {
+	public void setCity(SysChina city) {
 		this.city = city;
 	}
 
-	public String getDistrict() {
+	public SysChina getDistrict() {
 		return district;
 	}
 
-	public void setDistrict(String district) {
+	public void setDistrict(SysChina district) {
 		this.district = district;
 	}
 

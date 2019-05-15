@@ -12,6 +12,7 @@ import com.thinkgem.jeesite.common.supcan.annotation.treelist.cols.SupCol;
 import com.thinkgem.jeesite.common.utils.Collections3;
 import com.thinkgem.jeesite.common.utils.excel.annotation.ExcelField;
 import com.thinkgem.jeesite.common.utils.excel.fieldtype.RoleListType;
+import com.thinkgem.jeesite.modules.area.entity.SysChina;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 
@@ -39,9 +40,9 @@ public class UserAndOfficeInformationVo {
 	private String weiXinCode;   //微信二维码
 	private String attentionNum;  //关注数
 	private String attention2Num;  //被关注数
-	private String provence;  // 省
-	private String city;    // 市
-	private String district;      // 区
+	private SysChina provence;  // 省
+	private SysChina city;    // 市
+	private SysChina district;      // 区
 	private String officeLink;     // 公司主页
 	private String name;		// 机构名称
 	private String teamSize;       //团队人数
@@ -143,27 +144,27 @@ public class UserAndOfficeInformationVo {
 		this.attention2Num = attention2Num;
 	}
 
-	public String getProvence() {
+	public SysChina getProvence() {
 		return provence;
 	}
 
-	public void setProvence(String provence) {
+	public void setProvence(SysChina provence) {
 		this.provence = provence;
 	}
 
-	public String getCity() {
+	public SysChina getCity() {
 		return city;
 	}
 
-	public void setCity(String city) {
+	public void setCity(SysChina city) {
 		this.city = city;
 	}
 
-	public String getDistrict() {
+	public SysChina getDistrict() {
 		return district;
 	}
 
-	public void setDistrict(String district) {
+	public void setDistrict(SysChina district) {
 		this.district = district;
 	}
 
