@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.modules.area.entity.SysChina;
 import com.thinkgem.jeesite.modules.sys.entity.Area;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -92,9 +93,9 @@ public class SysOfficeInformationService extends CrudService<SysOfficeInformatio
 		officeInfo.setOfficeIntroduction(map.get("officeIntroduction"));  //机构简介
 		officeInfo.setOfficeLink(map.get("officeLink"));  // 企业官网
 		officeInfo.setImage(map.get("image"));   //  企业证书
-		officeInfo.setProvence(map.get("provence"));
-		officeInfo.setCity(map.get("city"));
-		officeInfo.setDistrict(map.get("district"));
+		officeInfo.setProvence(new SysChina(map.get("provence")));
+		officeInfo.setCity(new SysChina(map.get("city")));
+		officeInfo.setDistrict(new SysChina(map.get("district")));
 		return officeInfo;
 	}
 

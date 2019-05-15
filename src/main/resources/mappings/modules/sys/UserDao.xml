@@ -109,7 +109,7 @@
     	<!--主页的属性-->
     	a.sex,
 		a.district AS "district.id",
-		di.name AS "district.name"
+		di.name AS "district.name",
 		a.city AS "city.id",
 		ci.name AS "city.name",
 		a.provence AS "provence.id",
