@@ -277,11 +277,12 @@ public class HomeLoginController extends BaseController {
                 CacheUtils.put("homeLoginSession_"+byLoginName.getId(),byLoginName.getId());
                 return ReturnEntity.success(byLoginName, "登录成功");
             }
+            return ReturnEntity.fail("登录失败");
         } catch (Exception e) {
             LogUtils.getLogInfo(clazz).info("程序出错", e);
             return ReturnEntity.fail("程序出错");
         }
-        return ReturnEntity.fail("登录失败");
+
     }
 
     /**
@@ -412,6 +413,16 @@ public class HomeLoginController extends BaseController {
             e.printStackTrace();
             return ReturnEntity.fail("同步失败");
         }
+    }
 
+    /**
+     * 获取密码
+     * @param user
+     * @return
+     */
+    @RequestMapping("filter/getMyPassword")
+    @ResponseBody
+    public ReturnEntity getMyPassword(User user){
+        return ReturnEntity.success(SystemService.entryptPassword(user.getNewPassword()),"获取成功");
     }
 }
