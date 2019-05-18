@@ -303,7 +303,7 @@
         <include refid="cmsArticleJoins"/>
         <where>
             a.del_flag = #{DEL_FLAG_NORMAL}
-            <if test="isRecommend != null and isRecommend != ''">
+            <if test="isRecommend != null and isRecommend != '' ">
                 AND a.is_recommend = #{isRecommend}
             </if>
             <if test="commentNum == 1 ">

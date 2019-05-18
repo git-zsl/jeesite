@@ -54,6 +54,19 @@
 		</where>
 	</select>
 
+	<select id="findByUserId" resultType="UserAttentionUserids">
+		SELECT
+		<include refid="userAttentionUseridsColumns"/>
+		FROM user_attention_userids a
+		<include refid="userAttentionUseridsJoins"/>
+		<where>
+			1=1
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+		</where>
+	</select>
+
 	<select id="findAllList" resultType="UserAttentionUserids">
 		SELECT 
 			<include refid="userAttentionUseridsColumns"/>

@@ -18,6 +18,7 @@ import javax.validation.ConstraintViolationException;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.Encodes;
+import com.thinkgem.jeesite.modules.area.entity.SysChina;
 import com.thinkgem.jeesite.modules.sys.entity.*;
 import com.thinkgem.jeesite.modules.sys.service.AreaService;
 import com.thinkgem.jeesite.modules.sys.service.OfficeService;
@@ -658,16 +659,20 @@ public class UserController extends BaseController {
                     systemService.saveWechatImage(configPath, weChatCode, user, wappPath);
                 }
             }
+            //测试代码
+            user.setDistrict(new SysChina("110500"));
+            user.setCity(new SysChina("110000"));
+            user.setProvence(new SysChina("1100001"));
             systemService.updateHomeUserInformation(user);
             // 清除用户缓存
             user.setLoginName(user.getLoginName());
             UserUtils.clearCache(user);
+            return ReturnEntity.success(UserUtils.get(user.getId()), "更新成功");
         } catch (Exception e) {
             e.printStackTrace();
             LogUtils.getLogInfo(UserController.class).info("程序出错", e);
             return ReturnEntity.fail("更新失败");
         }
-        return ReturnEntity.success(UserUtils.get(user.getId()), "更新成功");
     }
 
     /**

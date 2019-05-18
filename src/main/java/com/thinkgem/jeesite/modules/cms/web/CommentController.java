@@ -3,6 +3,8 @@
  */
 package com.thinkgem.jeesite.modules.cms.web;
 
+import com.google.common.collect.Lists;
+import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.utils.MyPageUtil;
@@ -191,19 +193,39 @@ public class CommentController extends BaseController {
      */
     @RequestMapping(value = "filter/consultationArticleList", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<Page<Comment>> findConsultationArticleList(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "categoryId") String categoryId, @ModelAttribute Comment comment) {
+    public synchronized  ReturnEntity<Page<Comment>> findConsultationArticleList(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "categoryId") String categoryId, @ModelAttribute Comment comment) {
         Article article = new Article();
         article.setCategory(new Category(categoryId));
-        article.setIsRecommend(comment.getIsRecommend());
-        article.setCommentNum(Integer.parseInt(comment.getCommentNum()));
+        if(!Global.YES.equals(comment.getIsRecommend())){
+            article.setIsRecommend("");
+        }else{
+            article.setIsRecommend(comment.getIsRecommend());
+        }
+        List<Article> articleList0Answers = Lists.newArrayList();
         Page<Article> articlePage = null;
         try {
             articlePage = articleService.findconsultationArticlePage(new Page<Article>(request, response), article);
+            //设置评论数
+            List<Article> list = articlePage.getList();
+            if(!list.isEmpty()){
+                for (Article a : list) {
+                    int commentNumByArticle = commentService.findCommentNumByArticle(a);
+                    a.setCommentNum(commentNumByArticle);
+                    if(StringUtils.isNotBlank(comment.getParentContentId()) && commentNumByArticle == 0){
+                        articleList0Answers.add(a);
+                    }
+                }
+                article.setCommentNum(Integer.parseInt(comment.getCommentNum()));
+            }
+            if(StringUtils.isNotBlank(comment.getParentContentId())){
+                articlePage.setList(articleList0Answers);
+            }
+            return ReturnEntity.success(articlePage, "查询成功");
         } catch (Exception e) {
             e.printStackTrace();
             LogUtils.getLogInfo(CommentController.class).info("程序出错", e);
+            return ReturnEntity.fail( "查询失败");
         }
-        return ReturnEntity.success(articlePage, "查询成功");
     }
 
 
@@ -228,4 +250,23 @@ public class CommentController extends BaseController {
             return ReturnEntity.fail("程序出错");
         }
     }
+
+    /**
+     * 评论点赞修改接口
+     * @param comment（只需评论的id）
+     * @return
+     */
+    @RequestMapping("filter/updateCommentLikeNum")
+    @ResponseBody
+    public ReturnEntity updateCommentLikeNum(Comment comment,String userId) {
+        try {
+            String message = commentService.updateCommentLikeNum(comment, userId);
+            return ReturnEntity.success(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtils.getLogInfo(CommentController.class).info("程序出错", e);
+            return ReturnEntity.fail("程序出错");
+        }
+    }
+
 }

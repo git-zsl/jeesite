@@ -10,6 +10,8 @@ import com.thinkgem.jeesite.common.persistence.ReturnStatus;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.area.entity.SysChina;
+import com.thinkgem.jeesite.modules.area.service.SysChinaService;
 import com.thinkgem.jeesite.modules.sys.entity.Area;
 import com.thinkgem.jeesite.modules.sys.entity.Email;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -57,6 +59,8 @@ public class HomeLoginController extends BaseController {
     private AreaService areaService;
     @Autowired
     private CacheManager cacheManager;
+    @Autowired
+    private SysChinaService sysChinaService;
 
     private static final String TRUE = "true";
     private Class clazz = HomeLoginController.class;
@@ -313,9 +317,9 @@ public class HomeLoginController extends BaseController {
      */
     @RequestMapping("/getArea")
     @ResponseBody
-    public ReturnEntity<Area> getAreaData(Area area) {
+    public ReturnEntity<SysChina> getAreaData(SysChina sysChina) {
         try {
-            List<Area> list = areaService.findCurrentArea(area);
+            List<SysChina> list = sysChinaService.findCurrentArea(sysChina);
             return ReturnEntity.success(list, "获取省市区成功");
         } catch (Exception e) {
             LogUtils.getLogInfo(clazz).info("获取省市区失败", e);

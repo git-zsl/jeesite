@@ -19,8 +19,11 @@
 		a.is_top AS "isTop",
 		a.is_recommend AS "isRecommend",
 		a.comment_num AS "commentNum",
+		a.like_num AS "likeNum",
+		a.like_userIds AS "likeUserIds",
 		c.name AS "category.name",
-		u.name AS "user.name"
+		u.name AS "user.name",
+		a.user_photo AS "userPhoto"
 	</sql>
 	
 	<sql id="cmsCommentDaoJoins">
@@ -176,7 +179,10 @@
 			parent_content_id,
 			is_top,
 		    is_recommend,
-		    comment_num
+		    comment_num,
+		    like_num,
+		    like_userIds,
+		    user_photo
 		) VALUES (
 			#{id},
 			#{category.id},
@@ -193,7 +199,10 @@
 			#{parentContentId},
 			#{isTop},
 			#{isRecommend},
-			#{commentNum}
+			#{commentNum},
+			#{likeNum},
+			#{likeUserIds},
+			#{userPhoto}
 		)
 	</insert>
 	
@@ -213,7 +222,10 @@
 			parent_content_id = #{parentContentId},
 			is_top = #{isTop},
 		    is_recommend = #{isRecommend},
-		    comment_num = #{commentNum}
+		    comment_num = #{commentNum},
+		    like_num = #{likeNum},
+		    like_userIds = #{likeUserIds},
+		    user_photo = #{userPhoto}
 		WHERE id = #{id}
 	</update>
 	
@@ -222,5 +234,12 @@
 			del_flag = #{delFlag}
 		WHERE id = #{id}
 	</update>
-	
+
+	<update id="updateCommentLikeNum">
+		UPDATE cms_comment SET
+			like_num = #{likeNum},
+			like_userIds = #{likeUserIds}
+		WHERE id = #{id}
+	</update>
+
 </mapper>

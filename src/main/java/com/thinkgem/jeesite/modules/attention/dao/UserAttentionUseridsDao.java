@@ -17,5 +17,8 @@ import java.util.List;
  */
 @MyBatisDao
 public interface UserAttentionUseridsDao extends CrudDao<UserAttentionUserids> {
+
 	public List<UserAttentionUserids> findByIds(@Param("attentionUserIds") String attentionUserIds);
+
+	public List<UserAttentionUserids> findByUserId(@Param("userId") String userId);
 }

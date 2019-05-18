@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.area.service;
 
 import java.util.List;
 
+import com.thinkgem.jeesite.modules.sys.entity.Area;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,11 @@ public class SysChinaService extends CrudService<SysChinaDao, SysChina> {
 	public Page<SysChina> findPage(Page<SysChina> page, SysChina sysChina) {
 		return super.findPage(page, sysChina);
 	}
-	
+
+	public List<SysChina> findCurrentArea(SysChina sysChina){
+		return dao.findCurrentArea(sysChina);
+	}
+
 	@Transactional(readOnly = false)
 	public void save(SysChina sysChina) {
 		super.save(sysChina);

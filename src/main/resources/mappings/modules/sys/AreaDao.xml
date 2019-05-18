@@ -18,7 +18,7 @@
 		a.del_flag,
 		p.name AS "parent.name"
 	</sql>
-	
+
 	<sql id="areaJoins">
 		LEFT JOIN sys_office p ON p.id = a.parent_id
     </sql>
@@ -65,23 +65,6 @@
 		<where>
 			 a.del_flag = '0'
 		AND  a.type = '2'
-		</where>
-				ORDER BY a.sort ASC
-	</select>
-
-	<select id="findCurrentArea" resultType="Area">
-		SELECT
-		<include refid="areaColumns"/>
-		FROM sys_china a
-		<include refid="areaJoins"/>
-		<where>
-			a.del_flag = #{DEL_FLAG_NORMAL}
-			<if test=" id != '' and id != null">
-				AND  a.parent_id = #{id}
-			</if>
-			<if test=" type != '' and type != null">
-				AND  a.parent_id = '0'
-			</if>
 		</where>
 				ORDER BY a.sort ASC
 	</select>

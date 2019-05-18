@@ -27,7 +27,24 @@
 		<include refid="sysChinaJoins"/>
 		WHERE a.id = #{id}
 	</select>
-	
+
+	<select id="findCurrentArea" resultType="SysChina">
+		SELECT
+		<include refid="sysChinaColumns"/>
+		FROM sys_china a
+		<include refid="sysChinaJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test=" id != '' and id != null">
+				AND  a.parent_id = #{id}
+			</if>
+			<if test=" type != '' and type != null">
+				AND  a.parent_id = '0'
+			</if>
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+
 	<select id="findList" resultType="SysChina">
 		SELECT 
 			<include refid="sysChinaColumns"/>

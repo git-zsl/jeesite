@@ -38,6 +38,9 @@ public class Comment extends DataEntity<Comment> {
 	private String isTop;  // 是否置顶
 	private String isRecommend; //是否推荐
 	private String commentNum;   //评论数
+	private String likeNum;   //点赞数
+	private String likeUserIds;   //点赞数
+	private String userPhoto; //评论人头像路径
 	private String categoryIdFlag;   //是否文章标志
 	private String isValidate;   //是否需要验证码
 	private User user;
@@ -48,6 +51,7 @@ public class Comment extends DataEntity<Comment> {
 		this.isTop = Global.NO;
 		this.isRecommend = Global.NO;
 		this.commentNum = Global.NO;
+		this.likeNum = Global.NO;
 	}
 	
 	public Comment(String id){
@@ -219,5 +223,29 @@ public class Comment extends DataEntity<Comment> {
 
 	public void setChildrens(List<Comment> childrens) {
 		this.childrens = childrens;
+	}
+
+	public String getLikeNum() {
+		return likeNum;
+	}
+
+	public void setLikeNum(String likeNum) {
+		this.likeNum = likeNum;
+	}
+
+	public String getLikeUserIds() {
+		return likeUserIds;
+	}
+
+	public void setLikeUserIds(String likeUserIds) {
+		this.likeUserIds = likeUserIds;
+	}
+
+	public String getUserPhoto() {
+		return userPhoto;
+	}
+
+	public void setUserPhoto(String userPhoto) {
+		this.userPhoto = userPhoto;
 	}
 }

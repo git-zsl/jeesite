@@ -12,6 +12,7 @@ import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.*;
 
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
@@ -772,6 +773,10 @@ public class ArticleController extends BaseController {
     @ResponseBody
     public ReturnEntity updateLikeNum(@ModelAttribute Article article,String userId) {
         try {
+            if(StringUtils.isBlank(userId)){
+                LogUtils.getLogInfo(ArticleController.class).error("传入的userId为空");
+                return ReturnEntity.fail("点赞出错");
+            }
             User user = new User(userId);
             UserArticleLikeCollect byUserIdAndArticleId = userArticleLikeCollectService.findByUserIdAndArticleId(new UserArticleLikeCollect(user, article.getId()));
             if(Objects.nonNull(byUserIdAndArticleId) && Global.YES.equals(byUserIdAndArticleId.getGood())){
@@ -806,8 +811,9 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping("filter/latestAction")
     @ResponseBody
-    public ReturnEntity latestAction(@RequestParam("userId") String userId) {
+    public ReturnEntity latestAction(@RequestParam("userId") String userId,HttpServletRequest request,HttpServletResponse response) {
         List<Article> articleLists = Lists.newArrayList();
+        Page<Article> page = new Page<Article>(request,response);
         List<Article> list = null;
         List<Article> articlecollects = null;
         List<Article> comments = null;
@@ -845,12 +851,14 @@ public class ArticleController extends BaseController {
             articleLists.addAll(comments);
             //时间排序
             articleList = articleService.listSort(articleLists);
+            List<Article> pageList = MyPageUtil.getPageList(articleList, request, response);
+            page.setList(pageList);
+            return ReturnEntity.success(page, "最新动态成功");
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("查询关键词出错", e);
             e.printStackTrace();
             return ReturnEntity.fail("查询关键词出错");
         }
-        return ReturnEntity.success(articleList, "查询成功");
     }
 
     /**
@@ -951,4 +959,21 @@ public class ArticleController extends BaseController {
             return ReturnEntity.fail("查询失败");
         }
     }
+
+    /**
+     * 查询作品数，关注数，粉丝数
+     * @param userId
+     * @return
+     */
+    @RequestMapping("filter/findNumberByUserId")
+    @ResponseBody
+    public ReturnEntity findNumberByUserId(String userId){
+        try{
+            return ReturnEntity.success(articleService.findNumberByUserId(userId),"查询数量成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ReturnEntity.fail("查询失败");
+        }
+    }
+
 }

@@ -362,9 +362,6 @@
 			provence = #{provence},
 			city = #{city},
 			district = #{district},
-			district = #{district},
-			district = #{district},
-			district = #{district},
 			subscription = #{subscription},
 			information = #{information}
 		WHERE id = #{id}
@@ -436,9 +433,9 @@
 		mobile = #{mobile},
 		password = #{password},
 		sex = #{sex},
-		district = #{district},
-		city = #{city},
-		provence = #{provence},
+		district = #{district.id},
+		city = #{city.id},
+		provence = #{provence.id},
 		subscription = #{subscription},
 	    information = #{information},
 		dou_ban = #{douBan},

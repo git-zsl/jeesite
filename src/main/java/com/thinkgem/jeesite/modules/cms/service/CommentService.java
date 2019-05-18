@@ -61,38 +61,63 @@ public class CommentService extends CrudService<CommentDao, Comment> {
     }
 
     @Transactional(readOnly = false)
+    public String updateCommentLikeNum(Comment comment, String userId) {
+        Comment comment1 = dao.get(comment.getId());
+        String userIds = comment1.getLikeUserIds();
+        StringBuffer sb = new StringBuffer();
+        String message = "";
+        if (StringUtils.isBlank(userIds)) {
+            comment1.setLikeUserIds(",");
+        }
+        if (!comment1.getLikeUserIds().contains(userId)) {
+            sb.append(comment1.getLikeUserIds()).append(userId).append(",");
+            comment1.setLikeUserIds(sb.toString());
+            comment1.setLikeNum(Integer.parseInt(comment1.getLikeNum()) + 1 + "");
+            message = "点赞成功";
+        } else {
+            String s = comment1.getLikeUserIds().replaceAll( userId + ",", "");
+            comment1.setLikeNum(Integer.parseInt(comment1.getLikeNum()) - 1 + "");
+            comment1.setLikeUserIds(s);
+            message = "取消点赞成功";
+        }
+        dao.updateCommentLikeNum(comment1);
+        return message;
+    }
+
+    @Transactional(readOnly = false)
     public void delete(Comment entity, Boolean isRe) {
         super.delete(entity);
     }
 
     @Transactional(readOnly = false)
     public int findChildNum(Comment comment, int i) {
-        return ChildNum(comment,i);
+        return ChildNum(comment, i);
     }
 
 
     public int ChildNum(Comment comment, int i) {
         i += comment.getChildComments().size();
         for (Comment c : comment.getChildComments()) {
-            if(!c.getChildComments().isEmpty()){
-                i = ChildNum(c,i);
+            if (!c.getChildComments().isEmpty()) {
+                i = ChildNum(c, i);
             }
         }
         return i;
     }
+
     @Transactional(readOnly = false)
-    public void findParentCommentAndSet(Comment comment){
+    public void findParentCommentAndSet(Comment comment) {
         updateCommentNum(comment);
     }
 
     @Transactional(readOnly = false)
-    public void updateCommentNum(Comment comment){
-        comment.setCommentNum(Integer.parseInt(comment.getCommentNum())+1+"");
+    public void updateCommentNum(Comment comment) {
+        comment.setCommentNum(Integer.parseInt(comment.getCommentNum()) + 1 + "");
         super.save(comment);
         List<Comment> parents = dao.findParent(comment);
-        if(!parents.isEmpty()){
+        if (!parents.isEmpty()) {
             findParentCommentAndSet(parents.get(0));
-        }else{
+        } else {
             Article article = articleService.get(comment.getContentId());
             article.setCommentNum(article.getCommentNum() + 1);
             articleService.updataArticleCommentNum(article);
@@ -100,23 +125,28 @@ public class CommentService extends CrudService<CommentDao, Comment> {
     }
 
 
-    public List<Comment> findCommentByArticle(Article article){
+    public List<Comment> findCommentByArticle(Article article) {
         //查询，并组装list返回
         List<Comment> list = dao.findCommentByArticle(article.getId());
         List<Comment> comments = Lists.newArrayList();
         //封装子集合
-        if(!list.isEmpty()){
+        if (!list.isEmpty()) {
             for (Comment c : list) {
                 for (Comment cc : list) {
-                    if(c.getId().equals(cc.getParentContentId())){
+                    if (c.getId().equals(cc.getParentContentId())) {
                         c.getChildComments().add(cc);
                     }
                 }
-                if(StringUtils.isBlank(c.getParentContentId())){
+                if (StringUtils.isBlank(c.getParentContentId())) {
                     comments.add(c);
                 }
             }
         }
         return comments;
+    }
+
+    public int findCommentNumByArticle(Article article) {
+        List<Comment> list = dao.findCommentByArticle(article.getId());
+        return list.size();
     }
 }

@@ -40,6 +40,10 @@ public class UserAttentionUseridsService extends CrudService<UserAttentionUserid
 		return dao.findByIds(attentionUserIds);
 	}
 
+	public List<UserAttentionUserids> findByUserId(String userId) {
+		return dao.findByUserId(userId);
+	}
+
 	public Page<UserAttentionUserids> findPage(Page<UserAttentionUserids> page, UserAttentionUserids userAttentionUserids) {
 		return super.findPage(page, userAttentionUserids);
 	}

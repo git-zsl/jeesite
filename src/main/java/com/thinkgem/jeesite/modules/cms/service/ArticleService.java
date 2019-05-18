@@ -6,15 +6,20 @@ package com.thinkgem.jeesite.modules.cms.service;
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
+import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.modules.attention.entity.UserAttentionUserids;
+import com.thinkgem.jeesite.modules.attention.service.UserAttentionUseridsService;
 import com.thinkgem.jeesite.modules.cms.dao.ArticleDao;
 import com.thinkgem.jeesite.modules.cms.dao.ArticleDataDao;
 import com.thinkgem.jeesite.modules.cms.dao.CategoryDao;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.cms.entity.ArticleData;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
+import com.thinkgem.jeesite.modules.cms.entity.NumberVo;
+import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -37,6 +42,8 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
     private ArticleDataDao articleDataDao;
     @Autowired
     private CategoryDao categoryDao;
+    @Autowired
+    private UserAttentionUseridsService userAttentionUseridsService;
 
     @Transactional(readOnly = false)
     public Page<Article> findPage(Page<Article> page, Article article, boolean isDataScopeFilter) {
@@ -374,4 +381,25 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
     public List<Article> searchArticle(Article article){
         return dao.searchArticle(article);
     }
+
+
+    public NumberVo findNumberByUserId(String userId){
+        Article article = new Article();
+        NumberVo vo = new NumberVo();
+        User user = new User(userId);
+        article.setCreateBy(user);
+        List<Article> articleList = dao.findArticleList(article);
+        vo.setArticleNum(articleList.size() + "");
+        List<UserAttentionUserids> byIds = userAttentionUseridsService.findByIds(userId);
+        vo.setFansNum(byIds.size() + "");
+        List<UserAttentionUserids> byUserId = userAttentionUseridsService.findByUserId(userId);
+        if(!byUserId.isEmpty()){
+            String[] split = byUserId.get(0).getAttentionUserIds().split(",");
+            vo.setAttentionNum(split.length -1 + "");
+        }
+        return vo;
+    }
+
+
+
 }

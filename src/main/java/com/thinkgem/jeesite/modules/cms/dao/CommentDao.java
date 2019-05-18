@@ -21,5 +21,7 @@ public interface CommentDao extends CrudDao<Comment> {
 
     public List<String> findArticleIds(Comment comment);
 
+    public void updateCommentLikeNum(Comment comment);
+
     public List<Comment> findCommentByArticle(@Param("id") String id);
 }

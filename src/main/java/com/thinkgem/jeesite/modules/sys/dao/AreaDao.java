@@ -22,8 +22,6 @@ public interface AreaDao extends TreeDao<Area> {
 
     public List<Area> findTopArea();
 
-    public List<Area> findCurrentArea(Area area);
-
     public List<Area> findByParentId();
 
     public List<Area> findCityList(Area area);
