@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.thinkgem.jeesite.modules.userbackground.dao.UserBackgroundDao">
+    
+	<sql id="userBackgroundColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.background_path AS "backgroundPath",
+		u2.name AS "user.name"
+	</sql>
+	
+	<sql id="userBackgroundJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+	</sql>
+    
+	<select id="get" resultType="UserBackground">
+		SELECT 
+			<include refid="userBackgroundColumns"/>
+		FROM user_background a
+		<include refid="userBackgroundJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="UserBackground">
+		SELECT 
+			<include refid="userBackgroundColumns"/>
+		FROM user_background a
+		<include refid="userBackgroundJoins"/>
+		<where>
+			
+			<if test="user != null and user.id != null and user.id != ''">
+				AND a.user_id = #{user.id}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="UserBackground">
+		SELECT 
+			<include refid="userBackgroundColumns"/>
+		FROM user_background a
+		<include refid="userBackgroundJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO user_background(
+			id,
+			user_id,
+			background_path
+		) VALUES (
+			#{id},
+			#{user.id},
+			#{backgroundPath}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE user_background SET 	
+			user_id = #{user.id},
+			background_path = #{backgroundPath}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM user_background
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
