@@ -79,12 +79,21 @@
 		<div class="control-group">
 			<label class="control-label">分类:</label>
 			<div class="controls">
+				<form:select  path="cmsArticleClassify.id" class="input-medium">
+					<form:option value="" label="请选择"/>
+					<form:options items="${articleClassifys}" htmlEscape="false" itemLabel="articleClassify" itemValue="id"/>
+				</form:select>
+			</div>
+		</div>
+<%--		<div class="control-group">
+			<label class="control-label">分类:</label>
+			<div class="controls">
 				<form:select  path="classifying.id" class="input-medium">
 					<form:option value="" label="请选择"/>
 					<form:options items="${cmsClassifying}" htmlEscape="false" itemLabel="classifying" itemValue="id"/>
 				</form:select>
 			</div>
-		</div>
+		</div>--%>
 		<div class="control-group">
 			<label class="control-label">权重:</label>
 			<div class="controls">

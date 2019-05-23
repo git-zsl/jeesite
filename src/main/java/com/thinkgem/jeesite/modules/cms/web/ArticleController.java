@@ -121,11 +121,11 @@ public class ArticleController extends BaseController {
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = {"list", ""})
     public String list(Article article, HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "ad",required = false) String ad,@RequestParam(value = "formFlag",required = false) String formFlag) {
-        User user = UserUtils.getUser();
-        Page<Article> page = null;
-        if (!user.isAdmin()) {
+       /*User user = UserUtils.getUser();
+       if (!user.isAdmin()) {
             article.setCreateBy(user);
-        }
+        }*/
+        Page<Article> page = null;
         List<String> titles = articleService.findTitle(article);
         model.addAttribute("titles", titles);
         if(Objects.isNull(article.getCategory())){

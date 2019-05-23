@@ -12,7 +12,8 @@
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
-		u2.name AS "user.name"
+		u2.name AS "user.name",
+		u2.photo AS "user.photo"
 	</sql>
 	<sql id="articleHomeCollectColumns">
 		a.id AS "id",
@@ -24,7 +25,8 @@
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
-		u2.name AS "user.name"
+		u2.name AS "user.name",
+		u2.photo AS "user.photo"
 	</sql>
 	
 	<sql id="articleCollectJoins">

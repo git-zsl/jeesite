@@ -264,16 +264,16 @@
                 ORDER BY a.create_date DESC,a.hits DESC
             </when>
             <when test="hits != null and hits != ''">
-                ORDER BY a.hits DESC,a.create_date DESC
+                ORDER BY a.hits DESC,a.is_recommend DESC,a.create_date DESC
             </when>
             <when test="page !=null and page.orderBy != null and page.orderBy != ''">
                 ORDER BY ${page.orderBy}
             </when>
             <when test="createBy != null and createBy.id != null and createBy.id != ''">
-                ORDER BY a.weight DESC, a.create_date DESC
+                ORDER BY a.weight DESC,a.is_recommend DESC,a.create_date DESC
             </when>
             <otherwise>
-                ORDER BY a.weight DESC, a.update_date DESC
+                ORDER BY a.weight DESC, a.is_recommend DESC,a.update_date DESC
             </otherwise>
         </choose>
     </select>

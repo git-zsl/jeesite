@@ -97,6 +97,12 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">品牌:</label>
+			<div class="controls">
+				<form:input path="brand" htmlEscape="false" maxlength="200" class="input-xlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">权重:</label>
 			<div class="controls">
 				<form:input path="weight" htmlEscape="false" maxlength="200" class="input-mini required digits"/>&nbsp;
