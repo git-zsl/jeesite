@@ -43,7 +43,7 @@ public class HomeLoginService extends BaseService {
         List<Office> listByName = null;
         User user = new User();
         user.setLoginName(map.get("loginName"));
-        user.setName(map.get("name"));
+        user.setName(map.get("loginName"));
         user.setEmail(map.get("email"));
         String password = LoginUtils.entryptPassword(map.get("password"));
         LogUtils.getLogInfo(HomeLoginService.class).info("plainPassword:"+map.get("password"));
