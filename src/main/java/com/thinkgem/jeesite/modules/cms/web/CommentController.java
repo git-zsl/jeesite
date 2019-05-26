@@ -16,6 +16,7 @@ import com.thinkgem.jeesite.modules.cms.entity.Category;
 import com.thinkgem.jeesite.modules.cms.entity.Comment;
 import com.thinkgem.jeesite.modules.cms.service.ArticleService;
 import com.thinkgem.jeesite.modules.cms.service.CommentService;
+import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -107,8 +108,7 @@ public class CommentController extends BaseController {
     @RequestMapping(value = "filter/consultationList", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<Page<Comment>> findConsultationList(String userId, String categoryId, @ModelAttribute Comment comment, HttpServletRequest request, HttpServletResponse response) {
-	/*	Page<Comment> page = new Page<Comment>(request, response);
-		List<Comment> lists = new ArrayList<Comment>();*/
+		Page<Comment> page = new Page<Comment>(request, response);
         List<Comment> comments = new ArrayList<>();
         List<Comment> newComments = new ArrayList<>();
         try {
@@ -140,6 +140,11 @@ public class CommentController extends BaseController {
                     }
                 }
             }
+
+            //模拟分页
+            List<Comment> pageList = MyPageUtil.getPageList(comments, request, response);
+            page.setList(pageList);
+
             //统计评论数量
 		/*	for (Comment c : comments) {
 				int i = 0;
@@ -171,7 +176,7 @@ public class CommentController extends BaseController {
             e.printStackTrace();
             ReturnEntity.fail("程序出错");
         }
-        return ReturnEntity.success(comments, "获取评论列表成功");
+        return ReturnEntity.success(page, "获取评论列表成功");
     }
 
     /**
@@ -193,13 +198,16 @@ public class CommentController extends BaseController {
      */
     @RequestMapping(value = "filter/consultationArticleList", method = RequestMethod.POST)
     @ResponseBody
-    public synchronized  ReturnEntity<Page<Comment>> findConsultationArticleList(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "categoryId") String categoryId, @ModelAttribute Comment comment) {
+    public synchronized  ReturnEntity<Page<Comment>> findConsultationArticleList(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "categoryId") String categoryId, @ModelAttribute Comment comment,String userId) {
         Article article = new Article();
         article.setCategory(new Category(categoryId));
         if(!Global.YES.equals(comment.getIsRecommend())){
             article.setIsRecommend("");
         }else{
             article.setIsRecommend(comment.getIsRecommend());
+        }
+        if(StringUtils.isNotBlank(userId)){
+            article.setCreateBy(new User(userId));
         }
         List<Article> articleList0Answers = Lists.newArrayList();
         Page<Article> articlePage = null;

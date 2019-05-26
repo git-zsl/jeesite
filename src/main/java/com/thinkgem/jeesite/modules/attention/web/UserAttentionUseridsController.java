@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.utils.MyPageUtil;
+import com.thinkgem.jeesite.modules.cms.entity.Comment;
 import com.thinkgem.jeesite.modules.cms.web.ArticleController;
 import com.thinkgem.jeesite.modules.sys.dao.UserDao;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -193,7 +195,8 @@ public class UserAttentionUseridsController extends BaseController {
 	 */
 	@RequestMapping("filter/attention2List")
 	@ResponseBody
-	public ReturnEntity findAttention2MeList(@RequestParam("userId") String userId,UserAttentionUserids userAttentionUserids){
+	public ReturnEntity findAttention2MeList(@RequestParam("userId") String userId,UserAttentionUserids userAttentionUserids, HttpServletRequest request, HttpServletResponse response){
+		Page<User> page = new Page<User>(request, response);
 		UserAttentionUserids userAttentionUserids1 = null;
 		List<User> userList = Lists.newArrayList();
 		try{
@@ -205,12 +208,15 @@ public class UserAttentionUseridsController extends BaseController {
 			for (UserAttentionUserids uu : list) {
 				userList.add(uu.getUser());
 			}
+			//模拟分页
+			List<User> pageList = MyPageUtil.getPageList(userList, request, response);
+			page.setList(pageList);
 		}catch (Exception e){
 			LogUtils.getLogInfo(UserAttentionUseridsController.class).info("查询出错",e);
 			e.printStackTrace();
 			return ReturnEntity.fail("查询出错");
 		}
-		return ReturnEntity.success(userList,"查询粉丝列表成功");
+		return ReturnEntity.success(page,"查询粉丝列表成功");
 	}
 
 

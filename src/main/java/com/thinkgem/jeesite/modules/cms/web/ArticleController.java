@@ -690,7 +690,7 @@ public class ArticleController extends BaseController {
                     //路径问题，应与原来保持一致，不然主页上传的图片，后台看不到
                     path = filePath.getPath();    // 目前为完整路径，改成相对路径
                     //获取图片并保存。。。。。。
-                    path = contextPath + path.substring(configPath.length());
+                    path = (contextPath + path.substring(configPath.length())).replaceAll("\\\\","/");
                     article.setImage(path);
                 }
             }

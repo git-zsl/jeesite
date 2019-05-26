@@ -309,6 +309,9 @@
             <if test="commentNum == 1 ">
                 AND a.comment_num = 0
             </if>
+            <if test="createBy != null and createBy.id != null  and createBy.id != '' " >
+                AND a.create_by = #{createBy.id}
+            </if>
             <if test="category != null and category.id != null and category.id != ''">
                 AND a.category_id = #{category.id}
             </if>

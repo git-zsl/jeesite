@@ -244,6 +244,12 @@
 				<form:radiobuttons path="articleData.allowComment" items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 			</div>
 		</div>
+		<div class="control-group">
+			<label class="control-label">是否显示热门作者:</label>
+			<div class="controls">
+				<form:radiobuttons path="isShowHomeAuthor" items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+			</div>
+		</div>
 	<%--	<div class="control-group">
 			<label class="control-label">是否置顶:</label>
 			<div class="controls">
