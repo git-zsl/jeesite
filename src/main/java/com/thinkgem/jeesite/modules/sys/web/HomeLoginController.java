@@ -181,8 +181,9 @@ public class HomeLoginController extends BaseController {
             if (StringUtils.isBlank(map.get("loginName")) && StringUtils.isBlank(email)) {
                 return ReturnEntity.fail("用户名或者邮箱不能为空");
             }
-            String content = "<a href=http://" + Global.getConfig("serverAddress") + "/filter/homeLogin?loginName=" + loginName + "&isCompany=" + isCompany + ">请点击完成此处激活帐号完成注册</a><br/>";
-            EmailUtils.sendHtmlMail(new Email(email, "注册验证", content));
+            //String content = "<a href=http://" + Global.getConfig("serverAddress") + "/filter/homeLogin?loginName=" + loginName + "&isCompany=" + isCompany + ">请点击完成此处激活帐号完成注册</a><br/>";
+            String url = "http://" + Global.getConfig("serverAddress") + "/filter/homeLogin?loginName=" + loginName + "&isCompany=" + isCompany;
+            EmailUtils.sendHtmlMail(new Email(email, "响创意@USERIDEA", EmailUtils.setEmailPage(loginName,url)));
             CacheUtils.putMapAll(loginName, map);
         } catch (Exception e) {
             LogUtils.getLogInfo(clazz).info("邮箱认证出错", e);

@@ -853,6 +853,7 @@ public class ArticleController extends BaseController {
             articleList = articleService.listSort(articleLists);
             List<Article> pageList = MyPageUtil.getPageList(articleList, request, response);
             page.setList(pageList);
+            page.setCount(pageList.size());
             return ReturnEntity.success(page, "最新动态成功");
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("查询关键词出错", e);

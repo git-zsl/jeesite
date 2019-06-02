@@ -141,6 +141,7 @@ public class ArticleCollectController extends BaseController {
 					articlecollects.add(article);
 				}
 				page1.setList(articlecollects);
+				page1.setCount(articlecollects.size());
 			}
 			return ReturnEntity.success(page1,"查询收藏列表成功");
 		}catch (Exception e){
