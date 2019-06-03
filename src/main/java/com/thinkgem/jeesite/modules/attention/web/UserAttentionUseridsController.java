@@ -136,6 +136,9 @@ public class UserAttentionUseridsController extends BaseController {
 	@ResponseBody
 	public ReturnEntity attentionSave(@RequestParam("userId") String userId,@RequestParam("attention2UserId") String attention2UserId,UserAttentionUserids userAttentionUserids){
 		try{
+			if(StringUtils.isNotBlank(userId) && StringUtils.isNotBlank(attention2UserId) && userId.equals(attention2UserId)){
+				return ReturnEntity.fail("不能关注自己");
+			}
 			if(StringUtils.isBlank(userId) || Objects.isNull(UserUtils.get(userId))){
 				LogUtils.getLogInfo(UserAttentionUseridsController.class).info("userId为空");
 				return ReturnEntity.fail("关注失败");
@@ -207,6 +210,8 @@ public class UserAttentionUseridsController extends BaseController {
 			List<UserAttentionUserids> list = userAttentionUseridsService.findByIds(userId);
 			for (UserAttentionUserids uu : list) {
 				userList.add(uu.getUser());
+				//获取这个用户的粉丝数和作品数
+
 			}
 			//模拟分页
 			List<User> pageList = MyPageUtil.getPageList(userList, request, response);

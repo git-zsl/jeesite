@@ -21,6 +21,8 @@ public class UserAttentionUserids extends DataEntity<UserAttentionUserids> {
 	private User user;		// 用户id
 	private String attentionUserIds;		// 关注人ids
 	private List<User> userList = Lists.newArrayList();  //当前用户关注人列表
+	private String fans;
+	private String articleNum;
 	
 	public UserAttentionUserids() {
 		super();
@@ -52,5 +54,21 @@ public class UserAttentionUserids extends DataEntity<UserAttentionUserids> {
 
 	public void setUserList(List<User> userList) {
 		this.userList = userList;
+	}
+
+	public String getFans() {
+		return fans;
+	}
+
+	public void setFans(String fans) {
+		this.fans = fans;
+	}
+
+	public String getArticleNum() {
+		return articleNum;
+	}
+
+	public void setArticleNum(String articleNum) {
+		this.articleNum = articleNum;
 	}
 }

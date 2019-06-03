@@ -6,7 +6,8 @@
 		a.id AS "id",
 		a.user_id AS "user.id",
 		a.attention_user_ids AS "attentionUserIds",
-		u2.name AS "user.name"
+		u2.name AS "user.name",
+		u2.photo AS "user.photo"
 	</sql>
 	
 	<sql id="userAttentionUseridsJoins">
