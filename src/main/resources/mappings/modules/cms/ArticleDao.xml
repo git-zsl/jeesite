@@ -27,6 +27,10 @@
         u.id AS "user.id",
         u.name AS "user.name",
         u.photo AS "user.photo",
+        u.dou_ban AS "user.douBan",
+        u.zhi_hu AS "user.zhiHu",
+        u.wei_bo AS "user.weiBo",
+        u.wei_xin_code AS "user.weiXinCode",
         a.is_top AS "isTop",
         a.is_recommend AS "isRecommend",
         a.author AS "author",
@@ -229,6 +233,9 @@
                 </if>
                 )
             </if>
+            <if test="cmsArticleClassify != null and cmsArticleClassify.id != null and cmsArticleClassify.id != '' ">
+                AND a.article_classify_id = #{cmsArticleClassify.id}
+            </if>
             <if test="image != null and image != ''">
                 AND a.image = #{image}
             </if>
@@ -362,6 +369,9 @@
             </if>
             <if test="isRecommend != null and isRecommend != ''">
                 AND a.is_recommend = #{isRecommend}
+            </if>
+            <if test="cmsArticleClassify != null and cmsArticleClassify.id != null and cmsArticleClassify.id != '' ">
+                AND a.article_classify_id = #{cmsArticleClassify.id}
             </if>
             <if test="isTop != null and isTop != ''">
                 AND a.is_top = #{isTop}

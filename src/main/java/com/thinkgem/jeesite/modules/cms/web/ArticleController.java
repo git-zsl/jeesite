@@ -41,6 +41,8 @@ import com.thinkgem.jeesite.modules.jobcity.service.JobCityService;
 import com.thinkgem.jeesite.modules.posts.entity.CmsPosts;
 import com.thinkgem.jeesite.modules.posts.service.CmsPostsService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.AliyunEmailUtil;
+import com.thinkgem.jeesite.modules.sys.utils.EmailUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sysinfo.entity.SysSendInformation;
 import com.thinkgem.jeesite.modules.sysinfo.service.SysSendInformationService;
@@ -432,7 +434,7 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "filter/getAllArticle", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, @RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
+    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId,@RequestParam(value = "cmsArticleClassifyId", required = false) String cmsArticleClassifyId, @RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (!StringUtils.isBlank(userId)) {
                 User user = UserUtils.get(userId);
@@ -446,9 +448,13 @@ public class ArticleController extends BaseController {
                 category.setParentIds(categoryId);
                 article.setCategory(category);
             }
+            if (!StringUtils.isBlank(cmsArticleClassifyId)) {
+                CmsArticleClassify cmsArticleClassify = new CmsArticleClassify(cmsArticleClassifyId);
+                article.setCmsArticleClassify(cmsArticleClassify);
+            }
             if (!StringUtils.isBlank(article.getId())) {
                 ArticleData articleData = articleDataService.get(article.getId());
-                Article article1 = articleService.findList(article).get(0);
+                Article article1 = articleService.findList(new Article(article.getId())).get(0);
                 article1.setHits(article1.getHits() + 1);
                 articleService.updateArticleHits(article1);
                 article1.setArticleData(articleData);
@@ -977,4 +983,16 @@ public class ArticleController extends BaseController {
         }
     }
 
+    @RequestMapping("filter/sendEmailTest")
+    @ResponseBody
+    public ReturnEntity sendEmailTest(){
+        try{
+            //EmailUtils.aliSendMailUtil();
+            AliyunEmailUtil.sample(EmailUtils.setEmailPage("zsl","www.baidu.com"));
+            return ReturnEntity.success("发送成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            return ReturnEntity.fail("发送失败");
+        }
+    }
 }

@@ -1,5 +1,11 @@
 package com.thinkgem.jeesite.modules.sys.utils;
 
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.dm.model.v20151123.SingleSendMailRequest;
+import com.aliyuncs.dm.model.v20151123.SingleSendMailResponse;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.profile.IClientProfile;
 import com.thinkgem.jeesite.modules.sys.entity.Email;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -92,6 +98,7 @@ public class EmailUtils {
         return true;
     }
 
+
     public static String setEmailPage(String userName,String url){
         SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss日");
         String systemTime = format.format(new Date());
@@ -105,8 +112,23 @@ public class EmailUtils {
     }
 
 
-
-
+public static void  aliSendMailUtil(){
+        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", "LTAIcpHt3ountPgh", "kcRXGPpg8Pqm9VzmowpdUEbAfJARe2");
+        IAcsClient client = new DefaultAcsClient(profile);
+        SingleSendMailRequest request = new SingleSendMailRequest();
+        try {
+            request.setAccountName("ideateam@mail.useidea.com");
+            request.setAddressType(1);
+            request.setTagName("USEIDEA");
+            request.setReplyToAddress(true);
+            request.setToAddress("328875024@qq.com");
+            request.setSubject("阿里云邮箱推送");
+            request.setHtmlBody("推送测试");
+            SingleSendMailResponse httpResponse = client.getAcsResponse(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+}
 
     public static void main(String[] args) {
         String content = "这是一个测试邮件内容%s";

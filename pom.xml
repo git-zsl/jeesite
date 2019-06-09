@@ -56,6 +56,11 @@
 		<downloadSources>true</downloadSources>
 		<!-- quartz setting -->
 		<quartz.version>2.2.1</quartz.version>
+
+		<!-- 阿里云java sdk core -->
+		<alysdk.version>3.0.0</alysdk.version>
+		<alydm.version>3.1.0</alydm.version>
+
 	</properties>
 	
 	<!-- 设定主仓库，按设定顺序进行查找。 -->
@@ -82,6 +87,19 @@
 	
 	<!-- 依赖项定义 -->
 	<dependencies>
+		<!--阿里云SDK-->
+		<dependency>
+			<groupId>com.aliyun</groupId>
+			<artifactId>aliyun-java-sdk-core</artifactId>
+			<version>${alysdk.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.aliyun</groupId>
+			<artifactId>aliyun-java-sdk-dm</artifactId>
+			<version>${alydm.version}</version>
+		</dependency>
+
 		<!--tar解压-->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
