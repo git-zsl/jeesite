@@ -40,6 +40,7 @@ import com.thinkgem.jeesite.modules.jobcity.entity.JobCity;
 import com.thinkgem.jeesite.modules.jobcity.service.JobCityService;
 import com.thinkgem.jeesite.modules.posts.entity.CmsPosts;
 import com.thinkgem.jeesite.modules.posts.service.CmsPostsService;
+import com.thinkgem.jeesite.modules.sys.entity.Email;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.AliyunEmailUtil;
 import com.thinkgem.jeesite.modules.sys.utils.EmailUtils;
@@ -988,7 +989,8 @@ public class ArticleController extends BaseController {
     public ReturnEntity sendEmailTest(){
         try{
             //EmailUtils.aliSendMailUtil();
-            AliyunEmailUtil.sample(EmailUtils.setEmailPage("zsl","www.baidu.com"));
+            EmailUtils.sendHtmlMail(new Email("328875024@qq.com", "欢迎加入响创意社区", EmailUtils.setEmailPage("zsl","www.baidu.com")));
+            //AliyunEmailUtil.sample(EmailUtils.setEmailPage("zsl","www.baidu.com"));
             return ReturnEntity.success("发送成功");
         }catch (Exception e){
             e.printStackTrace();
