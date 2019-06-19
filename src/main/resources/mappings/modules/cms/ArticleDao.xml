@@ -259,11 +259,96 @@
             <if test="isRecommend != null and isRecommend != ''">
                 AND a.is_recommend = #{isRecommend}
             </if>
-            <if test="isTop != null and isTop != ''">
-                AND a.is_top = #{isTop}
+            <if test="isRead != null and isRead != ''">
+                AND a.is_read = #{isRead}
+            </if>
+            AND a.is_top = '0'
+        </where>
+        <choose>
+            <when test="createTimeSort != null and createTimeSort != ''">
+                ORDER BY a.create_date DESC,a.hits DESC
+            </when>
+            <when test="hits != null and hits != ''">
+                ORDER BY a.hits DESC,a.is_recommend DESC,a.create_date DESC
+            </when>
+            <when test="page !=null and page.orderBy != null and page.orderBy != ''">
+                ORDER BY ${page.orderBy}
+            </when>
+            <when test="createBy != null and createBy.id != null and createBy.id != ''">
+                ORDER BY a.weight DESC,a.is_recommend DESC,a.create_date DESC
+            </when>
+            <otherwise>
+                ORDER BY a.weight DESC, a.is_recommend DESC,a.update_date DESC
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="findAllPageList" resultType="Article">
+        SELECT
+        <include refid="cmsArticleColumns"/>
+        FROM cms_article a
+        <include refid="cmsArticleJoins"/>
+        <where>
+            a.del_flag = #{delFlag}
+            <if test="title != null and title != ''">
+                AND a.title LIKE
+                <if test="dbName == 'oracle'">'%'||#{title}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{title}+'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{title}, '%')</if>
+            </if>
+            <if test="keywords != null and keywords != ''">
+                AND a.keywords LIKE
+                <if test="dbName == 'oracle'">'%'||#{keywords}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{keywords}+'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{keywords}, '%')</if>
+            </if>
+            <if test="posid != null and posid != ''">
+                AND a.posid LIKE
+                <if test="dbName == 'oracle'">'%'||#{posid}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{posid}+'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{posid}, '%')</if>
+            </if>
+            <if test="category != null and category.id != null and category.id != ''">
+                AND (a.category_id = #{category.id}
+                <if test="category.parentIds != null and category.parentIds != ''">
+                    or c.parent_ids like
+                    <if test="dbName == 'oracle'">'%'||#{category.id}||'%'</if>
+                    <if test="dbName == 'mssql'">'%,'+#{category.id}+',%'</if>
+                    <if test="dbName == 'mysql'">CONCAT('%,', #{category.id}, ',%')</if>
+                </if>
+                )
+            </if>
+            <if test="cmsArticleClassify != null and cmsArticleClassify.id != null and cmsArticleClassify.id != '' ">
+                AND a.article_classify_id = #{cmsArticleClassify.id}
+            </if>
+            <if test="image != null and image != ''">
+                AND a.image = #{image}
+            </if>
+            <if test="id != null and id != ''">
+                AND a.id = #{id}
+            </if>
+            <if test="company != null and company != ''">
+                AND (a.company like
+                <if test="dbName == 'oracle'">'%'||#{company}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{company}+'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{company}, '%')</if>
+                or a.posts like
+                <if test="dbName == 'oracle'">'%'||#{company}||'%'</if>
+                <if test="dbName == 'mssql'">'%'+#{company}+'%'</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{company}, '%')</if>
+                )
+            </if>
+            <if test="createBy != null and createBy.id != null and createBy.id != ''">
+                AND a.create_by = #{createBy.id}
+            </if>
+            <if test="isRecommend != null and isRecommend != ''">
+                AND a.is_recommend = #{isRecommend}
             </if>
             <if test="isRead != null and isRead != ''">
                 AND a.is_read = #{isRead}
+            </if>
+            <if test="isTop != null and isTop != '' ">
+                AND a.is_top =#{isTop}
             </if>
         </where>
         <choose>
@@ -316,7 +401,7 @@
             <if test="commentNum == 1 ">
                 AND a.comment_num = 0
             </if>
-            <if test="createBy != null and createBy.id != null  and createBy.id != '' " >
+            <if test="createBy != null and createBy.id != null  and createBy.id != '' ">
                 AND a.create_by = #{createBy.id}
             </if>
             <if test="category != null and category.id != null and category.id != ''">
@@ -373,12 +458,10 @@
             <if test="cmsArticleClassify != null and cmsArticleClassify.id != null and cmsArticleClassify.id != '' ">
                 AND a.article_classify_id = #{cmsArticleClassify.id}
             </if>
-            <if test="isTop != null and isTop != ''">
-                AND a.is_top = #{isTop}
-            </if>
             <if test="isRead != null and isRead != ''">
                 AND a.is_read = #{isRead}
             </if>
+            AND a.is_top = '0'
         </where>
         <choose>
             <when test="hits != null and hits != ''">
@@ -394,6 +477,29 @@
                 ORDER BY a.weight DESC, a.create_date DESC
             </otherwise>
         </choose>
+    </select>
+
+    <select id="findTopArticleList" resultType="Article">
+        SELECT
+        <include refid="cmsArticleColumns"/>
+        FROM cms_article a
+        <include refid="cmsArticleJoins"/>
+        <where>
+            a.del_flag = #{delFlag}
+            <if test="category != null and category.id != null and category.id != ''">
+                AND (a.category_id = #{category.id}
+                <if test="category.parentIds != null and category.parentIds != ''">
+                    or c.parent_ids like
+                    <if test="dbName == 'oracle'">'%'||#{category.id}||'%'</if>
+                    <if test="dbName == 'mssql'">'%,'+#{category.id}+',%'</if>
+                    <if test="dbName == 'mysql'">CONCAT('%,', #{category.id}, ',%')</if>
+                </if>
+                )
+            </if>
+            AND a.category_id in (select categoryId from cms_is_article)
+            AND a.is_top = '1'
+        </where>
+        ORDER BY a.hits DESC,a.weight DESC,a.create_date DESC
     </select>
 
     <select id="findJobList" resultType="Article">
@@ -729,7 +835,7 @@
         limit 0,8
     </select>
 
-   <!--主页查询所有文章接口-->
+    <!--主页查询所有文章接口-->
 
     <select id="searchArticlePage" resultType="Article">
         SELECT
@@ -740,10 +846,10 @@
         <where>
             a.del_flag = #{DEL_FLAG_NORMAL}
             <if test="title != null and title != '' ">
-            AND a.title LIKE CONCAT('%', #{title}, '%')
+                AND a.title LIKE CONCAT('%', #{title}, '%')
             </if>
             <if test="author != null and author != '' ">
-            AND a.author LIKE CONCAT('%', #{author}, '%')
+                AND a.author LIKE CONCAT('%', #{author}, '%')
             </if>
         </where>
         ORDER BY a.create_date DESC

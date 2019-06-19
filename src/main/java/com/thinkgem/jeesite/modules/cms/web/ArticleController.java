@@ -123,7 +123,7 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = {"list", ""})
-    public String list(Article article, HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "ad",required = false) String ad,@RequestParam(value = "formFlag",required = false) String formFlag) {
+    public String list(Article article, HttpServletRequest request, HttpServletResponse response, Model model, @RequestParam(value = "ad", required = false) String ad, @RequestParam(value = "formFlag", required = false) String formFlag) {
        /*User user = UserUtils.getUser();
        if (!user.isAdmin()) {
             article.setCreateBy(user);
@@ -131,18 +131,18 @@ public class ArticleController extends BaseController {
         Page<Article> page = null;
         List<String> titles = articleService.findTitle(article);
         model.addAttribute("titles", titles);
-        if(Objects.isNull(article.getCategory())){
-           page = articleService.findArticlePage(new Page<Article>(request, response), article, true);
+        if (Objects.isNull(article.getCategory())) {
+            page = articleService.findArticlePage(new Page<Article>(request, response), article, true);
         }
         page = articleService.findPage(new Page<Article>(request, response), article, true);
         model.addAttribute("page", page);
         String returnPage = "";
-        if(!StringUtils.isBlank(ad)){
+        if (!StringUtils.isBlank(ad)) {
             model.addAttribute("parentCategoryId", article.getCategory().getId());
             returnPage = "modules/cms/articleADList";
-        }else{
-            if(Global.NO.equals(formFlag)){
-                return  "modules/cms/articleLearnList";
+        } else {
+            if (Global.NO.equals(formFlag)) {
+                return "modules/cms/articleLearnList";
             }
             returnPage = "modules/cms/articleList";
         }
@@ -151,7 +151,7 @@ public class ArticleController extends BaseController {
 
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = "form")
-    public String form(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId , @RequestParam(value = "all", required = false) String all,@RequestParam(value = "formFlag",required = false) String formFlag) {
+    public String form(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "formFlag", required = false) String formFlag) {
         try {
             model.addAttribute("postsList", cmsPostsService.findPosts(new CmsPosts()));
             model.addAttribute("cityList", jobCityService.findList(new JobCity()));
@@ -171,17 +171,17 @@ public class ArticleController extends BaseController {
                     CmsUtils.addViewConfigAttribute(model, article.getCategory());
                     if (!StringUtils.isBlank(article.getCategory().getId())) {
                         String formContent = TxtReadUtil.getFormContent(article.getCategory().getId(), categoryService);
-                        if(StringUtils.isNotBlank(parentCategoryId)){
-                            model.addAttribute("parentCategoryId",parentCategoryId);
+                        if (StringUtils.isNotBlank(parentCategoryId)) {
+                            model.addAttribute("parentCategoryId", parentCategoryId);
                         }
-                        if(Global.NO.equals(formFlag)){
+                        if (Global.NO.equals(formFlag)) {
                             return formContent != null ? formContent : "modules/cms/articleLearnForm";
                         }
                         return formContent != null ? formContent : "modules/cms/articleForm";
                     }
-                    if(Global.NO.equals(formFlag)){
+                    if (Global.NO.equals(formFlag)) {
                         return "modules/cms/articleLearnForm";
-                    }else{
+                    } else {
                         return "modules/cms/articleForm";
                     }
                 } else {
@@ -197,10 +197,10 @@ public class ArticleController extends BaseController {
             CmsUtils.addViewConfigAttribute(model, article.getCategory());
             if (!StringUtils.isBlank(article.getCategory().getId())) {
                 String formContent = TxtReadUtil.getFormContent(article.getCategory().getId(), categoryService);
-                if(StringUtils.isNotBlank(parentCategoryId)){
-                    model.addAttribute("parentCategoryId",parentCategoryId);
+                if (StringUtils.isNotBlank(parentCategoryId)) {
+                    model.addAttribute("parentCategoryId", parentCategoryId);
                 }
-                if(Global.NO.equals(formFlag)){
+                if (Global.NO.equals(formFlag)) {
                     return formContent != null ? formContent : "modules/cms/articleLearnForm";
                 }
                 return formContent != null ? formContent : "modules/cms/articleForm";
@@ -209,16 +209,16 @@ public class ArticleController extends BaseController {
             LogUtils.getLogInfo(ArticleController.class).info(e.getMessage());
             e.printStackTrace();
         }
-        if(Global.NO.equals(formFlag)){
+        if (Global.NO.equals(formFlag)) {
             return "modules/cms/articleLearnForm";
-        }else{
+        } else {
             return "modules/cms/articleForm";
         }
     }
 
     @RequiresPermissions("cms:article:edit")
     @RequestMapping(value = "save")
-    public String save(Article article, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "ad", required = false) String ad,@RequestParam(value = "formFlag", required = false) String formFlag) {
+    public String save(Article article, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "ad", required = false) String ad, @RequestParam(value = "formFlag", required = false) String formFlag) {
         String path = "";
         if (!StringUtils.isBlank(all)) {
             path = "allList";
@@ -230,11 +230,11 @@ public class ArticleController extends BaseController {
             article.setIsRecommend(Global.NO);
         }
         if (!beanValidator(model, article)) {
-            return form(article, model, redirectAttributes, all,parentCategoryId,"1");
+            return form(article, model, redirectAttributes, all, parentCategoryId, "1");
         }
         articleService.save(article);
         //发送给用户系统消息
-        if(StringUtils.isNotBlank(article.getIsSendInformation()) && article.getDelFlag().equals(Global.YES)){
+        if (StringUtils.isNotBlank(article.getIsSendInformation()) && article.getDelFlag().equals(Global.YES)) {
             Article article1 = articleService.get(article.getId());
             String[] split = Global.getConfig("sys.content").split("&");
             String format = MessageFormat.format("{0}:{1}{2}", split[0], article.getUser().getEmail(), split[1]);
@@ -243,25 +243,25 @@ public class ArticleController extends BaseController {
         }
         AdInfomation adInfomation = new AdInfomation(article.getId());
         List<AdInfomation> AdInfomations = adInfomationService.findByArticleId(adInfomation);
-        if(!AdInfomations.isEmpty()){
+        if (!AdInfomations.isEmpty()) {
             for (AdInfomation a : AdInfomations) {
-                AdInfomation adInfomation1 = adInfomationService.setOldAdInfomationData(a,article);
+                AdInfomation adInfomation1 = adInfomationService.setOldAdInfomationData(a, article);
                 adInfomationService.save(adInfomation1);
             }
         }
         addMessage(redirectAttributes, "保存文章'" + StringUtils.abbr(article.getTitle(), 50) + "'成功");
         String categoryId = article.getCategory() != null ? article.getCategory().getId() : null;
-        if(StringUtils.isNotBlank(ad)){
-            if(StringUtils.isNotBlank(all)){
+        if (StringUtils.isNotBlank(ad)) {
+            if (StringUtils.isNotBlank(all)) {
                 return "redirect:" + adminPath + "/cms/article/" + path + "?repage&delFlag=2&category.id=";
             }
-            if(StringUtils.isNotBlank(parentCategoryId)){
+            if (StringUtils.isNotBlank(parentCategoryId)) {
                 return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&category.id=" + (categoryId != null ? parentCategoryId : "");
             }
             return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&category.id=" + (categoryId != null ? categoryId : "");
         }
-        if(Global.NO.equals(formFlag)){
-            return "redirect:" + adminPath + "/cms/article/" + path + "?repage&delFlag=2&formFlag=0&category.id=" ;
+        if (Global.NO.equals(formFlag)) {
+            return "redirect:" + adminPath + "/cms/article/" + path + "?repage&delFlag=2&formFlag=0&category.id=";
         }
         return "redirect:" + adminPath + "/cms/article/" + path + "?repage&delFlag=2&category.id=" /*+ (categoryId != null ? categoryId : "")*/;
     }
@@ -286,15 +286,15 @@ public class ArticleController extends BaseController {
             addMessage(redirectAttributes, "你没有删除或发布权限");
         }
         //判断是否发布人
-        if(!isRe){
+        if (!isRe) {
             article.setPromulgator1(UserUtils.getUser());
         }
         articleService.delete(article, isRe);
         addMessage(redirectAttributes, (isRe ? "删除" : "发布") + "文章成功");
-        if(StringUtils.isNotBlank(parentCategoryId)){
+        if (StringUtils.isNotBlank(parentCategoryId)) {
             return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&category.id=" + (categoryId != null ? parentCategoryId : "");
         }
-        if(StringUtils.isNotBlank(ad)){
+        if (StringUtils.isNotBlank(ad)) {
             return "redirect:" + adminPath + "/cms/article?repage&delFlag=2&ad=1&delFlag=2&category.id=" + (categoryId != null ? categoryId : "");
         }
         return "redirect:" + adminPath + "/cms/article/" + path + "?repage&category.id=" + (categoryId != null ? categoryId : "");
@@ -306,7 +306,7 @@ public class ArticleController extends BaseController {
     @RequiresPermissions("cms:article:view")
     @RequestMapping(value = "selectList")
     public String selectList(Article article, HttpServletRequest request, HttpServletResponse response, Model model) {
-        list(article, request, response, model,"","");
+        list(article, request, response, model, "", "");
         return "modules/cms/articleSelectList";
     }
 
@@ -334,7 +334,7 @@ public class ArticleController extends BaseController {
             article.setDelFlag("2");
         }
         article.setRemarks(Global.YES);
-        Page<Article> page = articleService.findPage(new Page<Article>(request, response), article, true);
+        Page<Article> page = articleService.findAllPage(new Page<Article>(request, response), article, true);
         List<String> titles = articleService.findTitle(article);
         model.addAttribute("titles", titles);
         model.addAttribute("page", page);
@@ -370,7 +370,7 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "filter/adhistoryList", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> adsHistoryList(Article article,String userId,@RequestParam(value = "flag",required = false,defaultValue = "true") String flag, Category category, HttpServletRequest request,HttpServletResponse response) {
+    public ReturnEntity<List<Article>> adsHistoryList(Article article, String userId, @RequestParam(value = "flag", required = false, defaultValue = "true") String flag, Category category, HttpServletRequest request, HttpServletResponse response) {
         Page<AdInfomation> page = new Page<AdInfomation>(request, response);
         List<Article> articles = null;
         List<AdInfomation> adInfomations = Lists.newArrayList();
@@ -382,7 +382,7 @@ public class ArticleController extends BaseController {
             }
             List<String> byParentIdNoSite = categoryService.findByParentIdNoSite(gg.getCategoryId());
             articles = articleService.findByCategoryIdIn(byParentIdNoSite);
-            if(StringUtils.isBlank(userId)){
+            if (StringUtils.isBlank(userId)) {
                 LogUtils.getLogInfo(ArticleController.class).info("用户id 为空 ：" + userId);
                 return ReturnEntity.fail("用户id 为空 ：" + userId);
             }
@@ -395,10 +395,10 @@ public class ArticleController extends BaseController {
             }
             //模拟分页
             List<AdInfomation> pageList = MyPageUtil.getPageList(adInfomations, request, response);
-            page.setList(adInfomationService.getRuntimeOrHistoryADList(adInfomationService.getSortList(pageList),flag));
+            page.setList(adInfomationService.getRuntimeOrHistoryADList(adInfomationService.getSortList(pageList), flag));
         } catch (Exception e) {
             e.printStackTrace();
-           /* LogUtils.saveLog(request, articles, e, "没有找到对应的自定义栏目，请配置");*/
+            /* LogUtils.saveLog(request, articles, e, "没有找到对应的自定义栏目，请配置");*/
             return ReturnEntity.fail("系统内部错误成功，请联系管理员");
         }
         return ReturnEntity.success(page, "查询广告成功");
@@ -429,13 +429,13 @@ public class ArticleController extends BaseController {
     }
 
     /**
-     * 获取全局文章内容接口
+     * 获取全局文章内容接口(不置顶文章)
      * param category.id （不必须）
      */
 
     @RequestMapping(value = "filter/getAllArticle", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId,@RequestParam(value = "cmsArticleClassifyId", required = false) String cmsArticleClassifyId, @RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
+    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, @RequestParam(value = "cmsArticleClassifyId", required = false) String cmsArticleClassifyId, @RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (!StringUtils.isBlank(userId)) {
                 User user = UserUtils.get(userId);
@@ -463,22 +463,22 @@ public class ArticleController extends BaseController {
             }
             if (Global.YES.equals(article.getHits() + "")) {
                 List<Article> list = null;
-                if(Objects.nonNull(article.getCategory()) && StringUtils.isNotBlank(article.getCategory().getId())){
+                if (Objects.nonNull(article.getCategory()) && StringUtils.isNotBlank(article.getCategory().getId())) {
                     list = articleService.findList(article);
                  /*Page<Article> page = new Page<Article>(request, response);
                     //模拟分页
                     List<Article> pageList = MyPageUtil.getPageList(list, request, response);
                     page.setList(pageList);*/
                     return ReturnEntity.success(list, "获取列表成功");
-                }else{
+                } else {
                     list = articleService.findArticleList(article);
                 }
                 return ReturnEntity.success(list, "获取列表成功");
             } else {
                 Page<Article> page = null;
-                if(Objects.nonNull(article.getCategory()) && StringUtils.isNotBlank(article.getCategory().getId())){
-                    page =  articleService.findPage(new Page<Article>(request, response), article, true);
-                }else{
+                if (Objects.nonNull(article.getCategory()) && StringUtils.isNotBlank(article.getCategory().getId())) {
+                    page = articleService.findPage(new Page<Article>(request, response), article, true);
+                } else {
                     page = articleService.findArticlePage(new Page<Article>(request, response), article, true);
                 }
                 return ReturnEntity.success(page, "获取数据成功");
@@ -690,14 +690,14 @@ public class ArticleController extends BaseController {
                         LogUtils.getLogInfo(ArticleController.class).info("文件夹不存在，创建文件夹");
                         filePath.getParentFile().mkdirs();
                         LogUtils.getLogInfo(ArticleController.class).info("创建成功");
-                    }else{
+                    } else {
                         LogUtils.getLogInfo(ArticleController.class).info("没有创建");
                     }
                     image.transferTo(filePath);
                     //路径问题，应与原来保持一致，不然主页上传的图片，后台看不到
                     path = filePath.getPath();    // 目前为完整路径，改成相对路径
                     //获取图片并保存。。。。。。
-                    path = (contextPath + path.substring(configPath.length())).replaceAll("\\\\","/");
+                    path = (contextPath + path.substring(configPath.length())).replaceAll("\\\\", "/");
                     article.setImage(path);
                 }
             }
@@ -710,7 +710,7 @@ public class ArticleController extends BaseController {
             article.setAuthor(user.getLoginName());
             articleData.setCreateBy(user);
             articleService.save(article);
-           /* CacheUtils.remove(categoryId + "_" + userId + "path");*/
+            /* CacheUtils.remove(categoryId + "_" + userId + "path");*/
             //保存内容(如果需要设置相关请教，则在ArticleData处添加)
         } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("保存出错", e);
@@ -778,24 +778,24 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping(value = "filter/like")
     @ResponseBody
-    public ReturnEntity updateLikeNum(@ModelAttribute Article article,String userId) {
+    public ReturnEntity updateLikeNum(@ModelAttribute Article article, String userId) {
         try {
-            if(StringUtils.isBlank(userId)){
+            if (StringUtils.isBlank(userId)) {
                 LogUtils.getLogInfo(ArticleController.class).error("传入的userId为空");
                 return ReturnEntity.fail("点赞出错");
             }
             User user = new User(userId);
             UserArticleLikeCollect byUserIdAndArticleId = userArticleLikeCollectService.findByUserIdAndArticleId(new UserArticleLikeCollect(user, article.getId()));
-            if(Objects.nonNull(byUserIdAndArticleId) && Global.YES.equals(byUserIdAndArticleId.getGood())){
+            if (Objects.nonNull(byUserIdAndArticleId) && Global.YES.equals(byUserIdAndArticleId.getGood())) {
                 articleService.deleteLikeNum(article);
                 byUserIdAndArticleId.setGood(Global.NO);
                 userArticleLikeCollectService.save(byUserIdAndArticleId);
                 return new ReturnEntity(ReturnStatus.UNAUTHORIZED, "取消点赞");
-            }else{
+            } else {
                 articleService.updateLikeNum(article);
-                if(Objects.nonNull(byUserIdAndArticleId)){
+                if (Objects.nonNull(byUserIdAndArticleId)) {
                     byUserIdAndArticleId.setGood(Global.YES);
-                }else{
+                } else {
                     byUserIdAndArticleId = new UserArticleLikeCollect();
                     byUserIdAndArticleId.setGood(Global.YES);
                     byUserIdAndArticleId.setArticleId(article.getId());
@@ -818,9 +818,9 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping("filter/latestAction")
     @ResponseBody
-    public ReturnEntity latestAction(@RequestParam("userId") String userId,HttpServletRequest request,HttpServletResponse response) {
+    public ReturnEntity latestAction(@RequestParam("userId") String userId, HttpServletRequest request, HttpServletResponse response) {
         List<Article> articleLists = Lists.newArrayList();
-        Page<Article> page = new Page<Article>(request,response);
+        Page<Article> page = new Page<Article>(request, response);
         List<Article> list = null;
         List<Article> articlecollects = null;
         List<Article> comments = null;
@@ -888,18 +888,18 @@ public class ArticleController extends BaseController {
 
 
     @RequestMapping(value = "newlist")
-    public String list(Model model,@RequestParam(value ="isShowHome",required = false) String isShowHome) {
+    public String list(Model model, @RequestParam(value = "isShowHome", required = false) String isShowHome) {
         List<Category> list = Lists.newArrayList();
-        List<Category> sourcelist = categoryService.findByUser(true, null,isShowHome,"");
+        List<Category> sourcelist = categoryService.findByUser(true, null, isShowHome, "");
         Category.sortList(list, sourcelist, Global.NO);
         model.addAttribute("list", list);
         return "modules/cms/categoryADList";
     }
 
     @RequestMapping(value = "adForm")
-    public String adForm(Model model,Article article) {
+    public String adForm(Model model, Article article) {
         Article article1 = articleService.get(article);
-        if(Objects.nonNull(article1)){
+        if (Objects.nonNull(article1)) {
             AdInfomation adInfomation = adInfomationService.setAdInfomationData(article1);
             model.addAttribute("adInfomation", adInfomation);
         }
@@ -907,16 +907,16 @@ public class ArticleController extends BaseController {
     }
 
     @RequestMapping(value = "changFlag")
-    public String changFlag(Model model,Article article,String flag) {
+    public String changFlag(Model model, Article article, String flag) {
         Article article1 = articleService.get(article);
-        if(Objects.nonNull(article1)){
-            if(Global.YES.equals(flag)){
-                if(StringUtils.isNotBlank(article.getIsTop())){
+        if (Objects.nonNull(article1)) {
+            if (Global.YES.equals(flag)) {
+                if (StringUtils.isNotBlank(article.getIsTop())) {
                     article1.setIsTop(article.getIsTop());
                     articleService.updateIsTop(article1);
                 }
-            }else{
-                if(StringUtils.isNotBlank(article.getIsRecommend())){
+            } else {
+                if (StringUtils.isNotBlank(article.getIsRecommend())) {
                     article1.setIsRecommend(article.getIsRecommend());
                     articleService.updateIsRecommend(article1);
                 }
@@ -930,12 +930,12 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping("filter/saveJob")
     @ResponseBody
-    public ReturnEntity saveJob(Article article,ArticleData articleData,String categoryId,String userId){
-        try{
-            if(StringUtils.isNotBlank(categoryId)){
+    public ReturnEntity saveJob(Article article, ArticleData articleData, String categoryId, String userId) {
+        try {
+            if (StringUtils.isNotBlank(categoryId)) {
                 article.setCategory(new Category(categoryId));
             }
-            if(StringUtils.isNotBlank(userId)){
+            if (StringUtils.isNotBlank(userId)) {
                 User user = UserUtils.get(userId);
                 article.setCreateBy(user);
                 article.setUpdateBy(user);
@@ -945,24 +945,24 @@ public class ArticleController extends BaseController {
             article.setDelFlag(Article.DEL_FLAG_AUDIT);
             article.setArticleData(articleData);
             articleService.save(article);
-        }catch (Exception e){
+        } catch (Exception e) {
             LogUtils.getLogInfo(ArticleController.class).info("发布出错", e);
             e.printStackTrace();
             return ReturnEntity.fail("发布出错");
         }
-        return ReturnEntity.success(article,"发布成功");
+        return ReturnEntity.success(article, "发布成功");
     }
 
     /**
      * 主页查询所有文章接口
-     *参数：author/title
+     * 参数：author/title
      */
     @RequestMapping("filter/searchArticle")
     @ResponseBody
-    public ReturnEntity searchArticle(Article article, HttpServletRequest request, HttpServletResponse response){
-        try{
-            return ReturnEntity.success(articleService.searchArticle(new Page<Article>(request, response), article),"查询成功");
-        }catch (Exception e){
+    public ReturnEntity searchArticle(Article article, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            return ReturnEntity.success(articleService.searchArticle(new Page<Article>(request, response), article), "查询成功");
+        } catch (Exception e) {
             e.printStackTrace();
             return ReturnEntity.fail("查询失败");
         }
@@ -970,15 +970,16 @@ public class ArticleController extends BaseController {
 
     /**
      * 查询作品数，关注数，粉丝数
+     *
      * @param userId
      * @return
      */
     @RequestMapping("filter/findNumberByUserId")
     @ResponseBody
-    public ReturnEntity findNumberByUserId(String userId){
-        try{
-            return ReturnEntity.success(articleService.findNumberByUserId(userId),"查询数量成功");
-        }catch (Exception e){
+    public ReturnEntity findNumberByUserId(String userId) {
+        try {
+            return ReturnEntity.success(articleService.findNumberByUserId(userId), "查询数量成功");
+        } catch (Exception e) {
             e.printStackTrace();
             return ReturnEntity.fail("查询失败");
         }
@@ -986,15 +987,40 @@ public class ArticleController extends BaseController {
 
     @RequestMapping("filter/sendEmailTest")
     @ResponseBody
-    public ReturnEntity sendEmailTest(){
-        try{
+    public ReturnEntity sendEmailTest() {
+        try {
             //EmailUtils.aliSendMailUtil();
-            EmailUtils.sendHtmlMail(new Email("328875024@qq.com", "欢迎加入响创意社区", EmailUtils.setEmailPage("zsl","www.baidu.com")));
+            EmailUtils.sendHtmlMail(new Email("328875024@qq.com", "欢迎加入响创意社区", EmailUtils.setEmailPage("zsl", "www.baidu.com")));
             //AliyunEmailUtil.sample(EmailUtils.setEmailPage("zsl","www.baidu.com"));
             return ReturnEntity.success("发送成功");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return ReturnEntity.fail("发送失败");
+        }
+    }
+
+    /**
+     * 获取置顶文章
+     * param category.id （必须）
+     */
+
+    @RequestMapping(value = "filter/getAllTopArticle", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity<List<Article>> getAllTopArticle(@RequestParam(value = "categoryId") String categoryId) {
+        try {
+            List<Article> list = null;
+            Article article = new Article();
+            if (!StringUtils.isBlank(categoryId)) {
+                Category category = new Category(categoryId);
+                category.setParentIds(categoryId);
+                article.setCategory(category);
+                list = articleService.findTopArticleList(article);
+            }
+            return ReturnEntity.success(list, "获取置顶列表成功");
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            e.printStackTrace();
+            return ReturnEntity.fail("程序内部出错");
         }
     }
 }

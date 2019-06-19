@@ -41,6 +41,8 @@ public interface CrudDao<T> extends BaseDao {
 	 */
 	public List<T> findList(T entity);
 
+	public List<T> findAllPageList(T entity);
+
 	/**
 	 * 查询数据列表，如果需要分页，请设置分页对象，如：entity.setPage(new Page<T>());
 	 * @param entity
@@ -60,6 +62,8 @@ public interface CrudDao<T> extends BaseDao {
 	 * @return
 	 */
 	public List<T> findArticleList(T entity);
+
+	public List<T> findTopArticleList(T entity);
 
 	/**
 	 * 查询数据列表，如果需要分页，请设置分页对象，如：entity.setPage(new Page<T>());

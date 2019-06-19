@@ -7,7 +7,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.language = 'zh-cn'; config.uiColor = '#f7f5f4';
 	config.width = '99.7%'; 
 	if (config.height == ''){
-		config.height = '400px';
+		config.height = '620px';
 	}
 	config.removePlugins = 'elementspath,scayt';
 	config.disableNativeSpellChecker = false;
