@@ -455,7 +455,7 @@ public class ArticleController extends BaseController {
             }
             if (!StringUtils.isBlank(article.getId())) {
                 ArticleData articleData = articleDataService.get(article.getId());
-                Article article1 = articleService.findList(new Article(article.getId())).get(0);
+                Article article1 = articleService.get(article.getId());
                 article1.setHits(article1.getHits() + 1);
                 articleService.updateArticleHits(article1);
                 article1.setArticleData(articleData);
@@ -778,11 +778,11 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping(value = "filter/like")
     @ResponseBody
-    public ReturnEntity updateLikeNum(@ModelAttribute Article article, String userId) {
+    public ReturnEntity updateLikeNum(@ModelAttribute Article article, @RequestParam(value = "userId",required = false) String userId) {
         try {
             if (StringUtils.isBlank(userId)) {
                 LogUtils.getLogInfo(ArticleController.class).error("传入的userId为空");
-                return ReturnEntity.fail("点赞出错");
+                return  new ReturnEntity(ReturnStatus.LOGOUT, "请先登录");
             }
             User user = new User(userId);
             UserArticleLikeCollect byUserIdAndArticleId = userArticleLikeCollectService.findByUserIdAndArticleId(new UserArticleLikeCollect(user, article.getId()));

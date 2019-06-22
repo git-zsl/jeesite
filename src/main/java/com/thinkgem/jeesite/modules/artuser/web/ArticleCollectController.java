@@ -100,11 +100,11 @@ public class ArticleCollectController extends BaseController {
 	 */
 	@RequestMapping(value = "filter/collectArticle")
 	@ResponseBody
-	public ReturnEntity collectArticle(@RequestParam(value = "userId") String userId,@RequestParam(value = "articleId") String articleId){
+	public ReturnEntity collectArticle(@RequestParam(value = "userId",required = false) String userId,@RequestParam(value = "articleId") String articleId){
 		try{
 			if(StringUtils.isBlank(userId) || StringUtils.isBlank(articleId)){
 				LogUtils.getLogInfo(clazz).info("参数缺失：userId = "+ userId + " articleId = " + articleId);
-				return ReturnEntity.fail("参数缺失");
+				return new ReturnEntity(ReturnStatus.LOGOUT, "请先登录");
 			}
 			return articleCollectService.updateCollectNum(userId, articleId);
 		}catch (RuntimeException ru){

@@ -183,9 +183,9 @@ public class CommentController extends BaseController {
      * 主页请教保存接口
      */
     @RequestMapping(value = "filter/homeSsave")
-    public ReturnEntity homeSsave(@ModelAttribute Comment comment) {
+    public ReturnEntity homeSsave(@ModelAttribute Comment comment,String userId) {
         if (comment.getAuditUser() == null) {
-            comment.setAuditUser(UserUtils.getUser());
+            comment.setAuditUser(UserUtils.get(userId));
             comment.setAuditDate(new Date());
         }
         comment.setDelFlag(Comment.DEL_FLAG_NORMAL);
