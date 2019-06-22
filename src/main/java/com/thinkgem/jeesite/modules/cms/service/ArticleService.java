@@ -130,8 +130,10 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
             article.getArticleData().setContent(StringEscapeUtils.unescapeHtml4(
                     article.getArticleData().getContent()));
         }
-        if(article.getArticleData().getContent().contains("application/x-shockwave-flash")){
-            article.getArticleData().setContent(article.getArticleData().getContent().replace("application/x-shockwave-flash ",""));
+        String content = article.getArticleData().getContent();
+        if(StringUtils.isNotBlank(content) && content.contains("application/x-shockwave-flash")){
+        String replace = content.replace("application/x-shockwave-flash", "");
+            article.getArticleData().setContent(replace);
         }
         // 如果没有审核权限，则将当前内容改为待审核状态
         if (!UserUtils.getSubject().isPermitted("cms:article:audit")) {
