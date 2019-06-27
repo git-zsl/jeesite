@@ -435,9 +435,9 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "filter/getAllArticle", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "categoryId", required = false) String categoryId, @RequestParam(value = "cmsArticleClassifyId", required = false) String cmsArticleClassifyId, @RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
+    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article,@RequestParam(value = "flag", required = false,defaultValue = "false") String flag, @RequestParam(value = "categoryId", required = false) String categoryId, @RequestParam(value = "cmsArticleClassifyId", required = false) String cmsArticleClassifyId, @RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
         try {
-            if (!StringUtils.isBlank(userId)) {
+            if (!StringUtils.isBlank(userId) && "false".equals(flag)) {
                 User user = UserUtils.get(userId);
                 if (Objects.isNull(user)) {
                     return ReturnEntity.fail("当前用户不存在，无法获取用户的信息列表");
@@ -469,10 +469,10 @@ public class ArticleController extends BaseController {
                     //模拟分页
                     List<Article> pageList = MyPageUtil.getPageList(list, request, response);
                     page.setList(pageList);*/
-                    return ReturnEntity.success(list, "获取列表成功");
                 } else {
                     list = articleService.findArticleList(article);
                 }
+                list = ArticleService.verdictAndSetStatus(list, userId, userArticleLikeCollectService, articleCollectService);
                 return ReturnEntity.success(list, "获取列表成功");
             } else {
                 Page<Article> page = null;
@@ -481,6 +481,7 @@ public class ArticleController extends BaseController {
                 } else {
                     page = articleService.findArticlePage(new Page<Article>(request, response), article, true);
                 }
+                page.setList(ArticleService.verdictAndSetStatus(page.getList(), userId, userArticleLikeCollectService, articleCollectService));
                 return ReturnEntity.success(page, "获取数据成功");
             }
         } catch (Exception e) {
@@ -669,7 +670,7 @@ public class ArticleController extends BaseController {
             }
             if (Objects.isNull(user)) {
                 LogUtils.getLogInfo(ArticleController.class).info("获取用户值为空，传入userId值为：" + userId);
-                return ReturnEntity.fail("当前用户过期，或者不存在。传入userId值为：" + userId);
+                return ReturnEntity.fail("请先登录！");
             }
             boolean isMultipart = ServletFileUpload.isMultipartContent(request);
             if (isMultipart) {

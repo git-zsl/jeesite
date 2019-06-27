@@ -74,7 +74,7 @@ public class ArticleCollectService extends CrudService<ArticleCollectDao, Articl
 		if(Objects.isNull(article)){
 			throw new RuntimeException("当前文章不存在，或者已经删除");
 		}
-		List<ArticleCollect> sameDatas = dao.findSameDatas(userId, articleId);
+		List<ArticleCollect> sameDatas = findSameDatas(userId, articleId);
 		if(!sameDatas.isEmpty()){
 			dao.delete(sameDatas.get(0));
 			articleService.deleteCollectNum(article);
@@ -86,5 +86,9 @@ public class ArticleCollectService extends CrudService<ArticleCollectDao, Articl
 		articleCollect.setArticleId(articleId);
 		save(articleCollect);
 		return new ReturnEntity(ReturnStatus.OPTSUCCESS,"收藏成功");
+	}
+
+	public List<ArticleCollect> findSameDatas(String userId,String articleId){
+		return dao.findSameDatas(userId, articleId);
 	}
 }

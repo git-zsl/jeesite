@@ -45,6 +45,7 @@ public class Comment extends DataEntity<Comment> {
 	private String isValidate;   //是否需要验证码
 	private User user;
     private List<Comment> childrens = Lists.newArrayList();
+    private String listFlag;    // 点赞标志
 	public Comment() {
 		super();
 		this.delFlag = DEL_FLAG_NORMAL;
@@ -247,5 +248,13 @@ public class Comment extends DataEntity<Comment> {
 
 	public void setUserPhoto(String userPhoto) {
 		this.userPhoto = userPhoto;
+	}
+
+	public String getListFlag() {
+		return listFlag;
+	}
+
+	public void setListFlag(String listFlag) {
+		this.listFlag = listFlag;
 	}
 }

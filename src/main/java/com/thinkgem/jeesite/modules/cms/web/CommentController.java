@@ -245,11 +245,11 @@ public class CommentController extends BaseController {
      */
     @RequestMapping("filter/findCommentByArticle")
     @ResponseBody
-    public ReturnEntity findCommentByArticle(Article article,HttpServletRequest request,HttpServletResponse response) {
+    public ReturnEntity findCommentByArticle(Article article,@RequestParam(value = "userId",required = false) String userId, HttpServletRequest request,HttpServletResponse response) {
         try {
             Page<Comment> page = new Page<Comment>(request, response);
             //模拟分页
-            List<Comment> pageList = MyPageUtil.getPageList(commentService.findCommentByArticle(article), request, response);
+            List<Comment> pageList = MyPageUtil.getPageList(commentService.findCommentByArticle(article,userId), request, response);
             page.setList(pageList);
             return ReturnEntity.success(page, "获取评论成功");
         } catch (Exception e) {

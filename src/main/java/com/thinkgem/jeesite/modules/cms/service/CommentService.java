@@ -4,6 +4,7 @@
 package com.thinkgem.jeesite.modules.cms.service;
 
 import com.google.common.collect.Lists;
+import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
@@ -125,9 +126,12 @@ public class CommentService extends CrudService<CommentDao, Comment> {
     }
 
 
-    public List<Comment> findCommentByArticle(Article article) {
+    public List<Comment> findCommentByArticle(Article article,String userId) {
         //查询，并组装list返回
         List<Comment> list = dao.findCommentByArticle(article.getId());
+        if(StringUtils.isNotBlank(userId)){
+            list = verdictAndSetStatus(list,userId);
+        }
         List<Comment> comments = Lists.newArrayList();
         //封装子集合
         if (!list.isEmpty()) {
@@ -148,5 +152,16 @@ public class CommentService extends CrudService<CommentDao, Comment> {
     public int findCommentNumByArticle(Article article) {
         List<Comment> list = dao.findCommentByArticle(article.getId());
         return list.size();
+    }
+
+    public List<Comment> verdictAndSetStatus(List<Comment> list , String userId){
+        if(!list.isEmpty()){
+            for (Comment c : list) {
+                if(c.getLikeUserIds().contains(userId)){
+                    c.setListFlag(Global.YES);
+                }
+            }
+        }
+        return list;
     }
 }

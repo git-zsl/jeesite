@@ -10,6 +10,9 @@ import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.modules.artuser.dao.ArticleCollectDao;
+import com.thinkgem.jeesite.modules.artuser.entity.ArticleCollect;
+import com.thinkgem.jeesite.modules.artuser.service.ArticleCollectService;
 import com.thinkgem.jeesite.modules.attention.entity.UserAttentionUserids;
 import com.thinkgem.jeesite.modules.attention.service.UserAttentionUseridsService;
 import com.thinkgem.jeesite.modules.cms.dao.ArticleDao;
@@ -21,6 +24,8 @@ import com.thinkgem.jeesite.modules.cms.entity.Category;
 import com.thinkgem.jeesite.modules.cms.entity.NumberVo;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import com.thinkgem.jeesite.modules.wf.entity.UserArticleLikeCollect;
+import com.thinkgem.jeesite.modules.wf.service.UserArticleLikeCollectService;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +69,7 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
             article.setCategory(category);
         } else {
             article.setCategory(new Category());
-            if(Global.YES.equals(article.getRemarks())){
+            if (Global.YES.equals(article.getRemarks())) {
                 return super.findPage(page, article);
             }
             return super.findArticlePage(page, article);
@@ -131,8 +136,8 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
                     article.getArticleData().getContent()));
         }
         String content = article.getArticleData().getContent();
-        if(StringUtils.isNotBlank(content) && content.contains("application/x-shockwave-flash")){
-        String replace = content.replace("application/x-shockwave-flash", "");
+        if (StringUtils.isNotBlank(content) && content.contains("application/x-shockwave-flash")) {
+            String replace = content.replace("application/x-shockwave-flash", "");
             article.getArticleData().setContent(replace);
         }
         // 如果没有审核权限，则将当前内容改为待审核状态
@@ -179,10 +184,10 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         article.setDelFlag(isRe ? Article.DEL_FLAG_DELETE : Article.DEL_FLAG_NORMAL);
         //dao.insert(article);
         String promulgator1Id = null;
-        if(Objects.nonNull(article.getPromulgator1())){
+        if (Objects.nonNull(article.getPromulgator1())) {
             promulgator1Id = article.getPromulgator1().getId();
         }
-        dao.newDelete(article.getDelFlag(), article.getId(),promulgator1Id);
+        dao.newDelete(article.getDelFlag(), article.getId(), promulgator1Id);
     }
 
     /**
@@ -276,18 +281,18 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         return dao.findByCategoryIdIn(ids);
     }
 
-    public List<Article> findByCreateUser(List<Article> list ,String userId) {
+    public List<Article> findByCreateUser(List<Article> list, String userId) {
         List<Article> newList = Lists.newArrayList();
-        for (Article a : list ) {
-            if(userId.equals(a.getCreateBy().getId())){
+        for (Article a : list) {
+            if (userId.equals(a.getCreateBy().getId())) {
                 newList.add(a);
             }
         }
         return newList;
     }
 
-    public List<Article> findByCategoryIdInAndPageNum(List<String> ids,String pageNum) {
-        return dao.findByCategoryIdInAndPageNum(ids,pageNum);
+    public List<Article> findByCategoryIdInAndPageNum(List<String> ids, String pageNum) {
+        return dao.findByCategoryIdInAndPageNum(ids, pageNum);
     }
 
     public List<Article> findArticles() {
@@ -330,6 +335,7 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         article.setLikeNum(likeNum);
         dao.updateLikeNum(article);
     }
+
     /**
      * 减少点赞数
      */
@@ -365,6 +371,7 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         article.setCollectNum(collectNum);
         dao.updateCollectNum(article);
     }
+
     /**
      * 减少收藏数
      */
@@ -397,21 +404,21 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
     }
 
     @Transactional(readOnly = false)
-    public void updataArticleCommentNum(Article article){
+    public void updataArticleCommentNum(Article article) {
         dao.updataArticleCommentNum(article);
     }
 
     @Transactional(readOnly = false)
-    public void updateArticleHits(Article article){
+    public void updateArticleHits(Article article) {
         dao.updateArticleHits(article);
     }
 
-    public List<Article> searchArticle(Article article){
+    public List<Article> searchArticle(Article article) {
         return dao.searchArticle(article);
     }
 
 
-    public NumberVo findNumberByUserId(String userId){
+    public NumberVo findNumberByUserId(String userId) {
         Article article = new Article();
         NumberVo vo = new NumberVo();
         User user = new User(userId);
@@ -421,13 +428,34 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         List<UserAttentionUserids> byIds = userAttentionUseridsService.findByIds(userId);
         vo.setFansNum(byIds.size() + "");
         List<UserAttentionUserids> byUserId = userAttentionUseridsService.findByUserId(userId);
-        if(!byUserId.isEmpty()){
+        if (!byUserId.isEmpty()) {
             String[] split = byUserId.get(0).getAttentionUserIds().split(",");
-            vo.setAttentionNum(split.length -1 + "");
+            vo.setAttentionNum(split.length - 1 + "");
         }
         return vo;
     }
 
+    /**
+     * 判断是否点赞或者收藏，并改变对应的状态
+     *
+     * @param list
+     * @param userId
+     * @param flag   true点赞，flase收藏
+     * @return list
+     */
 
+    public static List<Article> verdictAndSetStatus(List<Article> list, String userId, UserArticleLikeCollectService userArticleLikeCollectService, ArticleCollectService articleCollectService) {
+        for (Article a : list) {
+                UserArticleLikeCollect byUserIdAndArticleId = userArticleLikeCollectService.findByUserIdAndArticleId(new UserArticleLikeCollect(new User(userId), a.getId()));
+                if(Objects.nonNull(byUserIdAndArticleId) && Global.YES.equals(byUserIdAndArticleId.getGood())){
+                    a.setLikeNum(Global.YES);
+                }
+                List<ArticleCollect> sameDatas = articleCollectService.findSameDatas(userId, a.getId());
+                if(Objects.nonNull(sameDatas)){
+                    a.setCollectFlag(Global.YES);
+                }
+        }
+        return list;
+    }
 
 }

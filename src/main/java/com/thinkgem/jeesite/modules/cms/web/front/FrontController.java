@@ -292,10 +292,14 @@ public class FrontController extends BaseController{
 	 */
 	@ResponseBody
 	@RequestMapping(value = "comment", method=RequestMethod.POST)
-	public ReturnEntity commentSave(Comment comment, String userId,String validateCode, @RequestParam(required=false) String categoryId, @RequestParam(required=false) String replyId, HttpServletRequest request) {
+	public ReturnEntity commentSave(Comment comment, String validateCode,@RequestParam(value = "userId" ,required=false) String userId,@RequestParam(required=false) String categoryId, @RequestParam(required=false) String replyId, HttpServletRequest request) {
 		if(!StringUtils.isBlank(categoryId)){
 			comment.setCategory(new Category(categoryId));
 		}
+		if(StringUtils.isBlank(validateCode) && StringUtils.isBlank(userId)){
+			return new ReturnEntity(ReturnStatus.LOGOUT, "请先登录");
+		}
+
 		User user = UserUtils.get(userId);
 		comment.setCreateBy(user);
 		comment.setUpdateBy(user);

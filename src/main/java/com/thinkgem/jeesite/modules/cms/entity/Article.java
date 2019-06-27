@@ -74,6 +74,8 @@ public class Article extends DataEntity<Article> {
 	private String createTimeSort;    // 市
 	private String isSendInformation;    // 市
 	private String isShowHomeAuthor;    //  否页主页显示
+	private String likeFlag;                 //点赞标志
+	private String collectFlag;            // 收藏标志
 
 
 
@@ -515,6 +517,22 @@ public class Article extends DataEntity<Article> {
 
 	public void setIsShowHomeAuthor(String isShowHomeAuthor) {
 		this.isShowHomeAuthor = isShowHomeAuthor;
+	}
+
+	public String getLikeFlag() {
+		return likeFlag;
+	}
+
+	public void setLikeFlag(String likeFlag) {
+		this.likeFlag = likeFlag;
+	}
+
+	public String getCollectFlag() {
+		return collectFlag;
+	}
+
+	public void setCollectFlag(String collectFlag) {
+		this.collectFlag = collectFlag;
 	}
 }
 
