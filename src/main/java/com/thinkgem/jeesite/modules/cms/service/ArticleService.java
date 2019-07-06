@@ -452,7 +452,7 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         for (Article a : list) {
                 UserArticleLikeCollect byUserIdAndArticleId = userArticleLikeCollectService.findByUserIdAndArticleId(new UserArticleLikeCollect(new User(userId), a.getId()));
                 if(Objects.nonNull(byUserIdAndArticleId) && Global.YES.equals(byUserIdAndArticleId.getGood())){
-                    a.setLikeNum(Global.YES);
+                    a.setLikeFlag(Global.YES);
                 }
                 List<ArticleCollect> sameDatas = articleCollectService.findSameDatas(userId, a.getId());
                 if(Objects.nonNull(sameDatas)){
