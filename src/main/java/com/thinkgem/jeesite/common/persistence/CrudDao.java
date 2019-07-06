@@ -121,7 +121,12 @@ public interface CrudDao<T> extends BaseDao {
 	 * @return
 	 */
 	public int update(T entity);
-	
+
+	public int updateAttentionNum(T entity);
+
+	public int updateAttention2Num(T entity);
+
+
 	/**
 	 * 删除数据（一般为逻辑删除，更新del_flag字段为1）
 	 * @param id

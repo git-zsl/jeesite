@@ -835,6 +835,18 @@
         limit 0,8
     </select>
 
+    <select id="findbyUserIdOrderByUpdateDate" resultType="Article">
+        SELECT
+        <include refid="cmsArticleColumns"/>
+        from cms_article a
+        <include refid="cmsArticleJoins"/>
+        <where>
+            a.del_flag = '0'
+            AND a.create_by = #{createById}
+        </where>
+        ORDER BY a.update_date DESC
+    </select>
+
     <!--主页查询所有文章接口-->
 
     <select id="searchArticlePage" resultType="Article">

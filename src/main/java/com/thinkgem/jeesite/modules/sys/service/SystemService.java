@@ -618,7 +618,9 @@ public class SystemService extends BaseService implements InitializingBean {
 		user1.setInformation(information);
 		user1.setCity(user.getCity());
 		user1.setDistrict(user.getDistrict());
-		user1.setPassword(LoginUtils.entryptPassword(user.getNewPassword()));
+		if(StringUtils.isNotBlank(user.getNewPassword())){
+			user1.setPassword(LoginUtils.entryptPassword(user.getNewPassword()));
+		}
 		user1.setMobile(user.getMobile());
 		user1.setSubscription(user.isSubscription());
 		user1.setZhiHu(user.getZhiHu());

@@ -74,7 +74,7 @@
 		FROM cms_comment a
 		<include refid="cmsCommentDaoJoins"/>
 		<where>
-			1=1
+			1=1 AND a.del_flag = '0'
 			<if test=" id != null and id != '' ">
 				AND a.content_id = #{id}
 			</if>

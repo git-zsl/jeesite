@@ -228,7 +228,7 @@ public class HomeLoginController extends BaseController {
             if(StringUtils.isBlank(name)){
                 return ReturnEntity.fail("请输入名称");
             }
-            User byName = UserUtils.getByLoginName(name);
+            User byName = UserUtils.getByName(name);
             if (Objects.isNull(byName)) {
                 return ReturnEntity.success("当前用户名可以使用");
             }
@@ -245,7 +245,7 @@ public class HomeLoginController extends BaseController {
      */
     @RequestMapping(value = "/loginSuccess", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<String> loginSuccess(@RequestParam Map<String, String> map,HttpServletRequest request) {
+    public ReturnEntity loginSuccess(@RequestParam Map<String, String> map,HttpServletRequest request) {
         User byLoginName = null;
         try {
             String token = "";
@@ -260,7 +260,7 @@ public class HomeLoginController extends BaseController {
             }
             byLoginName = UserUtils.getByLoginName(loginName);
             if (Objects.isNull(byLoginName)) {
-                return ReturnEntity.fail("用户名错误，请重新输入");
+                return new ReturnEntity(ReturnStatus.LOGINUSERNAME, "用户名错误");
             }
             if(StringUtils.isBlank(byLoginName.getIsCompany())){
                 return ReturnEntity.fail( "此为后台用户，不允许登录主页");
@@ -282,7 +282,7 @@ public class HomeLoginController extends BaseController {
                 CacheUtils.put("homeLoginSession_"+byLoginName.getId(),byLoginName.getId());
                 return ReturnEntity.success(byLoginName, "登录成功");
             }
-            return ReturnEntity.fail("登录失败");
+            return new ReturnEntity(ReturnStatus.LOGINUPASSWORD, "密码错误");
         } catch (Exception e) {
             LogUtils.getLogInfo(clazz).info("程序出错", e);
             return ReturnEntity.fail("程序出错");

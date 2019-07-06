@@ -6,9 +6,13 @@ package com.thinkgem.jeesite.modules.artuser.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.persistence.ReturnStatus;
+import com.thinkgem.jeesite.common.utils.MyPageUtil;
 import com.thinkgem.jeesite.modules.ad.entity.AdInfomation;
+import com.thinkgem.jeesite.modules.attention.entity.UserAttentionUserids;
+import com.thinkgem.jeesite.modules.attention.service.UserAttentionUseridsService;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.cms.service.ArticleService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -47,6 +51,8 @@ public class ArticleCollectController extends BaseController {
 	private ArticleCollectService articleCollectService;
 	@Autowired
 	private ArticleService articleService;
+	@Autowired
+	private UserAttentionUseridsService userAttentionUseridsService;
 	private Class<ArticleCollectController> clazz = ArticleCollectController.class;
 
 	@ModelAttribute
@@ -168,5 +174,33 @@ public class ArticleCollectController extends BaseController {
 		}
 
 		return ReturnEntity.success(collectUsers,"查询收藏用户列表成功");
+	}
+
+	/**
+	 * 查看关注人更新文章列表
+	 */
+	@RequestMapping("filter/attentionUserUpdateArticles")
+	@ResponseBody
+	public ReturnEntity attentionUserUpdateArticles(@RequestParam("userId") String userId,HttpServletResponse response, HttpServletRequest request){
+		Page<Article> page = new Page<Article>(request, response);
+		List<Article> list = Lists.newArrayList();
+		try{
+			List<UserAttentionUserids> byUserId = userAttentionUseridsService.findByUserId(userId);
+			if(!byUserId.isEmpty()){
+				for (UserAttentionUserids u : byUserId) {
+					String[] split = u.getAttentionUserIds().split(",");
+					for (int i = 1; i < split.length ; i++) {
+						List<Article> articleList = articleService.findbyUserIdOrderByUpdateDate(split[i]);
+						list.addAll(articleList);
+					}
+				}
+			}
+			List<Article> pageList = MyPageUtil.getPageList(list, request, response);
+			page.setList(pageList);
+			return ReturnEntity.success(page);
+		}catch (Exception e){
+			LogUtils.getLogInfo(clazz).info("查询出错",e);
+			return ReturnEntity.fail("查询出错");
+		}
 	}
 }

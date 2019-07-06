@@ -183,8 +183,8 @@ public class UserAttentionUseridsController extends BaseController {
 			String s1 = Integer.parseInt(user2.getAttention2Num()) + 1 + "";
 			user1.setAttentionNum(s);
 			user2.setAttention2Num(s1);
-			userAttentionUseridsService.updateUserData(user1);
-			userAttentionUseridsService.updateUserData(user2);
+			userAttentionUseridsService.updateUserData1(user1);
+			userAttentionUseridsService.updateUserData2(user2);
 		}catch (Exception e){
 			LogUtils.getLogInfo(UserAttentionUseridsController.class).info("关注失败",e);
 			e.printStackTrace();

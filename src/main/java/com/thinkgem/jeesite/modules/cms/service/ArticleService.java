@@ -295,6 +295,10 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         return dao.findByCategoryIdInAndPageNum(ids, pageNum);
     }
 
+    public List<Article> findbyUserIdOrderByUpdateDate(String createById) {
+        return dao.findbyUserIdOrderByUpdateDate(createById);
+    }
+
     public List<Article> findArticles() {
         return dao.findArticles();
     }

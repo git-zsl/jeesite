@@ -59,8 +59,14 @@ public class UserAttentionUseridsService extends CrudService<UserAttentionUserid
 	}
 
 	@Transactional(readOnly = false)
-	public void updateUserData(User user){
+	public void updateUserData1(User user){
 		user.preUpdate();
-		userDao.update(user);
+		userDao.updateAttentionNum(user);
+	}
+
+	@Transactional(readOnly = false)
+	public void updateUserData2(User user){
+		user.preUpdate();
+		userDao.updateAttention2Num(user);
 	}
 }

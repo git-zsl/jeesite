@@ -5,20 +5,17 @@ package com.thinkgem.jeesite.modules.cms.service;
 
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.persistence.Page;
+import com.thinkgem.jeesite.common.service.CrudService;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.modules.cms.dao.CommentDao;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
-import com.thinkgem.jeesite.modules.cms.entity.Category;
+import com.thinkgem.jeesite.modules.cms.entity.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.service.CrudService;
-import com.thinkgem.jeesite.modules.cms.dao.CommentDao;
-import com.thinkgem.jeesite.modules.cms.entity.Comment;
-
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 评论Service
@@ -76,7 +73,7 @@ public class CommentService extends CrudService<CommentDao, Comment> {
             comment1.setLikeNum(Integer.parseInt(comment1.getLikeNum()) + 1 + "");
             message = "点赞成功";
         } else {
-            String s = comment1.getLikeUserIds().replaceAll( userId + ",", "");
+            String s = comment1.getLikeUserIds().replaceAll(userId + ",", "");
             comment1.setLikeNum(Integer.parseInt(comment1.getLikeNum()) - 1 + "");
             comment1.setLikeUserIds(s);
             message = "取消点赞成功";
@@ -126,11 +123,11 @@ public class CommentService extends CrudService<CommentDao, Comment> {
     }
 
 
-    public List<Comment> findCommentByArticle(Article article,String userId) {
+    public List<Comment> findCommentByArticle(Article article, String userId) {
         //查询，并组装list返回
         List<Comment> list = dao.findCommentByArticle(article.getId());
-        if(StringUtils.isNotBlank(userId)){
-            list = verdictAndSetStatus(list,userId);
+        if (StringUtils.isNotBlank(userId)) {
+            list = verdictAndSetStatus(list, userId);
         }
         List<Comment> comments = Lists.newArrayList();
         //封装子集合
@@ -154,10 +151,10 @@ public class CommentService extends CrudService<CommentDao, Comment> {
         return list.size();
     }
 
-    public List<Comment> verdictAndSetStatus(List<Comment> list , String userId){
-        if(!list.isEmpty()){
+    public List<Comment> verdictAndSetStatus(List<Comment> list, String userId) {
+        if (!list.isEmpty()) {
             for (Comment c : list) {
-                if(c.getLikeUserIds().contains(userId)){
+                if (c.getLikeUserIds().contains(userId)) {
                     c.setListFlag(Global.YES);
                 }
             }

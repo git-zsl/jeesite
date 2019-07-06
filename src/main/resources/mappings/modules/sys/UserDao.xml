@@ -461,11 +461,26 @@
 		WHERE id = #{id}
 	</update>
 
-	<!-- 更新主页企业背景  -->
+	<!-- 更新主页企业背景  未使用-->
 	<update id="updateackground">
 		UPDATE sys_user SET
-		background = #{background},
+		background = #{background}
 		WHERE id = #{id}
 	</update>
+
+	<!-- 更新主页企业背景  -->
+	<update id="updateAttentionNum">
+		UPDATE sys_user SET
+		attentionNum = #{attentionNum}
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateAttention2Num">
+		UPDATE sys_user SET
+		attention2Num = #{attention2Num}
+		WHERE id = #{id}
+	</update>
+
+
 
 </mapper>

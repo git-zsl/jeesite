@@ -124,4 +124,5 @@ public interface UserDao extends CrudDao<User> {
 
 
 	public void deleteOrrecover(User user);
+
 }

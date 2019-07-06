@@ -119,9 +119,9 @@ public class CommentController extends BaseController {
             if (!StringUtils.isBlank(userId)) {
                 for (Comment comment1 : list) {
                     if (StringUtils.isBlank(comment1.getParentContentId())) {
-                        if (comment1.getCreateBy().getId().equals(userId)) {
+                       // if (comment1.getCreateBy().getId().equals(userId)) {
                             newComments.add(comment1);
-                        }
+                       // }
                         continue;
                     }
                     newComments.add(comment1);

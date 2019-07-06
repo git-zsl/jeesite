@@ -7,4 +7,7 @@ public interface ReturnStatus {
 	int UNAUTHORIZED = 3; // 未授权
 	int SYSEXCEPTION = 4; // 系统异常
 	int DOGexception = 5; // 加密狗异常
+	int LOGINUSERNAME = 6; // 用户名错误
+	int LOGINUPASSWORD = 7; // 密码错误
+
 }

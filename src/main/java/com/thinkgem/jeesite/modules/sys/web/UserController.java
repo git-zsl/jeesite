@@ -632,9 +632,11 @@ public class UserController extends BaseController {
         MultipartFile weChatCode = null;
         User user1 = UserUtils.get(userId);
         try {
-            boolean b = LoginUtils.validatePassword(user.getPassword(), user1.getPassword());
-            if (!b) {
-                return ReturnEntity.fail("原密码不正确，请重新输入");
+            if(StringUtils.isNotBlank(user.getNewPassword())){
+                boolean b = LoginUtils.validatePassword(user.getPassword(), user1.getPassword());
+                if (!b) {
+                    return ReturnEntity.fail("原密码不正确，请重新输入");
+                }
             }
             //解码
             user = systemService.decode(user, user1);
@@ -660,9 +662,9 @@ public class UserController extends BaseController {
                 }
             }
             //测试代码
-            user.setDistrict(new SysChina("110500"));
+          /*  user.setDistrict(new SysChina("110500"));
             user.setCity(new SysChina("110000"));
-            user.setProvence(new SysChina("1100001"));
+            user.setProvence(new SysChina("1100001"));*/
             systemService.updateHomeUserInformation(user);
             // 清除用户缓存
             user.setLoginName(user.getLoginName());
