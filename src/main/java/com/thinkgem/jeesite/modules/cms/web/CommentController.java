@@ -119,9 +119,9 @@ public class CommentController extends BaseController {
             if (!StringUtils.isBlank(userId)) {
                 for (Comment comment1 : list) {
                     if (StringUtils.isBlank(comment1.getParentContentId())) {
-                       // if (comment1.getCreateBy().getId().equals(userId)) {
+                        if (comment1.getCreateBy().getId().equals(userId)) {
                             newComments.add(comment1);
-                       // }
+                        }
                         continue;
                     }
                     newComments.add(comment1);
@@ -276,5 +276,37 @@ public class CommentController extends BaseController {
             return ReturnEntity.fail("程序出错");
         }
     }
+
+
+
+    /**
+     * 个人中心新评论接口
+     * @param
+     * @return
+     */
+    @RequestMapping("filter/personalComment")
+    @ResponseBody
+    public ReturnEntity personalComment(String userId,HttpServletRequest request,HttpServletResponse response) {
+        List<Comment> comments = Lists.newArrayList();
+        Page<Comment> page = new Page<Comment>(request, response);
+        try {
+            Article article = new Article();
+            article.setCreateBy(new User(userId));
+            List<Article> list = articleService.findList(article);
+            for (Article a : list) {
+                List<Comment> commentByArticleId = commentService.findCommentByArticleId(a);
+                comments.addAll(commentByArticleId);
+            }
+            //模拟分页
+            List<Comment> pageList = MyPageUtil.getPageList(comments, request, response);
+            page.setList(pageList);
+            return ReturnEntity.success(page);
+        } catch (Exception e) {
+            e.printStackTrace();
+            LogUtils.getLogInfo(CommentController.class).info("程序出错", e);
+            return ReturnEntity.fail("程序出错");
+        }
+    }
+
 
 }

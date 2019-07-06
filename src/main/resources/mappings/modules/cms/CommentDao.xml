@@ -79,6 +79,7 @@
 				AND a.content_id = #{id}
 			</if>
 		</where>
+        order by a.create_date desc
 	</select>
 
 	<select id="findList" resultType="Comment">

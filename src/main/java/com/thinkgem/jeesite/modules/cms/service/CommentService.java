@@ -151,6 +151,10 @@ public class CommentService extends CrudService<CommentDao, Comment> {
         return list.size();
     }
 
+    public List<Comment> findCommentByArticleId(Article article) {
+        return dao.findCommentByArticle(article.getId());
+    }
+
     public List<Comment> verdictAndSetStatus(List<Comment> list, String userId) {
         if (!list.isEmpty()) {
             for (Comment c : list) {
