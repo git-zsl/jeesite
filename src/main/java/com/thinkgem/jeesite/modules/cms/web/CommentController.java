@@ -10,7 +10,6 @@ import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.utils.MyPageUtil;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.modules.ad.entity.AdInfomation;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.cms.entity.Category;
 import com.thinkgem.jeesite.modules.cms.entity.Comment;
@@ -77,7 +76,7 @@ public class CommentController extends BaseController {
             comment.setDelFlag(Comment.DEL_FLAG_NORMAL);
             commentService.save(comment);
             //修改文章的评论数
-             Article article = articleService.get(comment.getContentId());
+            Article article = articleService.get(comment.getContentId());
             article.setCommentNum(article.getCommentNum() + 1);
             articleService.updataArticleCommentNum(article);
             addMessage(redirectAttributes, DictUtils.getDictLabel(comment.getDelFlag(), "cms_del_flag", "保存")
@@ -108,7 +107,7 @@ public class CommentController extends BaseController {
     @RequestMapping(value = "filter/consultationList", method = RequestMethod.POST)
     @ResponseBody
     public ReturnEntity<Page<Comment>> findConsultationList(String userId, String categoryId, @ModelAttribute Comment comment, HttpServletRequest request, HttpServletResponse response) {
-		Page<Comment> page = new Page<Comment>(request, response);
+        Page<Comment> page = new Page<Comment>(request, response);
         List<Comment> comments = new ArrayList<>();
         List<Comment> newComments = new ArrayList<>();
         try {
@@ -183,7 +182,7 @@ public class CommentController extends BaseController {
      * 主页请教保存接口
      */
     @RequestMapping(value = "filter/homeSsave")
-    public ReturnEntity homeSsave(@ModelAttribute Comment comment,String userId) {
+    public ReturnEntity homeSsave(@ModelAttribute Comment comment, String userId) {
         if (comment.getAuditUser() == null) {
             comment.setAuditUser(UserUtils.get(userId));
             comment.setAuditDate(new Date());
@@ -198,15 +197,15 @@ public class CommentController extends BaseController {
      */
     @RequestMapping(value = "filter/consultationArticleList", method = RequestMethod.POST)
     @ResponseBody
-    public synchronized  ReturnEntity<Page<Comment>> findConsultationArticleList(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "categoryId") String categoryId, @ModelAttribute Comment comment,String userId) {
+    public synchronized ReturnEntity<Page<Comment>> findConsultationArticleList(HttpServletRequest request, HttpServletResponse response, @RequestParam(value = "categoryId") String categoryId, @ModelAttribute Comment comment, String userId) {
         Article article = new Article();
         article.setCategory(new Category(categoryId));
-        if(!Global.YES.equals(comment.getIsRecommend())){
+        if (!Global.YES.equals(comment.getIsRecommend())) {
             article.setIsRecommend("");
-        }else{
+        } else {
             article.setIsRecommend(comment.getIsRecommend());
         }
-        if(StringUtils.isNotBlank(userId)){
+        if (StringUtils.isNotBlank(userId)) {
             article.setCreateBy(new User(userId));
         }
         List<Article> articleList0Answers = Lists.newArrayList();
@@ -215,27 +214,26 @@ public class CommentController extends BaseController {
             articlePage = articleService.findconsultationArticlePage(new Page<Article>(request, response), article);
             //设置评论数
             List<Article> list = articlePage.getList();
-            if(!list.isEmpty()){
+            if (!list.isEmpty()) {
                 for (Article a : list) {
                     int commentNumByArticle = commentService.findCommentNumByArticle(a);
                     a.setCommentNum(commentNumByArticle);
-                    if(StringUtils.isNotBlank(comment.getParentContentId()) && commentNumByArticle == 0){
+                    if (StringUtils.isNotBlank(comment.getParentContentId()) && commentNumByArticle == 0) {
                         articleList0Answers.add(a);
                     }
                 }
                 article.setCommentNum(Integer.parseInt(comment.getCommentNum()));
             }
-            if(StringUtils.isNotBlank(comment.getParentContentId())){
+            if (StringUtils.isNotBlank(comment.getParentContentId())) {
                 articlePage.setList(articleList0Answers);
             }
             return ReturnEntity.success(articlePage, "查询成功");
         } catch (Exception e) {
             e.printStackTrace();
             LogUtils.getLogInfo(CommentController.class).info("程序出错", e);
-            return ReturnEntity.fail( "查询失败");
+            return ReturnEntity.fail("查询失败");
         }
     }
-
 
     /**
      * 文章详情内的评论内容
@@ -245,11 +243,11 @@ public class CommentController extends BaseController {
      */
     @RequestMapping("filter/findCommentByArticle")
     @ResponseBody
-    public ReturnEntity findCommentByArticle(Article article,@RequestParam(value = "userId",required = false) String userId, HttpServletRequest request,HttpServletResponse response) {
+    public ReturnEntity findCommentByArticle(Article article, @RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
         try {
             Page<Comment> page = new Page<Comment>(request, response);
             //模拟分页
-            List<Comment> pageList = MyPageUtil.getPageList(commentService.findCommentByArticle(article,userId), request, response);
+            List<Comment> pageList = MyPageUtil.getPageList(commentService.findCommentByArticle(article, userId), request, response);
             page.setList(pageList);
             return ReturnEntity.success(page, "获取评论成功");
         } catch (Exception e) {
@@ -261,12 +259,13 @@ public class CommentController extends BaseController {
 
     /**
      * 评论点赞修改接口
+     *
      * @param comment（只需评论的id）
      * @return
      */
     @RequestMapping("filter/updateCommentLikeNum")
     @ResponseBody
-    public ReturnEntity updateCommentLikeNum(Comment comment,String userId) {
+    public ReturnEntity updateCommentLikeNum(Comment comment, String userId) {
         try {
             String message = commentService.updateCommentLikeNum(comment, userId);
             return ReturnEntity.success(message);
@@ -277,16 +276,15 @@ public class CommentController extends BaseController {
         }
     }
 
-
-
     /**
      * 个人中心新评论接口
+     *
      * @param
      * @return
      */
     @RequestMapping("filter/personalComment")
     @ResponseBody
-    public ReturnEntity personalComment(String userId,HttpServletRequest request,HttpServletResponse response) {
+    public ReturnEntity personalComment(String userId, HttpServletRequest request, HttpServletResponse response) {
         List<Comment> comments = Lists.newArrayList();
         Page<Comment> page = new Page<Comment>(request, response);
         try {
