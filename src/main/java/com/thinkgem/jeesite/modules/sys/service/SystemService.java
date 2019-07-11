@@ -11,6 +11,7 @@ import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.service.ServiceException;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.Encodes;
+import com.thinkgem.jeesite.common.utils.IdGen;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.Servlets;
 import com.thinkgem.jeesite.modules.sys.dao.MenuDao;
@@ -354,7 +355,13 @@ public class SystemService extends BaseService implements InitializingBean {
 //		// 清除权限缓存
 //		systemRealm.clearAllCachedAuthorizationInfo();
 	}
-	
+
+	@Transactional(readOnly = false)
+	public void saveUserRole(String userId,String roleId) {
+		roleDao.deleteUserRole(userId);
+		roleDao.saveUserRole(userId,roleId);
+	}
+
 	@Transactional(readOnly = false)
 	public Boolean outUserInRole(Role role, User user) {
 		List<Role> roles = user.getRoleList();

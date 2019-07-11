@@ -5,6 +5,7 @@ package com.thinkgem.jeesite.modules.sys.service;
 
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
+import com.thinkgem.jeesite.modules.sys.entity.Role;
 import com.thinkgem.jeesite.modules.sys.entity.SysOfficeInformation;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
@@ -65,6 +66,7 @@ public class HomeLoginService extends BaseService {
             User user2 = sysOfficeInformationService.setUserInformation(map, user);
             SysOfficeInformation sysOfficeInformation = sysOfficeInformationService.setSysOfficeInformation(map, new SysOfficeInformation(),user2);
             systemService.createUser(user2);
+            systemService.saveUserRole(user2.getId(),"6");
             sysOfficeInformation.setUser(user2);
             sysOfficeInformationService.save(sysOfficeInformation);
         }else{

@@ -359,9 +359,9 @@
 			attention2Num = #{attention2Num},
 			background = #{background},
 			sex = #{sex},
-			provence = #{provence},
-			city = #{city},
-			district = #{district},
+			provence = #{provence.id},
+			city = #{city.id},
+			district = #{district.id},
 			subscription = #{subscription},
 			information = #{information}
 		WHERE id = #{id}

@@ -184,7 +184,17 @@
 			</if>
 		</foreach>
 	</insert>
-	
+
+	<insert id="saveUserRole">
+		INSERT INTO sys_user_role(user_id,role_id)
+		VALUEs(#{userId},#{roleId})
+	</insert>
+
+	<delete id="deleteUserRole">
+		delete from sys_user_role
+		where user_id = #{userId}
+	</delete>
+
 	<delete id="deleteRoleOffice">
 		DELETE FROM sys_role_office WHERE role_id = #{id}
 	</delete>

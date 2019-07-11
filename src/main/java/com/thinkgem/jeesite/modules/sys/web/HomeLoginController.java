@@ -129,21 +129,22 @@ public class HomeLoginController extends BaseController {
                 file = multipartRequest.getFile("file");
                 image = multipartRequest.getFile("image");
                 String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
-                File file0 = new File(configPath + "/" + loginName);
+                File file0 = new File(configPath + "/userfiles/" + loginName);
                 if (!file0.exists()) {
                     file0.mkdirs();
                 }
                 if(Objects.nonNull(image)){
                     originalFilename = image.getOriginalFilename();
-                    File file1 = new File(configPath + "/" + loginName + "/" + originalFilename);
+                    File file1 = new File(configPath + "/userfiles/" + loginName + "/" + originalFilename);
                     image.transferTo(file1);
-                    map.put("image", file1.getPath());
+
+                    map.put("image", getOnLineUrl(file1.getPath(),request));
                 }
                 if(Objects.nonNull(file)){
                     originalFilename1 = file.getOriginalFilename();
-                    File file2 = new File(configPath + "/" + loginName + "/" + originalFilename1);
+                    File file2 = new File(configPath + "/userfiles/" + loginName + "/" + originalFilename1);
                     file.transferTo(file2);
-                    map.put("file", file2.getPath());
+                    map.put("file", getOnLineUrl(file2.getPath(),request));
                 }
             }
             //个人用户字段
@@ -429,5 +430,14 @@ public class HomeLoginController extends BaseController {
     @ResponseBody
     public ReturnEntity getMyPassword(User user){
         return ReturnEntity.success(SystemService.entryptPassword(user.getNewPassword()),"获取成功");
+    }
+
+
+    private String getOnLineUrl(String path,HttpServletRequest request){
+        String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
+        String replace = path.replace("\\", "/");
+        String s = replace.split(configPath)[1];
+        String url =  request.getContextPath() +  s;
+        return url;
     }
 }

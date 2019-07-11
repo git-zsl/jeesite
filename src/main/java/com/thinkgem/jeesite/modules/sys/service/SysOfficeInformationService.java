@@ -72,7 +72,7 @@ public class SysOfficeInformationService extends CrudService<SysOfficeInformatio
 	public SysOfficeInformation setSysOfficeInformation(Map<String,String> map,SysOfficeInformation officeInfo,User user){
 		officeInfo.setName(map.get("name")); // 全称
 		Office office = new Office();
-		office.setName(map.get("officeName"));
+		office.setName(map.get("name"));
 		List<Office> listByName = officeService.findListByName(office);
 		if(listByName.isEmpty()){
 			office.setParent(new Office(map.get("companyId")));
@@ -87,12 +87,14 @@ public class SysOfficeInformationService extends CrudService<SysOfficeInformatio
 			office = listByName.get(0);
 		}
 		user.setOffice(office);
+		user.setName(map.get("officeName"));
+		user.setPhoto(map.get("image"));
 		officeInfo.setOffice(office); //  关联的officeId
 		officeInfo.setOfficeType(map.get("officeType")); //企业性质
 		officeInfo.setShortName(map.get("shortName")); // 简称
 		officeInfo.setOfficeIntroduction(map.get("officeIntroduction"));  //机构简介
 		officeInfo.setOfficeLink(map.get("officeLink"));  // 企业官网
-		officeInfo.setImage(map.get("image"));   //  企业证书
+		officeInfo.setImage(map.get("file"));   //  企业证书
 		officeInfo.setProvence(new SysChina(map.get("provence")));
 		officeInfo.setCity(new SysChina(map.get("city")));
 		officeInfo.setDistrict(new SysChina(map.get("district")));

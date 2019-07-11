@@ -6,6 +6,7 @@ package com.thinkgem.jeesite.modules.sys.dao;
 import com.thinkgem.jeesite.common.persistence.CrudDao;
 import com.thinkgem.jeesite.common.persistence.annotation.MyBatisDao;
 import com.thinkgem.jeesite.modules.sys.entity.Role;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * 角色DAO接口
@@ -27,7 +28,11 @@ public interface RoleDao extends CrudDao<Role> {
 	public int deleteRoleMenu(Role role);
 
 	public int insertRoleMenu(Role role);
-	
+
+	public int saveUserRole(@Param("userId") String userId,@Param("roleId") String roleId);
+
+	public int deleteUserRole(@Param("userId") String userId);
+
 	/**
 	 * 维护角色与公司部门关系
 	 * @param role
