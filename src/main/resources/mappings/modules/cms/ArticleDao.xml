@@ -513,7 +513,7 @@
                 AND a.pay = #{pay}
             </if>
             <if test="area != null and area != ''">
-                AND a.area = #{area}
+                AND jc.city = #{area}
             </if>
             <if test="education != null and education != ''">
                 AND a.education = #{education}
@@ -521,11 +521,15 @@
             <if test="experience != null and experience != ''">
                 AND a.experience = #{experience}
             </if>
+            <if test="company != null and company != ''">
+                AND (a.company like CONCAT('%', upper(#{company}), '%')
+                or p.posts like CONCAT('%', upper(#{company}), '%')
+                or a.title like CONCAT('%', upper(#{company}), '%')
+                )
+            </if>
             <if test="category != null and category.parentIds != null and category.parentIds != ''">
                 AND c.parent_ids like
-                <if test="dbName == 'oracle'">'%'||#{category.id}||'%'</if>
-                <if test="dbName == 'mssql'">'%,'+#{category.id}+',%'</if>
-                <if test="dbName == 'mysql'">CONCAT('%,', #{category.id}, ',%')</if>
+                <if test="dbName == 'mysql'">CONCAT('%', #{category.id}, '%')</if>
             </if>
 
         </where>

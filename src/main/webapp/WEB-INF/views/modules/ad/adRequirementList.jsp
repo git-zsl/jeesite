@@ -86,6 +86,7 @@
 					<fmt:formatDate value="${adRequirement.createDate}" pattern="yyyy-MM-dd HH:mm:ss"/>
 				</td>
 				<shiro:hasPermission name="ad:adRequirement:edit"><td>
+    				<a href="${ctx}/ad/adRequirement/changeStatus?id=${adRequirement.id}&status=${adRequirement.status eq 1 ? '0':'1'}">${adRequirement.status eq 1?'取消发布':'确认发布'}</a>
     				<a href="${ctx}/ad/adRequirement/form?id=${adRequirement.id}">修改</a>
 					<a href="${ctx}/ad/adRequirement/delete?id=${adRequirement.id}" onclick="return confirmx('确认要删除该信息吗？', this.href)">删除</a>
 				</td></shiro:hasPermission>

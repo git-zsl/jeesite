@@ -28,6 +28,8 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.ad.entity.AdRequirement;
 import com.thinkgem.jeesite.modules.ad.service.AdRequirementService;
 
+import java.util.List;
+
 /**
  * 广告需求Controller
  * @author zsl
@@ -55,6 +57,7 @@ public class AdRequirementController extends BaseController {
 	@RequiresPermissions("ad:adRequirement:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(AdRequirement adRequirement, HttpServletRequest request, HttpServletResponse response, Model model) {
+		adRequirement.setStatus("");
 		Page<AdRequirement> page = adRequirementService.findPage(new Page<AdRequirement>(request, response), adRequirement); 
 		model.addAttribute("page", page);
 		return "modules/ad/adRequirementList";
@@ -86,6 +89,14 @@ public class AdRequirementController extends BaseController {
 		return "redirect:"+Global.getAdminPath()+"/ad/adRequirement/?repage";
 	}
 
+	@RequiresPermissions("ad:adRequirement:edit")
+	@RequestMapping(value = "changeStatus")
+	public String changeStatus(AdRequirement adRequirement, RedirectAttributes redirectAttributes) {
+		adRequirementService.changeStatus(adRequirement);
+		addMessage(redirectAttributes, "修改成功");
+		return "redirect:"+Global.getAdminPath()+"/ad/adRequirement/?repage";
+	}
+
 
 	/**
 	 * 广告需求发布
@@ -94,6 +105,7 @@ public class AdRequirementController extends BaseController {
 	@ResponseBody
 	public ReturnEntity findADRequirement(AdRequirement adRequirement,String userId){
 		try{
+		    userId = "fc55d66378ed42239b838364922554b1";
 			User user = UserUtils.get(userId);
 			adRequirement.setCreateBy(user);
 			adRequirement.setUpdateBy(user);
@@ -105,4 +117,40 @@ public class AdRequirementController extends BaseController {
 		}
 		return ReturnEntity.success("查询成功");
 	}
+
+
+
+	@RequestMapping("filter/getADRequirementAll")
+	@ResponseBody
+	public ReturnEntity getADRequirementAll(AdRequirement adRequirement,String userId){
+		try{
+			User user = UserUtils.get(userId);
+			adRequirement.setCreateBy(user);
+            adRequirement.setStatus("");
+            List<AdRequirement> list = adRequirementService.findList(adRequirement);
+            return ReturnEntity.success(list);
+        }catch (Exception e){
+			e.printStackTrace();
+			LogUtils.getLogInfo(AdRequirementController.class).info("程序出错", e);
+			return ReturnEntity.fail("程序出错");
+		}
+	}
+
+	@RequestMapping("filter/getADRequirementIng")
+	@ResponseBody
+	public ReturnEntity getADRequirementIng(AdRequirement adRequirement,String userId){
+		try{
+			User user = UserUtils.get(userId);
+			adRequirement.setCreateBy(user);
+			adRequirement.setStatus(Global.YES);
+            List<AdRequirement> list = adRequirementService.findList(adRequirement);
+            return ReturnEntity.success(list);
+        }catch (Exception e){
+			e.printStackTrace();
+			LogUtils.getLogInfo(AdRequirementController.class).info("程序出错", e);
+			return ReturnEntity.fail("程序出错");
+		}
+
+	}
+
 }

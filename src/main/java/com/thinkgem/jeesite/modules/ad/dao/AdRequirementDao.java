@@ -14,5 +14,7 @@ import com.thinkgem.jeesite.modules.ad.entity.AdRequirement;
  */
 @MyBatisDao
 public interface AdRequirementDao extends CrudDao<AdRequirement> {
+
+    void changeStatus(AdRequirement adRequirement);
 	
 }

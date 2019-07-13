@@ -437,7 +437,6 @@ public class HomeLoginController extends BaseController {
         String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
         String replace = path.replace("\\", "/");
         String s = replace.split(configPath)[1];
-        String url =  request.getContextPath() +  s;
-        return url;
+        return request.getContextPath() +  s;
     }
 }

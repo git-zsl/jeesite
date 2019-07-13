@@ -43,5 +43,10 @@ public class AdRequirementService extends CrudService<AdRequirementDao, AdRequir
 	public void delete(AdRequirement adRequirement) {
 		super.delete(adRequirement);
 	}
-	
+
+	@Transactional(readOnly = false)
+	public void changeStatus(AdRequirement adRequirement) {
+		dao.changeStatus(adRequirement);
+	}
+
 }

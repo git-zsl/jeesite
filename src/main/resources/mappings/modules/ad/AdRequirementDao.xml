@@ -10,6 +10,7 @@
 		a.wechat_id AS "wechatId",
 		a.period AS "period",
 		a.content AS "content",
+		a.status AS "status",
 		a.create_by AS "createBy.id",
 		a.create_date AS "createDate",
 		a.update_by AS "updateBy.id",
@@ -57,13 +58,19 @@
 			<if test="createDate != null and createDate != ''">
 				AND a.create_date = #{createDate}
 			</if>
+			<if test="createBy.id != null and createBy.id != ''">
+				AND a.create_by = #{createBy.id}
+			</if>
+			<if test="status != null and status != ''">
+				AND a.status = #{status}
+			</if>
 		</where>
 		<choose>
 			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
-				ORDER BY ${page.orderBy}
+				ORDER BY a.status asc,${page.orderBy}
 			</when>
 			<otherwise>
-				ORDER BY a.update_date DESC
+				ORDER BY a.status asc,a.update_date DESC
 			</otherwise>
 		</choose>
 	</select>
@@ -95,6 +102,7 @@
 			wechat_id,
 			period,
 			content,
+			status,
 			create_by,
 			create_date,
 			update_by,
@@ -109,6 +117,7 @@
 			#{wechatId},
 			#{period},
 			#{content},
+			#{status},
 			#{createBy.id},
 			#{createDate},
 			#{updateBy.id},
@@ -126,6 +135,7 @@
 			wechat_id = #{wechatId},
 			period = #{period},
 			content = #{content},
+			status = #{status},
 			update_by = #{updateBy.id},
 			update_date = #{updateDate},
 			remarks = #{remarks}
@@ -137,5 +147,11 @@
 			del_flag = #{DEL_FLAG_DELETE}
 		WHERE id = #{id}
 	</update>
-	
+
+	<update id="changeStatus">
+		UPDATE ad_requirement SET
+			status = #{status}
+		WHERE id = #{id}
+	</update>
+
 </mapper>

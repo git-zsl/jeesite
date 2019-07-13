@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.ad.entity;
 
+import com.thinkgem.jeesite.common.config.Global;
 import org.hibernate.validator.constraints.Length;
 
 import com.thinkgem.jeesite.common.persistence.DataEntity;
@@ -21,13 +22,16 @@ public class AdRequirement extends DataEntity<AdRequirement> {
 	private String wechatId;		// 微信id
 	private String period;		// 投放周期
 	private String content;		// 附件内容
+	private String status;        // 投放状态
 	
 	public AdRequirement() {
 		super();
+		this.status = Global.NO;
 	}
 
 	public AdRequirement(String id){
 		super(id);
+		this.status = Global.NO;
 	}
 
 	@Length(min=0, max=255, message="广告标题长度必须介于 0 和 255 之间")
@@ -83,5 +87,12 @@ public class AdRequirement extends DataEntity<AdRequirement> {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }
