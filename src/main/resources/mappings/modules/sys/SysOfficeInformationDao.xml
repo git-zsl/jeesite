@@ -6,10 +6,10 @@
 		a.id AS "id",
 		a.office_id AS "office.id",
 		a.user_id AS "user.id",
-		a.provence AS "provence",
-		a.city AS "city",
+		a.provence AS "provence.id",
+		a.city AS "city.id",
 		a.team_size AS "teamSize",
-		a.district AS "district",
+		a.district AS "district.id",
 		a.office_introduction AS "officeIntroduction",
 		a.office_link AS "officeLink",
 		a.name AS "name",
@@ -24,12 +24,19 @@
 		a.update_date AS "updateDate",
 		a.remarks AS "remarks",
 		a.del_flag AS "delFlag",
-		o2.name AS "office.name"
+		o2.name AS "office.name",
+		pr.name AS "provence.name",
+		ci.name AS "city.name",
+		di.name AS "district.name"
 	</sql>
 
     <sql id="sysOfficeInformationJoins">
-		LEFT JOIN sys_office o2 ON o2.id = a.office_id
-	</sql>
+        LEFT JOIN sys_office o2 ON o2.id = a.office_id
+        <!--省市区关联-->
+        LEFT JOIN sys_china pr ON pr.id = a.provence
+        LEFT JOIN sys_china ci ON ci.id = a.city
+        LEFT JOIN sys_china di ON di.id = a.district
+    </sql>
 
     <select id="get" resultType="SysOfficeInformation">
         SELECT
@@ -165,7 +172,7 @@
 		WHERE id = #{id}
 	</update>
 
-	<update id="updateHomeInformation">
+    <update id="updateHomeInformation">
 		UPDATE sys_office_information SET
 		name = #{name},
 		update_by = #{updateBy.id},

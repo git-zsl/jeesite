@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.persistence.ReturnStatus;
 import com.thinkgem.jeesite.common.utils.MyPageUtil;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
@@ -268,6 +269,9 @@ public class CommentController extends BaseController {
     public ReturnEntity updateCommentLikeNum(Comment comment, String userId) {
         try {
             String message = commentService.updateCommentLikeNum(comment, userId);
+            if("取消点赞成功".equals(message)){
+                return new ReturnEntity<Object>(ReturnStatus.UNAUTHORIZED, message);
+            }
             return ReturnEntity.success(message);
         } catch (Exception e) {
             e.printStackTrace();

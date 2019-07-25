@@ -9,5 +9,6 @@ public interface ReturnStatus {
 	int DOGexception = 5; // 加密狗异常
 	int LOGINUSERNAME = 6; // 用户名错误
 	int LOGINUPASSWORD = 7; // 密码错误
+	int CANCLELIKE = 8; // 取消点赞
 
 }

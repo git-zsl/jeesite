@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
+import com.thinkgem.jeesite.common.utils.MyPageUtil;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -122,13 +123,14 @@ public class AdRequirementController extends BaseController {
 
 	@RequestMapping("filter/getADRequirementAll")
 	@ResponseBody
-	public ReturnEntity getADRequirementAll(AdRequirement adRequirement,String userId){
+	public ReturnEntity getADRequirementAll(AdRequirement adRequirement,String userId, HttpServletRequest request, HttpServletResponse response){
 		try{
+			Page<AdRequirement> page = new Page<AdRequirement>();
 			User user = UserUtils.get(userId);
 			adRequirement.setCreateBy(user);
             adRequirement.setStatus("");
-            List<AdRequirement> list = adRequirementService.findList(adRequirement);
-            return ReturnEntity.success(list);
+			page.setList(MyPageUtil.getPageList(adRequirementService.findList(adRequirement), request, response));
+			return ReturnEntity.success(page);
         }catch (Exception e){
 			e.printStackTrace();
 			LogUtils.getLogInfo(AdRequirementController.class).info("程序出错", e);
@@ -138,13 +140,14 @@ public class AdRequirementController extends BaseController {
 
 	@RequestMapping("filter/getADRequirementIng")
 	@ResponseBody
-	public ReturnEntity getADRequirementIng(AdRequirement adRequirement,String userId){
+	public ReturnEntity getADRequirementIng(AdRequirement adRequirement,String userId, HttpServletRequest request, HttpServletResponse response){
 		try{
+			Page<AdRequirement> page = new Page<AdRequirement>();
 			User user = UserUtils.get(userId);
 			adRequirement.setCreateBy(user);
 			adRequirement.setStatus(Global.YES);
-            List<AdRequirement> list = adRequirementService.findList(adRequirement);
-            return ReturnEntity.success(list);
+			page.setList(MyPageUtil.getPageList(adRequirementService.findList(adRequirement), request, response));
+            return ReturnEntity.success(page);
         }catch (Exception e){
 			e.printStackTrace();
 			LogUtils.getLogInfo(AdRequirementController.class).info("程序出错", e);

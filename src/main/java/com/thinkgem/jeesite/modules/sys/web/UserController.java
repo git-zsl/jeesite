@@ -3,29 +3,28 @@
  */
 package com.thinkgem.jeesite.modules.sys.web;
 
-import java.io.File;
-import java.net.URLDecoder;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.ConstraintViolationException;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.thinkgem.jeesite.common.beanvalidator.BeanValidators;
+import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.utils.CacheUtils;
+import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.Encodes;
-import com.thinkgem.jeesite.modules.area.entity.SysChina;
+import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
+import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
+import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.sys.entity.*;
 import com.thinkgem.jeesite.modules.sys.service.AreaService;
 import com.thinkgem.jeesite.modules.sys.service.OfficeService;
 import com.thinkgem.jeesite.modules.sys.service.SysOfficeInformationService;
+import com.thinkgem.jeesite.modules.sys.service.SystemService;
 import com.thinkgem.jeesite.modules.sys.utils.EmailUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LoginUtils;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
@@ -33,28 +32,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.thinkgem.jeesite.common.beanvalidator.BeanValidators;
-import com.thinkgem.jeesite.common.config.Global;
-import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.utils.DateUtils;
-import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
-import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
-import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.modules.sys.service.SystemService;
-import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.springframework.web.util.WebUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.ConstraintViolationException;
+import java.io.File;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 用户Controller
@@ -168,7 +160,7 @@ public class UserController extends BaseController {
         systemService.saveUser(user);
         //保存企业详细信息
         SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(user.getId());
-        if(Objects.isNull(byUserId)){
+        if (Objects.isNull(byUserId)) {
             byUserId = new SysOfficeInformation();
         }
         byUserId.setUser(new User(user.getId()));
@@ -533,9 +525,10 @@ public class UserController extends BaseController {
         }
         return "redirect:" + Global.getAdminPath() + "/sys/user/businessList/?repage";
     }
+
     @RequiresPermissions("sys:user:edit")
     @RequestMapping(value = "changeLoginFlag")
-    public String changeLoginFlag(String userId, RedirectAttributes redirectAttributes,String loginFlag) {
+    public String changeLoginFlag(String userId, RedirectAttributes redirectAttributes, String loginFlag) {
         User user = systemService.getUser(userId);
         user.setLoginFlag(loginFlag);
         systemService.saveUser(user);
@@ -612,7 +605,7 @@ public class UserController extends BaseController {
             user.setOffice(UserUtils.getUser().getOffice());
         }
         SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(user.getId());
-        if(Objects.nonNull(byUserId)){
+        if (Objects.nonNull(byUserId)) {
             user.setOfficeImage(byUserId.getOfficeImage());
             user.setTeamSize(byUserId.getTeamSize());
             user.setOfficeLink(byUserId.getOfficeLink());
@@ -632,7 +625,7 @@ public class UserController extends BaseController {
         MultipartFile weChatCode = null;
         User user1 = UserUtils.get(userId);
         try {
-            if(StringUtils.isNotBlank(user.getNewPassword())){
+            if (StringUtils.isNotBlank(user.getNewPassword())) {
                 boolean b = LoginUtils.validatePassword(user.getPassword(), user1.getPassword());
                 if (!b) {
                     return ReturnEntity.fail("原密码不正确，请重新输入");
@@ -647,7 +640,7 @@ public class UserController extends BaseController {
                 weChatCode = multipartRequest.getFile("weChatCode");
                 String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
                 String wappPath = request.getSession().getServletContext().getContextPath();
-                if(Objects.nonNull(image)){
+                if (Objects.nonNull(image)) {
                     String originalFilename = Encodes.urlDecode(image.getOriginalFilename());
                     File file1 = new File(configPath + "/" + Global.getConfig("homePhoto") + user.getLoginName() + "/" + originalFilename);
                     if (!file1.getParentFile().exists()) {
@@ -657,7 +650,7 @@ public class UserController extends BaseController {
                     String s = wappPath + "/" + file1.getPath().substring(configPath.length() + 1);
                     user.setPhoto(s);
                 }
-                if(Objects.nonNull(weChatCode)){
+                if (Objects.nonNull(weChatCode)) {
                     systemService.saveWechatImage(configPath, weChatCode, user, wappPath);
                 }
             }
@@ -685,9 +678,12 @@ public class UserController extends BaseController {
     public ReturnEntity updateOfficeInformation(String userId, User user, HttpServletRequest request, SysOfficeInformation sysOfficeInformation) {
         try {
             User user1 = UserUtils.get(userId);
-            boolean b = LoginUtils.validatePassword(user.getPassword(), user1.getPassword());
-            if (!b) {
-                return ReturnEntity.fail("原密码不正确，请重新输入");
+            if (StringUtils.isNotBlank(user.getNewPassword())) {
+                boolean b = LoginUtils.validatePassword(user.getPassword(), user1.getPassword());
+                if (!b) {
+                    return ReturnEntity.fail("原密码不正确，请重新输入");
+                }
+                user1.setPassword(LoginUtils.entryptPassword(user.getNewPassword()));
             }
             MultipartFile headImage = null;
             MultipartFile file1 = null;
@@ -719,16 +715,19 @@ public class UserController extends BaseController {
                 file2 = multipartRequest.getFile("file2");
                 file3 = multipartRequest.getFile("file3");
                 weChatCode = multipartRequest.getFile("weChatCode");
-                String originalFilename = Encodes.urlDecode(headImage.getOriginalFilename());
                 String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
-                File path = new File(configPath + "/" + Global.getConfig("homePhoto") + user.getLoginName() + "/" + originalFilename);
-                if (!path.getParentFile().exists()) {
-                    path.getParentFile().mkdirs();
-                }
                 String wappPath = request.getSession().getServletContext().getContextPath();
-                headImage.transferTo(path);
-                String s = wappPath + "/" + path.getPath().substring(configPath.length() + 1);
-                user.setPhoto(s);
+                if(Objects.nonNull(headImage)){
+                    String originalFilename = Encodes.urlDecode(headImage.getOriginalFilename());
+                    File path = new File(configPath + "/" + Global.getConfig("homePhoto") + user.getLoginName() + "/" + originalFilename);
+                    if (!path.getParentFile().exists()) {
+                        path.getParentFile().mkdirs();
+                    }
+
+                    headImage.transferTo(path);
+                    String s = wappPath + "/" + path.getPath().substring(configPath.length() + 1);
+                    user.setPhoto(s);
+                }
                 systemService.saveWechatImage(configPath, weChatCode, user, wappPath);
                 systemService.saveOfficeImage(configPath, file1, sysOfficeInformation, wappPath);
                 systemService.saveOfficeImage(configPath, file2, sysOfficeInformation, wappPath);
@@ -751,7 +750,7 @@ public class UserController extends BaseController {
             LogUtils.getLogInfo(UserController.class).info("程序出错", e);
             return ReturnEntity.fail("程序出错");
         }
-        return ReturnEntity.success(UserUtils.get(user.getId()), "更新成功");
+        return ReturnEntity.success(getOfficeInformation(user.getId()), "更新成功");
     }
 
 
@@ -780,20 +779,25 @@ public class UserController extends BaseController {
     @RequestMapping("filter/findOfficeInformation1")
     @ResponseBody
     public ReturnEntity findOfficeInformation(String userId) {
-        UserAndOfficeInformationVo vo = null;
         try {
-            User user = UserUtils.get(userId);
-            SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(userId);
-            if(Objects.isNull(byUserId)){
-                byUserId = new SysOfficeInformation();
-            }
-            vo = systemService.setUserAndOfficeInformationVoData(user, byUserId);
+            UserAndOfficeInformationVo vo = getOfficeInformation(userId);
+            return ReturnEntity.success(vo, "获取成功");
         } catch (Exception e) {
             e.printStackTrace();
             LogUtils.getLogInfo(UserController.class).info("程序出错", e);
             return ReturnEntity.fail("程序出错");
         }
-        return ReturnEntity.success(vo, "获取成功");
+    }
+
+    private UserAndOfficeInformationVo getOfficeInformation(String userId){
+        UserAndOfficeInformationVo vo = null;
+        User user = UserUtils.get(userId);
+        SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(userId);
+        if (Objects.isNull(byUserId)) {
+            byUserId = new SysOfficeInformation();
+        }
+        vo = systemService.setUserAndOfficeInformationVoData(user, byUserId);
+        return vo;
     }
 
     /**
@@ -818,7 +822,7 @@ public class UserController extends BaseController {
                 }
                 String wappPath = request.getSession().getServletContext().getContextPath();
                 background.transferTo(file1);
-                 s = wappPath + "/" + file1.getPath().substring(configPath.length() + 1);
+                s = wappPath + "/" + file1.getPath().substring(configPath.length() + 1);
                 user.setPhoto(s);
             }
         } catch (Exception e) {
@@ -826,7 +830,7 @@ public class UserController extends BaseController {
             LogUtils.getLogInfo(UserController.class).info("程序出错", e);
             return ReturnEntity.fail("程序出错");
         }
-        return ReturnEntity.success(s,"保存成功");
+        return ReturnEntity.success(s, "保存成功");
     }
 
 
@@ -835,14 +839,14 @@ public class UserController extends BaseController {
      */
     @RequestMapping("filter/clearCache")
     @ResponseBody
-    public ReturnEntity clearCache(String userId,HttpServletRequest request){
-        try{
+    public ReturnEntity clearCache(String userId, HttpServletRequest request) {
+        try {
             // 清除用户缓存
             User user = UserUtils.get(userId);
             user.setLoginName(user.getLoginName());
-           CacheUtils.remove("homeLoginSession_"+userId);
+            CacheUtils.remove("homeLoginSession_" + userId);
             UserUtils.clearCache(user);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             LogUtils.getLogInfo(UserController.class).info("程序出错", e);
             return ReturnEntity.fail("程序出错");
