@@ -58,7 +58,7 @@
 			<if test="createDate != null and createDate != ''">
 				AND a.create_date = #{createDate}
 			</if>
-			<if test="createBy.id != null and createBy.id != ''">
+			<if test="createBy != null and createBy.id != null and createBy.id != ''">
 				AND a.create_by = #{createBy.id}
 			</if>
 			<if test="status != null and status != ''">

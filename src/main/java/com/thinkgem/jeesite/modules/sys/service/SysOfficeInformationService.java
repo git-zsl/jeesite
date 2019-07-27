@@ -3,11 +3,14 @@
  */
 package com.thinkgem.jeesite.modules.sys.service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.area.entity.SysChina;
 import com.thinkgem.jeesite.modules.sys.entity.Area;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
@@ -39,6 +42,21 @@ public class SysOfficeInformationService extends CrudService<SysOfficeInformatio
 
 	public SysOfficeInformation findByUserId(String userId) {
 		return dao.findByUserId(userId);
+	}
+
+	public List<String> findOfficeImage (String userId){
+		List<String> list = Lists.newArrayList();
+		SysOfficeInformation byUserId = dao.findByUserId(userId);
+		if(Objects.nonNull(byUserId)){
+			String officeImage = byUserId.getOfficeImage();
+			if(StringUtils.isNotBlank(officeImage)){
+				String[] split = officeImage.split(",");
+				Arrays.stream(split).forEach(item ->{
+					list.add(item);
+				});
+			}
+		}
+		return list;
 	}
 
 	public List<SysOfficeInformation> findList(SysOfficeInformation sysOfficeInformation) {

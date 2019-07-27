@@ -678,6 +678,9 @@ public class UserController extends BaseController {
     public ReturnEntity updateOfficeInformation(String userId, User user, HttpServletRequest request, SysOfficeInformation sysOfficeInformation) {
         try {
             User user1 = UserUtils.get(userId);
+            if(StringUtils.isBlank(user.getPassword())){
+                return ReturnEntity.fail("请验证密码！");
+            }
             if (StringUtils.isNotBlank(user.getNewPassword())) {
                 boolean b = LoginUtils.validatePassword(user.getPassword(), user1.getPassword());
                 if (!b) {
