@@ -606,7 +606,9 @@ public class UserController extends BaseController {
         }
         SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(user.getId());
         if (Objects.nonNull(byUserId)) {
-            user.setOfficeImage(byUserId.getOfficeImage());
+            String officeImage = byUserId.getOfficeImage();
+            String replace = officeImage.replace(",", "|");
+            user.setOfficeImage(replace);
             user.setTeamSize(byUserId.getTeamSize());
             user.setOfficeLink(byUserId.getOfficeLink());
         }
@@ -678,7 +680,7 @@ public class UserController extends BaseController {
     public ReturnEntity updateOfficeInformation(String userId, User user, HttpServletRequest request, SysOfficeInformation sysOfficeInformation) {
         try {
             User user1 = UserUtils.get(userId);
-            if(StringUtils.isBlank(user.getPassword())){
+            if (StringUtils.isBlank(user.getPassword())) {
                 return ReturnEntity.fail("请验证密码！");
             }
             if (StringUtils.isNotBlank(user.getNewPassword())) {
@@ -720,7 +722,7 @@ public class UserController extends BaseController {
                 weChatCode = multipartRequest.getFile("weChatCode");
                 String configPath = Global.getConfig("userfiles.basedir").substring(0, 1) + Global.getConfig("userfiles.basedir").substring(1);
                 String wappPath = request.getSession().getServletContext().getContextPath();
-                if(Objects.nonNull(headImage)){
+                if (Objects.nonNull(headImage)) {
                     String originalFilename = Encodes.urlDecode(headImage.getOriginalFilename());
                     File path = new File(configPath + "/" + Global.getConfig("homePhoto") + user.getLoginName() + "/" + originalFilename);
                     if (!path.getParentFile().exists()) {
@@ -792,7 +794,7 @@ public class UserController extends BaseController {
         }
     }
 
-    private UserAndOfficeInformationVo getOfficeInformation(String userId){
+    private UserAndOfficeInformationVo getOfficeInformation(String userId) {
         UserAndOfficeInformationVo vo = null;
         User user = UserUtils.get(userId);
         SysOfficeInformation byUserId = sysOfficeInformationService.findByUserId(userId);

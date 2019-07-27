@@ -3,25 +3,19 @@
  */
 package com.thinkgem.jeesite.modules.cms.web;
 
-import java.io.File;
-import java.net.URLDecoder;
-import java.text.DateFormat;
-import java.text.MessageFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.swing.*;
-
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.mapper.JsonMapper;
+import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.persistence.ReturnEntity;
 import com.thinkgem.jeesite.common.persistence.ReturnStatus;
-import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.MyPageUtil;
+import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.ad.entity.AdInfomation;
 import com.thinkgem.jeesite.modules.ad.service.AdInfomationService;
+import com.thinkgem.jeesite.modules.area.entity.SysChina;
+import com.thinkgem.jeesite.modules.area.service.SysChinaService;
 import com.thinkgem.jeesite.modules.articleclassify.entity.CmsArticleClassify;
 import com.thinkgem.jeesite.modules.articleclassify.service.CmsArticleClassifyService;
 import com.thinkgem.jeesite.modules.artuser.entity.ArticleCollect;
@@ -30,45 +24,45 @@ import com.thinkgem.jeesite.modules.classifying.entity.CmsClassifying;
 import com.thinkgem.jeesite.modules.classifying.service.CmsClassifyingService;
 import com.thinkgem.jeesite.modules.cms.entity.*;
 import com.thinkgem.jeesite.modules.cms.service.*;
+import com.thinkgem.jeesite.modules.cms.utils.CmsUtils;
+import com.thinkgem.jeesite.modules.cms.utils.TplUtils;
 import com.thinkgem.jeesite.modules.cms.utils.TxtReadUtil;
 import com.thinkgem.jeesite.modules.crn.entity.UserCategoryNum;
 import com.thinkgem.jeesite.modules.custom.entity.CustomCategory;
 import com.thinkgem.jeesite.modules.custom.service.CustomCategoryService;
-import com.thinkgem.jeesite.modules.is_article.entity.CmsIsArticle;
 import com.thinkgem.jeesite.modules.is_article.service.CmsIsArticleService;
-import com.thinkgem.jeesite.modules.jobcity.entity.JobCity;
 import com.thinkgem.jeesite.modules.jobcity.service.JobCityService;
 import com.thinkgem.jeesite.modules.posts.entity.CmsPosts;
 import com.thinkgem.jeesite.modules.posts.service.CmsPostsService;
 import com.thinkgem.jeesite.modules.sys.entity.Email;
 import com.thinkgem.jeesite.modules.sys.entity.User;
-import com.thinkgem.jeesite.modules.sys.utils.AliyunEmailUtil;
 import com.thinkgem.jeesite.modules.sys.utils.EmailUtils;
 import com.thinkgem.jeesite.modules.sys.utils.LogUtils;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.sysinfo.entity.SysSendInformation;
 import com.thinkgem.jeesite.modules.sysinfo.service.SysSendInformationService;
 import com.thinkgem.jeesite.modules.wf.entity.UserArticleLikeCollect;
 import com.thinkgem.jeesite.modules.wf.service.UserArticleLikeCollectService;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.poi.ss.formula.functions.T;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.thinkgem.jeesite.common.mapper.JsonMapper;
-import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.modules.cms.utils.CmsUtils;
-import com.thinkgem.jeesite.modules.cms.utils.TplUtils;
-import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import org.springframework.web.util.WebUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.net.URLDecoder;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 文章Controller
@@ -111,6 +105,8 @@ public class ArticleController extends BaseController {
     private SysSendInformationService sysSendInformationService;
     @Autowired
     private UserArticleLikeCollectService userArticleLikeCollectService;
+    @Autowired
+    private SysChinaService sysChinaService;
 
     @ModelAttribute
     public Article get(@RequestParam(required = false) String id) {
@@ -153,8 +149,10 @@ public class ArticleController extends BaseController {
     @RequestMapping(value = "form")
     public String form(Article article, Model model, RedirectAttributes redirectAttributes, @RequestParam(value = "parentCategoryId", required = false) String parentCategoryId, @RequestParam(value = "all", required = false) String all, @RequestParam(value = "formFlag", required = false) String formFlag) {
         try {
+            SysChina sysChina = new SysChina();
             model.addAttribute("postsList", cmsPostsService.findPosts(new CmsPosts()));
-            model.addAttribute("cityList", jobCityService.findList(new JobCity()));
+            sysChina.setType("2");
+            model.addAttribute("cityList", sysChinaService.findCurrentArea(sysChina));
             model.addAttribute("cmsClassifying", cmsClassifyingService.findList(new CmsClassifying()));
             model.addAttribute("articleClassifys", cmsArticleClassifyService.findList(new CmsArticleClassify()));
             // 如果当前传参有子节点，则选择取消传参选择
@@ -435,7 +433,7 @@ public class ArticleController extends BaseController {
 
     @RequestMapping(value = "filter/getAllArticle", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article,@RequestParam(value = "flag", required = false,defaultValue = "false") String flag, @RequestParam(value = "categoryId", required = false) String categoryId, @RequestParam(value = "cmsArticleClassifyId", required = false) String cmsArticleClassifyId, @RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
+    public ReturnEntity<List<Article>> getAllArticle(@ModelAttribute Article article, @RequestParam(value = "flag", required = false, defaultValue = "false") String flag, @RequestParam(value = "categoryId", required = false) String categoryId, @RequestParam(value = "cmsArticleClassifyId", required = false) String cmsArticleClassifyId, @RequestParam(value = "userId", required = false) String userId, HttpServletRequest request, HttpServletResponse response) {
         try {
             if (!StringUtils.isBlank(userId) && "false".equals(flag)) {
                 User user = UserUtils.get(userId);
@@ -779,11 +777,11 @@ public class ArticleController extends BaseController {
      */
     @RequestMapping(value = "filter/like")
     @ResponseBody
-    public ReturnEntity updateLikeNum(@ModelAttribute Article article, @RequestParam(value = "userId",required = false) String userId) {
+    public ReturnEntity updateLikeNum(@ModelAttribute Article article, @RequestParam(value = "userId", required = false) String userId) {
         try {
             if (StringUtils.isBlank(userId)) {
                 LogUtils.getLogInfo(ArticleController.class).error("传入的userId为空");
-                return  new ReturnEntity(ReturnStatus.LOGOUT, "请先登录");
+                return new ReturnEntity(ReturnStatus.LOGOUT, "请先登录");
             }
             User user = new User(userId);
             UserArticleLikeCollect byUserIdAndArticleId = userArticleLikeCollectService.findByUserIdAndArticleId(new UserArticleLikeCollect(user, article.getId()));

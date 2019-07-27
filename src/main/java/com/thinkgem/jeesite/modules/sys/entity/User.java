@@ -71,6 +71,9 @@ public class User extends DataEntity<User> {
 	private String teamSize;
 	private String officeImage;
 	private String officeLink;
+	private String officeImage1;
+	private String officeImage2;
+	private String officeImage3;
 
 	private Role role;	// 根据角色查询用户条件
 	
@@ -499,6 +502,30 @@ public class User extends DataEntity<User> {
 
 	public void setOfficeLink(String officeLink) {
 		this.officeLink = officeLink;
+	}
+
+	public String getOfficeImage1() {
+		return officeImage1;
+	}
+
+	public void setOfficeImage1(String officeImage1) {
+		this.officeImage1 = officeImage1;
+	}
+
+	public String getOfficeImage2() {
+		return officeImage2;
+	}
+
+	public void setOfficeImage2(String officeImage2) {
+		this.officeImage2 = officeImage2;
+	}
+
+	public String getOfficeImage3() {
+		return officeImage3;
+	}
+
+	public void setOfficeImage3(String officeImage3) {
+		this.officeImage3 = officeImage3;
 	}
 
 	@Override

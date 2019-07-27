@@ -363,7 +363,8 @@
 			city = #{city.id},
 			district = #{district.id},
 			subscription = #{subscription},
-			information = #{information}
+			information = #{information},
+			wei_xin_code = #{weiXinCode}
 		WHERE id = #{id}
 	</update>
 	

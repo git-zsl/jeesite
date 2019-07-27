@@ -22,6 +22,8 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.area.entity.SysChina;
 import com.thinkgem.jeesite.modules.area.service.SysChinaService;
 
+import java.util.List;
+
 /**
  * 省市区对象Controller
  * @author zsl
@@ -79,5 +81,12 @@ public class SysChinaController extends BaseController {
 		addMessage(redirectAttributes, "删除数据成功");
 		return "redirect:"+Global.getAdminPath()+"/area/sysChina/?repage";
 	}
+
+	@RequestMapping(value = "changeContent")
+	public List<SysChina> changeContent(SysChina sysChina) {
+		List<SysChina> currentArea = sysChinaService.findCurrentArea(sysChina);
+		return currentArea;
+	}
+
 
 }

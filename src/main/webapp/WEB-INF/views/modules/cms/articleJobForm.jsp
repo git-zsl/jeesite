@@ -32,7 +32,29 @@
 						error.insertAfter(element);
 					}
 				}
+
+
+
+
 			});
+
+            $("#area").click(function(){
+                var code = $("#area").val();
+                var url = "${ctx}/area/sysChina/changeContent?code="+code;
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    success: function(result){
+                        document.getElementById("secondClassificationId").options.length=0;
+                        $("#s2id_secondClassificationId .select2-chosen").html("");
+                        $("#secondClassificationId").append( "<option value=''></option>");
+                        $.each(result,function(index,item){
+                            $("#secondClassificationId").append( "<option value='"+item.id+"'>"+item.name+"</option>");
+                        });
+                    }
+                });
+            });
+
 		});
 	</script>
 </head>
@@ -84,19 +106,19 @@
 			<div class="controls">
 					<form:select id="area" path="area" class="input-medium">
 						<form:option value="" label="请选择"/>
-						<form:options items="${cityList}" htmlEscape="false" itemLabel="city" itemValue="id"/>
+						<form:options items="${cityList}" htmlEscape="false" itemLabel="name" itemValue="code"/>
 					</form:select>
 			</div>
 			<%--<div class="controls">
-					<form:select id="city" path="city" class="input-medium">
+					<form:select id="city" path="code" class="input-medium">
 						<form:option value="" label="请选择"/>
-						<form:options items="${cityList}" htmlEscape="false" itemLabel="city" itemValue="id"/>
+						<form:options items="${cityList2}" htmlEscape="false" itemLabel="name" itemValue="code"/>
 					</form:select>
 			</div>
 			<div class="controls">
 					<form:select id="district" path="district" class="input-medium">
 						<form:option value="" label="请选择"/>
-						<form:options items="${cityList}" htmlEscape="false" itemLabel="city" itemValue="id"/>
+						<form:options items="${cityList3}" htmlEscape="false" itemLabel="name" itemValue="code"/>
 					</form:select>
 			</div>--%>
 		</div>
