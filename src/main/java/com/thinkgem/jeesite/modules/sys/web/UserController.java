@@ -828,7 +828,8 @@ public class UserController extends BaseController {
                 String wappPath = request.getSession().getServletContext().getContextPath();
                 background.transferTo(file1);
                 s = wappPath + "/" + file1.getPath().substring(configPath.length() + 1);
-                user.setPhoto(s);
+                user.setBackground(s);
+                systemService.saveUserBackground(user);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -463,7 +463,7 @@
 	</update>
 
 	<!-- 更新主页企业背景  未使用-->
-	<update id="updateackground">
+	<update id="updateBackground">
 		UPDATE sys_user SET
 		background = #{background}
 		WHERE id = #{id}

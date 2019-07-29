@@ -273,6 +273,10 @@ public class ArticleService extends CrudService<ArticleDao, Article> {
         return dao.findHostAuthors(article);
     }
 
+    public List<Article> findHotCompany(Article article) {
+        return dao.findHotCompany(article);
+    }
+
     public List<Article> findHostKeywords(Article article) {
         return dao.findHostKeywords(article);
     }

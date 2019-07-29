@@ -74,6 +74,8 @@
         a.like_num AS "likeNum",
         <include refid="cmsArticleJobColumns"/>
     </sql>
+
+
     <sql id="cmsArticleJobPostColumns">
         DISTINCT a.category_id AS "category.id",
         a.id AS "id",
@@ -188,6 +190,19 @@
 		Left JOIN job_city jc ON jc.id = a.area
 		Left JOIN cms_classifying cc ON cc.id = a.classifying_id
 		Left JOIN cms_article_classify dd ON dd.id = a.article_classify_id
+	</sql>
+
+    <sql id="cmsArticleCompanyColumns">
+        b.id ,
+        b.name,
+        d.office_introduction AS "officeIntroduction",
+        count(b.id) AS "count"
+    </sql>
+
+    <sql id="cmsArticleCompanyJoins">
+        left join sys_user b on a.create_by = b.id
+        left join cms_category c on c.id = a.category_id
+        left join sys_office_information d on b.id = d.user_id
 	</sql>
 
     <select id="get" resultType="Article">
@@ -570,6 +585,21 @@
         </where>
         GROUP BY a.author
         ORDER BY a.hits desc
+    </select>
+
+    <select id="findHotCompany" resultType="Article">
+        SELECT
+        <include refid="cmsArticleCompanyColumns"/>
+        FROM cms_article a
+        <include refid="cmsArticleCompanyJoins"/>
+        <where>
+            a.del_flag = #{DEL_FLAG_NORMAL}
+            AND  b.isCompany = 'true'
+            AND  c.parent_ids LIKE CONCAT('%,', #{category.id}, ',%')
+        </where>
+        GROUP BY b.id
+        ORDER BY a.hits desc
+        LIMIT 0,10
     </select>
 
     <select id="findHostPosts" resultType="Article">

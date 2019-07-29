@@ -35,6 +35,8 @@ public interface ArticleDao extends CrudDao<Article> {
 
 	public List<String> findTitle(Article article);
 
+	public List<Article> findHotCompany(Article article);
+
 	public List<Article> findHostAuthors(Article article);
 
 	public List<Article> findHostPosts(Article article);

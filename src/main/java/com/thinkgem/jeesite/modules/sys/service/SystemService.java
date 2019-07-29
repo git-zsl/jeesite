@@ -751,6 +751,7 @@ public class SystemService extends BaseService implements InitializingBean {
 		vo.setName(StringUtils.isNotBlank(user.getName())?user.getName():"");
 		vo.setTeamSize(sysOfficeInformation.getTeamSize());
 		vo.setOfficeImage(sysOfficeInformation.getOfficeImage());
+		vo.setBackground(user.getBackground());
 		return vo;
 	}
 
@@ -762,5 +763,10 @@ public class SystemService extends BaseService implements InitializingBean {
 	public boolean findUserEmail(String email){
 		List<String> userEmail = userDao.findUserEmail(email);
 		return userEmail.isEmpty()?false:true;
+	}
+
+	@Transactional(readOnly = false,rollbackFor = Exception.class)
+	public void saveUserBackground(User user){
+		userDao.updateBackground(user);
 	}
 }

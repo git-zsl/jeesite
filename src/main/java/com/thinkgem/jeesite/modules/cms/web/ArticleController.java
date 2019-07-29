@@ -1024,4 +1024,24 @@ public class ArticleController extends BaseController {
     }
 
 
+    /**
+     * 热门公司接口
+     * param categoryId
+     */
+
+    @RequestMapping(value = "filter/hotCompany", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnEntity<List<Article>> findHotCompany(@RequestParam(value = "categoryId") String categoryId) {
+        try {
+            Article article = new Article();
+            Category category = new Category(categoryId);
+            article.setCategory(category);
+            List<Article> list = articleService.findHotCompany(article);
+            return ReturnEntity.success(list, "获取热门公司前十列表成功");
+        } catch (Exception e) {
+            LogUtils.getLogInfo(ArticleController.class).info("程序内部出错", e);
+            e.printStackTrace();
+            return ReturnEntity.fail("程序内部出错");
+        }
+    }
 }

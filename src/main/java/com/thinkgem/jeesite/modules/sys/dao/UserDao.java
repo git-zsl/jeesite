@@ -108,6 +108,7 @@ public interface UserDao extends CrudDao<User> {
 	 */
 	public void updateBackground(User user);
 
+
 	/**
 	 * 查找个人黑名单列表
 	 * @param

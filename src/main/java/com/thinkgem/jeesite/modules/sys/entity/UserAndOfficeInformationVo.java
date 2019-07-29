@@ -47,6 +47,7 @@ public class UserAndOfficeInformationVo {
 	private String name;		// 机构名称
 	private String teamSize;       //团队人数
 	private String officeImage;    // 创作环境
+	private String background;    // 背景图
 
 	public String getUserId() {
 		return userId;
@@ -206,5 +207,13 @@ public class UserAndOfficeInformationVo {
 
 	public void setOfficeIntroduction(String officeIntroduction) {
 		this.officeIntroduction = officeIntroduction;
+	}
+
+	public String getBackground() {
+		return background;
+	}
+
+	public void setBackground(String background) {
+		this.background = background;
 	}
 }
